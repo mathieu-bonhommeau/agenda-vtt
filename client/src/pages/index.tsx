@@ -1,4 +1,4 @@
-import { Calendar } from '@/app/_common/components/calendar'
+import { MyCalendar } from '@/app/_common/components/calendar'
 import { Filters } from '@/app/_common/components/filters'
 import { Map } from '@/app/_common/components/map'
 import { ToggleButton, ToggleButtonGroup } from '@mui/material'
@@ -21,7 +21,7 @@ export default function Index() {
                 <ToggleButton value="calendar">Calendrier</ToggleButton>
                 <ToggleButton value="map">Carte</ToggleButton>
             </ToggleButtonGroup>
-            {view === 'calendar' && <Calendar />}
+            {view === 'calendar' && <MyCalendar />}
             {view === 'map' && <Map />}
         </>
     )
