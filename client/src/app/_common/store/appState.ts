@@ -1,5 +1,5 @@
-import { CalendarEvent } from '@/app/calendar-event/business/model/event'
+import { EventsState } from '@/app/calendar-event/business/reducer/event-reducer'
 
 export interface AppState {
-    events: CalendarEvent[]
+    eventsState: EventsState[]
 }

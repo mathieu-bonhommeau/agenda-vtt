@@ -1,8 +1,9 @@
 import { AppState } from '@/app/_common/store/appState'
+import { eventsReducer } from '@/app/calendar-event/business/reducer/event-reducer'
 import { EventsGateway } from '@/app/calendar-event/business/use-case/__test__/fetch-events.spec'
 import { Action, configureStore, Store, ThunkAction, ThunkDispatch, UnknownAction } from '@reduxjs/toolkit'
 import { BaseThunkAPI } from '@reduxjs/toolkit/src/createAsyncThunk'
-import {GetDefaultMiddleware} from "@reduxjs/toolkit/src/getDefaultMiddleware";
+import { GetDefaultMiddleware } from '@reduxjs/toolkit/src/getDefaultMiddleware'
 
 export interface Dependencies {
     eventsGateway: EventsGateway
@@ -10,7 +11,9 @@ export interface Dependencies {
 
 export const setupStore = (dependencies: Partial<Dependencies>) => {
     return configureStore({
-        reducer: {},
+        reducer: {
+            eventsReducer,
+        },
         devTools: true,
         middleware: (getDefaultMiddleware: GetDefaultMiddleware<AppState>) =>
             getDefaultMiddleware({
@@ -18,7 +21,6 @@ export const setupStore = (dependencies: Partial<Dependencies>) => {
                     extraArgument: dependencies,
                 },
             }),
-
     })
 }
 

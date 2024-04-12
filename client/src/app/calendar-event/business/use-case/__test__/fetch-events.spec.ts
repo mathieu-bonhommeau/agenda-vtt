@@ -9,10 +9,16 @@ describe('Fetch events', () => {
 
     beforeEach(() => {
         sut = new SUT()
-        events = sut.buildEvents(4)
     })
 
-    it('at the beginning, no events are fetched', async () => {})
+    it('at the beginning, no events are fetched', async () => {
+        events = sut.buildDefaultEvents(4)
+        sut.givenEvents(events)
+
+        sut.retrieveEvents()
+
+        expect(sut.eventsFromStore()).toEqual(events)
+    })
 })
 
 class SUT {
@@ -24,7 +30,7 @@ class SUT {
         this._store = setupStore({ eventsGateway: this._eventsGateway })
     }
 
-    buildEvents(count: number) {
+    buildDefaultEvents(count: number) {
         const events: CalendarEvent[] = []
         while (--count) {
             events.push(this.buildEvent())
@@ -42,6 +48,10 @@ class SUT {
 
     retrieveEvents() {
         this._store.dispatch(retrieveEvents())
+    }
+
+    eventsFromStore() {
+        return this._store.getState().eventsReducer.events
     }
 }
 

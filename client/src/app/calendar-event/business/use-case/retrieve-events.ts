@@ -3,8 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 
 export const retrieveEvents = createAsyncThunk<void, void, AppAsyncThunkConfig>(
     'events/fetch',
-    async (_, { extra: { eventsGateway }, getState, dispatch }: AppAsyncThunkConfig) => {
-        const events = await eventsGateway.retrieveEvents()
-        //dispatch({ type: Actions.EVENTS_RETRIEVED, payload: {} })
+    async (_, { extra: { eventsGateway } }: AppAsyncThunkConfig) => {
+        return await eventsGateway.retrieveEvents()
     },
 )
