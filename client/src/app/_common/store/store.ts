@@ -12,7 +12,7 @@ export interface Dependencies {
 export const setupStore = (dependencies: Partial<Dependencies>) => {
     return configureStore({
         reducer: {
-            eventsReducer,
+            eventsState: eventsReducer,
         },
         devTools: true,
         middleware: (getDefaultMiddleware: GetDefaultMiddleware<AppState>) =>
