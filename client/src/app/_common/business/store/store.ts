@@ -1,4 +1,4 @@
-import { AppState } from '@/app/_common/store/appState'
+import { AppState } from '@/app/_common/business/store/appState'
 import { eventsReducer } from '@/app/calendar-event/business/reducer/event-reducer'
 import { EventsGateway } from '@/app/calendar-event/business/use-case/__test__/fetch-events.spec'
 import { Action, configureStore, Store, ThunkDispatch } from '@reduxjs/toolkit'

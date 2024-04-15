@@ -2,9 +2,9 @@ export type CalendarEvent = {
     id: string
     title: string
     description?: string
-    createdAt: Date
-    startDate: Date
-    endDate: Date
+    createdAt: string
+    startDate: string
+    endDate: string
     EventLocation?: EventLocation
     traces?: Trace[]
     price?: Price[]

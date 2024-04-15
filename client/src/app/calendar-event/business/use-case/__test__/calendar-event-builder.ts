@@ -5,9 +5,9 @@ export class CalendarEventBuilder {
     private _id: string = randomUUID()
     private _title: string = 'my title'
     private _description?: string
-    private _createdAt: Date = new Date()
-    private _startDate: Date = new Date()
-    private _endDate: Date = new Date()
+    private _createdAt: string = new Date().toDateString()
+    private _startDate: string = new Date().toDateString()
+    private _endDate: string = new Date().toDateString()
     private _eventLocation?: EventLocation
     private _traces?: Trace[]
     private _prices?: Price[]

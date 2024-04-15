@@ -1,16 +1,17 @@
+import { EventsError } from '@/app/_common/business/models/errors/events-error'
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
 import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events'
 import { createSlice } from '@reduxjs/toolkit'
 
 export type EventsState = {
     events: CalendarEvent[]
-    error: boolean
+    error: EventsError | null
     loading: boolean
 }
 
 export const initialState: EventsState = {
     events: [],
-    error: false,
+    error: null,
     loading: false,
 }
 
@@ -19,7 +20,7 @@ export const eventsSlice = createSlice({
     initialState,
     reducers: {
         resetError: (state) => {
-            state.error = false
+            state.error = null
         },
     },
     extraReducers: (builder) => {
@@ -29,12 +30,12 @@ export const eventsSlice = createSlice({
             })
             .addCase(retrieveEvents.fulfilled, (state, action) => {
                 state.loading = false
-                console.log(action)
                 state.events = action.payload || []
             })
-            .addCase(retrieveEvents.rejected, (state) => {
+            .addCase(retrieveEvents.rejected, (state, action) => {
                 state.loading = false
-                state.error = true
+                console.log(action.error)
+                state.error = action.error
             })
     },
 })
