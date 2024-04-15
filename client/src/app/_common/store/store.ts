@@ -25,12 +25,12 @@ export const setupStore = (dependencies: Partial<Dependencies>) => {
 }
 
 export type ReduxStore = Store<AppState> & {
-    dispatch: ThunkDispatch<AppState, Dependencies, Action>
+    dispatch: AppDispatch
 }
 
 export type AppDispatch = ThunkDispatch<AppState, Dependencies, Action>
 
 export type AppAsyncThunkConfig = BaseThunkAPI<AppState, Dependencies, AppDispatch>
 
-/*//TODO - check if UnknownAction is the corresponding type !
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, Dependencies, Action>*/
+//TODO - check if UnknownAction is the corresponding type !
+//export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, Dependencies, Action>*/

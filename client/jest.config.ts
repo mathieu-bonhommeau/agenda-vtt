@@ -13,6 +13,9 @@ const config: Config = {
     setupFilesAfterEnv: ['jest-extended/all', 'jest-expect-message'],
     maxConcurrency: 10,
     maxWorkers: 5,
+    moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+    },
 }
 
 export default config
