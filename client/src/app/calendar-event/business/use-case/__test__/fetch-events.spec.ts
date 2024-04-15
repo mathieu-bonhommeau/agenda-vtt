@@ -1,4 +1,4 @@
-import { setupStore } from '@/app/_common/store/store'
+import { ReduxStore, setupStore } from '@/app/_common/store/store'
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
 import { CalendarEventBuilder } from '@/app/calendar-event/business/use-case/__test__/calendar-event-builder'
 import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events'
@@ -22,8 +22,8 @@ describe('Fetch events', () => {
 })
 
 class SUT {
-    private _store: ReturnType<typeof setupStore>
-    private _eventsGateway: InMemoryEventsGateway
+    private _store: ReduxStore
+    private readonly _eventsGateway: InMemoryEventsGateway
 
     constructor() {
         this._eventsGateway = new InMemoryEventsGateway()
@@ -51,7 +51,7 @@ class SUT {
     }
 
     eventsFromStore() {
-        return this._store.getState().eventsReducer.events
+        return this._store.getState().eventsState.events
     }
 }
 

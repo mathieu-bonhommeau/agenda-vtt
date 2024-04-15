@@ -1,7 +1,7 @@
 import { AppState } from '@/app/_common/store/appState'
 import { eventsReducer } from '@/app/calendar-event/business/reducer/event-reducer'
 import { EventsGateway } from '@/app/calendar-event/business/use-case/__test__/fetch-events.spec'
-import { Action, configureStore, Store, ThunkAction, ThunkDispatch, UnknownAction } from '@reduxjs/toolkit'
+import { Action, configureStore, Store, ThunkDispatch } from '@reduxjs/toolkit'
 import { BaseThunkAPI } from '@reduxjs/toolkit/src/createAsyncThunk'
 import { GetDefaultMiddleware } from '@reduxjs/toolkit/src/getDefaultMiddleware'
 
@@ -30,7 +30,7 @@ export type ReduxStore = Store<AppState> & {
 
 export type AppDispatch = ThunkDispatch<AppState, Dependencies, Action>
 
-export type AppAsyncThunkConfig = BaseThunkAPI<AppState, Dependencies>
+export type AppAsyncThunkConfig = BaseThunkAPI<AppState, Dependencies, AppDispatch>
 
-//TODO - check if UnknownAction is the corresponding type !
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, Dependencies, UnknownAction>
+/*//TODO - check if UnknownAction is the corresponding type !
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, Dependencies, Action>*/

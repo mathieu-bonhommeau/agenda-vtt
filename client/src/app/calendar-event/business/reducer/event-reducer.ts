@@ -30,7 +30,7 @@ export const eventsSlice = createSlice({
             .addCase(retrieveEvents.fulfilled, (state, action) => {
                 state.loading = false
                 console.log(action)
-                //state.events = (action.payload as CalendarEvent[]) || []
+                state.events = action.payload || []
             })
             .addCase(retrieveEvents.rejected, (state) => {
                 state.loading = false
