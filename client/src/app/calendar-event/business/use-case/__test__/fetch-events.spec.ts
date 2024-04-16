@@ -1,4 +1,4 @@
-import { EventsError } from '@/app/_common/business/models/errors/events-error'
+import { EVENTS_ERROR, EventsError } from '@/app/_common/business/models/errors/events-error'
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
 import { CalendarEventBuilder } from '@/app/calendar-event/business/use-case/__test__/calendar-event-builder'
@@ -19,7 +19,7 @@ describe('Fetch events', () => {
 
             await sut.retrieveEvents()
 
-            expect(sut.eventsFromStore()).toEqual({ events, loading: false, error: false })
+            expect(sut.eventsFromStore()).toEqual({ events, loading: false, error: null })
         })
 
         it('and loading is true when request is in pending', () => {
@@ -28,7 +28,7 @@ describe('Fetch events', () => {
 
             sut.retrieveEvents()
 
-            expect(sut.eventsFromStore()).toEqual({ events: [], loading: true, error: false })
+            expect(sut.eventsFromStore()).toEqual({ events: [], loading: true, error: null })
         })
 
         it('and errors are set when request is rejected', async () => {
@@ -38,7 +38,11 @@ describe('Fetch events', () => {
 
             await sut.retrieveEvents()
 
-            expect(sut.eventsFromStore()).toEqual({ events: [], loading: true, error: null })
+            expect(sut.eventsFromStore()).toEqual({
+                events: [],
+                loading: false,
+                error: { code: EVENTS_ERROR, message: 'an events error' },
+            })
         })
     })
 })

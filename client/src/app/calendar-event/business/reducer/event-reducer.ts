@@ -34,8 +34,7 @@ export const eventsSlice = createSlice({
             })
             .addCase(retrieveEvents.rejected, (state, action) => {
                 state.loading = false
-                console.log(action.error)
-                state.error = action.error
+                state.error = action.error as EventsError
             })
     },
 })
