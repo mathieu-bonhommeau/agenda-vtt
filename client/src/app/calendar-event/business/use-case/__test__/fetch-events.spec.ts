@@ -1,8 +1,9 @@
-import { EVENTS_ERROR, EventsError } from '@/app/_common/business/models/errors/events-error'
+import { EVENTS_ERROR } from '@/app/_common/business/models/errors/events-error'
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
 import { CalendarEventBuilder } from '@/app/calendar-event/business/use-case/__test__/calendar-event-builder'
 import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events'
+import { InMemoryEventsGateway } from '@/app/calendar-event/infrastructure/in-memory-events.gateway'
 
 describe('Fetch events', () => {
     let sut: SUT
@@ -82,19 +83,5 @@ class SUT {
 
     setError() {
         this._eventsGateway.error = true
-    }
-}
-
-export interface EventsGateway {
-    retrieveEvents(): Promise<CalendarEvent[]>
-}
-
-export class InMemoryEventsGateway implements EventsGateway {
-    public events: CalendarEvent[] = []
-    public error: boolean = false
-
-    async retrieveEvents(): Promise<CalendarEvent[]> {
-        if (this.error) throw new EventsError('an events error')
-        return this.events
     }
 }

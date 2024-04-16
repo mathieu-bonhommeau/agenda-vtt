@@ -1,8 +1,7 @@
 import { CalendarEvent, EventLocation, EventOrganizer, Price, Trace } from '@/app/calendar-event/business/model/event'
-import { randomUUID } from 'node:crypto'
 
 export class CalendarEventBuilder {
-    private _id: string = randomUUID()
+    private _id: string = 'randomId'
     private _title: string = 'my title'
     private _description?: string
     private _createdAt: string = new Date().toDateString()

@@ -1,6 +1,6 @@
 import { AppState } from '@/app/_common/business/store/appState'
+import { EventsGateway } from '@/app/calendar-event/business/ports/events.gateway'
 import { eventsReducer } from '@/app/calendar-event/business/reducer/event-reducer'
-import { EventsGateway } from '@/app/calendar-event/business/use-case/__test__/fetch-events.spec'
 import { Action, configureStore, Store, ThunkDispatch } from '@reduxjs/toolkit'
 import { BaseThunkAPI } from '@reduxjs/toolkit/src/createAsyncThunk'
 import { GetDefaultMiddleware } from '@reduxjs/toolkit/src/getDefaultMiddleware'

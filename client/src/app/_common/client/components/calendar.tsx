@@ -30,7 +30,7 @@ const events = [
     },
 ]
 
-export function MyCalendar() {
+export function AppCalendar() {
     const localizer = momentLocalizer(moment)
 
     return (
