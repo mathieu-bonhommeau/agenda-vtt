@@ -1,13 +1,15 @@
-import { Calendar } from '@/app/_common/components/calendar'
-import { Filters } from '@/app/_common/components/filters'
-import { Map } from '@/app/_common/components/map'
+import { buildDependencies } from '@/app/_common/_config/dependencies'
+import { setupStore } from '@/app/_common/business/store/store'
+import { AppCalendar } from '@/app/_common/client/components/calendar'
+import { Filters } from '@/app/_common/client/components/filters'
+import { Map } from '@/app/_common/client/components/map'
 import { ToggleButton, ToggleButtonGroup } from '@mui/material'
-import { useRouter } from 'next/router'
 import React, { useState } from 'react'
+import { Provider } from 'react-redux'
 
 export type ViewEvents = 'calendar' | 'map'
 export default function Index() {
-    const router = useRouter()
+    const store = setupStore(buildDependencies())
     const [view, setView] = useState<ViewEvents>('calendar')
 
     const toggleView = (event: React.MouseEvent<HTMLElement>, newView: ViewEvents) => {
@@ -15,14 +17,14 @@ export default function Index() {
     }
 
     return (
-        <>
+        <Provider store={store}>
             <Filters />
             <ToggleButtonGroup color="primary" value={view} exclusive onChange={toggleView} aria-label="Platform">
                 <ToggleButton value="calendar">Calendrier</ToggleButton>
                 <ToggleButton value="map">Carte</ToggleButton>
             </ToggleButtonGroup>
-            {view === 'calendar' && <Calendar />}
+            {view === 'calendar' && <AppCalendar />}
             {view === 'map' && <Map />}
-        </>
+        </Provider>
     )
 }

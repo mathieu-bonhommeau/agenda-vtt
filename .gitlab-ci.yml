@@ -1,0 +1,2 @@
+include:
+  - ${CI_PROJECT_DIR}/client/.gitlab-ci.yml
