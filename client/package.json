@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint ./ --ext .ts,.tsx --cache --fix",
+    "lint:check": "eslint ./ --ext .ts,.tsx",
     "test": "jest --config jest.config.ts"
   },
   "resolutions": {

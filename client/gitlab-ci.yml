@@ -1,0 +1,30 @@
+image: node:lts
+
+stages:
+  - validation
+  - test
+  - push-image
+
+
+.modules: &modules
+  - yarn
+
+lint:
+  stage: validation
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "pipeline"
+  before_script:
+    - *modules
+  script:
+    - yarn run lint:check
+
+test:
+  stage: test
+  needs: [ ]
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "pipeline"
+  before_script:
+    - *modules
+  script:
+    - yarn run test
