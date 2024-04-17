@@ -31,6 +31,3 @@ export type ReduxStore = Store<AppState> & {
 export type AppDispatch = ThunkDispatch<AppState, Dependencies, Action>
 
 export type AppAsyncThunkConfig = BaseThunkAPI<AppState, Dependencies, AppDispatch>
-
-//TODO - check if UnknownAction is the corresponding type !
-//export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, Dependencies, Action>*/

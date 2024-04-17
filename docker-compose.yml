@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  client-agenda:
+    build:
+      context: .
+      dockerfile: docker/client/client.dockerfile
+    container_name: "utagawavtt-agenda-frontend"
+    ports:
+      - "3000:3000"

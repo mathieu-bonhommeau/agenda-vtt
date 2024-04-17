@@ -1,11 +1,17 @@
+import { buildDependencies } from '@/app/_common/_config/dependencies'
+import { setupStore } from '@/app/_common/business/store/store'
 import { Layout } from '@/app/_common/client/components/layout'
 import type { AppProps } from 'next/app'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import { Provider } from 'react-redux'
 
 export default function App({ Component, pageProps }: AppProps) {
+    const store = setupStore(buildDependencies())
     return (
-        <Layout>
-            <Component {...pageProps} />
-        </Layout>
+        <Provider store={store}>
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
+        </Provider>
     )
 }
