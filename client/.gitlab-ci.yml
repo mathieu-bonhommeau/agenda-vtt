@@ -7,7 +7,7 @@ stages:
 
 
 .modules: &modules
-  - yarn
+  - cd client && yarn
 
 lint:
   stage: validation
