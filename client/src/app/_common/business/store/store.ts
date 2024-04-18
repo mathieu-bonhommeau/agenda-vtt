@@ -1,3 +1,4 @@
+import { buildDependencies } from '@/app/_common/_config/dependencies'
 import { AppState } from '@/app/_common/business/store/appState'
 import { EventsGateway } from '@/app/calendar-event/business/ports/events.gateway'
 import { eventsReducer } from '@/app/calendar-event/business/reducer/event-reducer'
@@ -23,6 +24,8 @@ export const setupStore = (dependencies: Partial<Dependencies>) => {
             }),
     })
 }
+
+export const store = setupStore(buildDependencies())
 
 export type ReduxStore = Store<AppState> & {
     dispatch: AppDispatch
