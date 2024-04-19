@@ -4,7 +4,6 @@ EXPOSE 80
 
 WORKDIR /
 
-COPY ./client/ .
+COPY ./client/out /usr/share/nginx/html
 
-CMD npm run start
 

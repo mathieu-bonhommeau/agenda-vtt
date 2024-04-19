@@ -3,11 +3,11 @@ image: node:lts
 stages:
   - validation
   - test
-  - push-image
+  - deploy
 
 
 .modules: &modules
-  - cd client && yarn
+  - cd client && npm install
 
 lint:
   stage: validation
@@ -17,7 +17,7 @@ lint:
   before_script:
     - *modules
   script:
-    - yarn run lint:check
+    - npm run lint:check
 
 test:
   stage: test
@@ -27,4 +27,24 @@ test:
   before_script:
     - *modules
   script:
-    - yarn run test
+    - npm run test
+
+build-image:
+  image: docker:24.0.5
+  stage: deploy
+  environment:
+    name: production
+  services:
+    - docker:24.0.5-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+    FRONTEND_TAG: ${CI_REGISTRY_IMAGE}/client:${CI_ENVIRONMENT_NAME}
+  needs: [lint, test]
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "pipeline"
+  before_script:
+    - *modules
+    - npm run build
+  script:
+    - docker build --no-cache -f docker/client/client.dockerfile -t ${FRONTEND_TAG}
+    - docker push ${FRONTEND_TAG}

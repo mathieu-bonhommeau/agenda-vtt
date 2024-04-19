@@ -6,10 +6,8 @@ import { InMemoryEventsGateway } from '@/app/calendar-event/infrastructure/in-me
 export const buildDependencies = (): Dependencies => {
     switch (process.env['REACT_APP']) {
         case 'prod':
-            console.log('Building real dependencies')
             return buildRealDependencies()
         default:
-            console.log('Building in-memory dependencies')
             return buildInMemoryDependencies()
     }
 }
