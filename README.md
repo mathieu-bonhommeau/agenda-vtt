@@ -13,7 +13,7 @@ To make it easy for you to get started with UtagawaVTT Agenda, here's a list of 
 
 First, open a terminal and clone the repo
 
-This project uses Yarn
+This project uses npm
 
 ## Frontend App
 
@@ -21,7 +21,7 @@ This app is built with NextJs and Typescript.
 
 For launch the project : 
 
-1 - `yarn` for install dependencies
+1 - `npm` for install dependencies
 
 2 - `cp env.template .env` copy .env file
 
@@ -29,7 +29,7 @@ For launch the project :
 - in memory : change the value of REACT_APP variable to "dev"
 - http : change the value of REACT_APP variable to "prod"
 
-4 - `yarn run dev` run the app in dev mode
+4 - `npm run dev` run the app in dev mode
 
 Have fun ! 
 
