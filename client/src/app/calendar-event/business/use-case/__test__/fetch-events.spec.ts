@@ -1,4 +1,3 @@
-import { EVENTS_ERROR } from '@/app/_common/business/models/errors/events-error'
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
 import { CalendarEventBuilder } from '@/app/calendar-event/business/use-case/__test__/calendar-event-builder'
@@ -14,7 +13,7 @@ describe('Fetch events', () => {
     })
 
     describe('Dispatch action for retrieve events', () => {
-        it('and get them from store after request is fullfilled', async () => {
+        it('retrieve calendar events', async () => {
             events = sut.buildDefaultEvents(4)
             sut.givenEvents(events)
 
@@ -23,16 +22,16 @@ describe('Fetch events', () => {
             expect(sut.eventsFromStore()).toEqual({ events, loading: false, error: null })
         })
 
-        it('and loading is true when request is in pending', () => {
-            events = sut.buildDefaultEvents(4)
+        it('retrieve nothing if events are not found', async () => {
+            events = sut.buildDefaultEvents(0)
             sut.givenEvents(events)
 
-            sut.retrieveEvents()
+            await sut.retrieveEvents()
 
-            expect(sut.eventsFromStore()).toEqual({ events: [], loading: true, error: null })
+            expect(sut.eventsFromStore()).toEqual({ events: [], loading: false, error: null })
         })
 
-        it('and errors are set when request is rejected', async () => {
+        it('retrieve nothing if get events from api return an error', async () => {
             events = sut.buildDefaultEvents(4)
             sut.givenEvents(events)
             sut.setError()
@@ -42,7 +41,20 @@ describe('Fetch events', () => {
             expect(sut.eventsFromStore()).toEqual({
                 events: [],
                 loading: false,
-                error: { code: EVENTS_ERROR, message: 'an events error' },
+                error: 'RETRIEVE_EVENTS_FAILED',
+            })
+        })
+
+        it('waiting if retrieve event is in pending', async () => {
+            events = sut.buildDefaultEvents(4)
+            sut.givenEvents(events)
+
+            sut.retrieveEvents().then()
+
+            expect(sut.eventsFromStore()).toEqual({
+                events: [],
+                loading: true,
+                error: null,
             })
         })
     })
@@ -59,7 +71,7 @@ class SUT {
 
     buildDefaultEvents(count: number) {
         const events: CalendarEvent[] = []
-        while (--count) {
+        while (count--) {
             events.push(this.buildEvent())
         }
         return events
