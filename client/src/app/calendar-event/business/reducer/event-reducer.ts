@@ -1,7 +1,8 @@
-import { EventsError } from '@/app/_common/business/models/errors/events-error'
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
 import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events'
 import { createSlice } from '@reduxjs/toolkit'
+
+export type EventsError = 'RETRIEVE_EVENTS_FAILED'
 
 export type EventsState = {
     events: CalendarEvent[]
@@ -19,25 +20,25 @@ export const eventsSlice = createSlice({
     name: 'calendar-events',
     initialState,
     reducers: {
-        resetError: (state) => {
-            state.error = null
+        onEventsRetrieved: (state, { payload }: { payload: CalendarEvent[] }) => {
+            state.events = payload || []
         },
     },
     extraReducers: (builder) => {
         builder
             .addCase(retrieveEvents.pending, (state) => {
                 state.loading = true
+                state.error = null
             })
             .addCase(retrieveEvents.fulfilled, (state, action) => {
                 state.loading = false
-                state.events = action.payload || []
+                state.error = null
             })
-            .addCase(retrieveEvents.rejected, (state, action) => {
+            .addCase(retrieveEvents.rejected, (state) => {
                 state.loading = false
-                state.error = action.error as EventsError
+                state.error = 'RETRIEVE_EVENTS_FAILED'
+                state.events = []
             })
     },
 })
-
-export const { resetError } = eventsSlice.actions
 export const eventsReducer = eventsSlice.reducer

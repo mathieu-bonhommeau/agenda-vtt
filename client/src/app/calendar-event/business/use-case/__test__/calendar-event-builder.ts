@@ -1,4 +1,11 @@
-import { CalendarEvent, EventLocation, EventOrganizer, Price, Trace } from '@/app/calendar-event/business/model/event'
+import {
+    CalendarEvent,
+    EventLocation,
+    EventOrganizer,
+    GeoEventLocation,
+    Price,
+    Trace,
+} from '@/app/calendar-event/business/model/event'
 
 export class CalendarEventBuilder {
     private _id: string = 'randomId'
@@ -21,7 +28,7 @@ export class CalendarEventBuilder {
             createdAt: this._createdAt,
             startDate: this._startDate,
             endDate: this._endDate,
-            EventLocation: this._eventLocation,
+            eventLocation: this._eventLocation,
             traces: this._traces,
             price: this._prices,
             equipments: this._equipments,
@@ -36,6 +43,36 @@ export class CalendarEventBuilder {
 
     setTitle(title: string): CalendarEventBuilder {
         this._title = title
+        return this
+    }
+
+    setEventLocation(eventLocation: EventLocation): CalendarEventBuilder {
+        this._eventLocation = eventLocation
+        return this
+    }
+}
+
+export class EventLocationBuilder {
+    private _country: string = 'France'
+    private _region: string = 'Nouvelle Aquitaine'
+    private _department: string = 'Landes'
+    private _city: string = 'Dax'
+    private _zipCode: string = '40000'
+    private _latLon: GeoEventLocation = { lon: 43.370312777615865, lat: -0.9990490074308079 }
+
+    build(): EventLocation {
+        return {
+            country: this._country,
+            region: this._region,
+            department: this._department,
+            city: this._city,
+            zipCode: this._zipCode,
+            latLon: this._latLon,
+        }
+    }
+
+    setLatLon(latLon: GeoEventLocation): EventLocationBuilder {
+        this._latLon = latLon
         return this
     }
 }
