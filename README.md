@@ -21,7 +21,7 @@ This app is built with NextJs and Typescript.
 
 For launch the project : 
 
-1 - `npm` for install dependencies
+1 - `npm install` for install dependencies
 
 2 - `cp env.template .env` copy .env file
 
