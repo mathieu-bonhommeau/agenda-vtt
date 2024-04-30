@@ -5,7 +5,7 @@ export type CalendarEvent = {
     createdAt: string
     startDate: string
     endDate: string
-    EventLocation?: EventLocation
+    eventLocation?: EventLocation
     traces?: Trace[]
     price?: Price[]
     equipments?: string[] //equipements obligatoire comme casque ou certification medical
