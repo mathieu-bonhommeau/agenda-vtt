@@ -6,7 +6,7 @@ import { fromLonLat } from 'ol/proj'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RLayerVector, RMap, ROSM, RStyle } from 'rlayers'
-import IconMap from './icon-map.png'
+import IconMap from '../../../../calendar-event/client/react/components/map/icon-map.png'
 
 export function AppMap() {
     const [map, setMap] = useState(<></>)
