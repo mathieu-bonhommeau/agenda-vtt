@@ -3,7 +3,7 @@ import { AppCalendar } from '@/app/_common/client/modules/calendar/calendar'
 import { Filters } from '@/app/_common/client/modules/filters/filters'
 import { AppMap } from '@/app/_common/client/modules/map/map'
 import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events'
-import { ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { Box, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -23,14 +23,23 @@ export default function Index() {
 
     return (
         <>
-            <Filters />
-            <hr />
-            <ToggleButtonGroup color="primary" value={view} exclusive onChange={toggleView} aria-label="Platform">
-                <ToggleButton value="map">Carte</ToggleButton>
-                <ToggleButton value="calendar">Calendrier</ToggleButton>
-            </ToggleButtonGroup>
-            {view === 'calendar' && <AppCalendar />}
-            {view === 'map' && <AppMap />}
+            <Box sx={{ display: 'flex' }}>
+                <Filters />
+                <Box sx={{ width: '100%', height: '100%' }}>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={view}
+                        exclusive
+                        onChange={toggleView}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="map">Carte</ToggleButton>
+                        <ToggleButton value="calendar">Calendrier</ToggleButton>
+                    </ToggleButtonGroup>
+                    {view === 'calendar' && <AppCalendar />}
+                    {view === 'map' && <AppMap />}
+                </Box>
+            </Box>
         </>
     )
 }

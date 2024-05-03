@@ -27,7 +27,7 @@ export function SliderRange({ label, min, max, minLabel, maxLabel }: SliderRange
     }
 
     return (
-        <Box sx={{ width: 500, display: 'flex', gap: 2, my: 2 }}>
+        <Box sx={{ width: 500, gap: 2, my: 2 }}>
             <Typography>{label}</Typography>
             <Box sx={{ width: '100%' }}>
                 <Slider

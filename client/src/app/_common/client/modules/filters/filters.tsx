@@ -1,15 +1,15 @@
 import { CheckboxSet } from '@/app/_common/client/components/form/checkbox-set'
 import { InputDateRangePicker } from '@/app/_common/client/components/form/date-range-picker'
 import { SliderRange } from '@/app/_common/client/components/form/input-range'
-import { Card, CardHeader, TextField } from '@mui/material'
+import { Box, Card, CardHeader, TextField } from '@mui/material'
 import { useState } from 'react'
 
 export function Filters() {
     return (
-        <>
+        <Box>
             <EventsBasedFilters />
             <RunsBasedFilters />
-        </>
+        </Box>
     )
 }
 
@@ -46,6 +46,7 @@ export function RunsBasedFilters() {
         <Card variant="outlined" sx={{ maxWidth: 500, p: 2, my: 2 }}>
             <CardHeader title={'Filtrer les parcours'} sx={{ px: 0 }}></CardHeader>
             <SliderRange label={'Distance'} min={0} minLabel={'0 km'} max={60} maxLabel={'60 km et +'} />
+            <Box sx={{ py: 1 }}></Box>
             <CheckboxSet initialChecked={{ vert: true, bleu: true, rouge: true, noir: true }} />
         </Card>
     )
