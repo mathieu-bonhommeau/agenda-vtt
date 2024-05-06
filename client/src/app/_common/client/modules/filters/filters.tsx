@@ -48,6 +48,10 @@ export function RunsBasedFilters() {
             <SliderRange label={'Distance'} min={0} minLabel={'0 km'} max={60} maxLabel={'60 km et +'} />
             <Box sx={{ py: 1 }}></Box>
             <CheckboxSet initialChecked={{ vert: true, bleu: true, rouge: true, noir: true }} />
+            <CheckboxSet initialChecked={{ 'All Mountain / XC': true, Enduro: true, 'DH / Gravity': true }} />
+            <SliderRange label={'Dénivelé positif'} min={0} minLabel={'1000 m'} max={3000} maxLabel={'3000 m et +'} />
+            <SliderRange label={'Dénivelé négatif'} min={0} minLabel={'1000 m'} max={3000} maxLabel={'3000 m et +'} />
+            <SliderRange label={'Dénivelé négatif'} min={0} minLabel={'1000 m'} max={3000} maxLabel={'3000 m et +'} />
         </Card>
     )
 }

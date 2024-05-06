@@ -7,19 +7,23 @@ export type SliderRangeProps = {
     max: number
     minLabel: string
     maxLabel: string
+    marks: Record<string, string | number>[]
 }
 
-export function SliderRange({ label, min, max, minLabel, maxLabel }: SliderRangeProps) {
-    const marks = [
-        {
-            value: min,
-            label: '',
-        },
-        {
-            value: max,
-            label: '',
-        },
-    ]
+export function SliderRange({ label, min, max, minLabel, maxLabel, marks }: SliderRangeProps) {
+    const sliderMarks = marks
+        ? marks
+        : [
+              {
+                  value: min,
+                  label: '',
+              },
+              {
+                  value: max,
+                  label: '',
+              },
+          ]
+
     const [rangeValue, setRangeValue] = useState<number>(30)
 
     const handleChange = (_: Event, newValue: number | number[]) => {
