@@ -50,6 +50,16 @@ export class CalendarEventBuilder {
         this._eventLocation = eventLocation
         return this
     }
+
+    setStartDate(startDate: string) {
+        this._startDate = startDate
+        return this
+    }
+
+    setEndDate(endDate: string) {
+        this._endDate = endDate
+        return this
+    }
 }
 
 export class EventLocationBuilder {
