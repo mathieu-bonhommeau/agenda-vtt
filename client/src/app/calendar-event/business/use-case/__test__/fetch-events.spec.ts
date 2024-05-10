@@ -17,7 +17,7 @@ describe('Fetch events', () => {
             events = sut.buildDefaultEvents(4)
             sut.givenEvents(events)
 
-            await sut.retrieveEvents()
+            await sut.retrieveEvents({})
 
             expect(sut.eventsFromStore()).toEqual({ events, loading: false, error: null })
         })
@@ -26,7 +26,7 @@ describe('Fetch events', () => {
             events = sut.buildDefaultEvents(0)
             sut.givenEvents(events)
 
-            await sut.retrieveEvents()
+            await sut.retrieveEvents({})
 
             expect(sut.eventsFromStore()).toEqual({ events: [], loading: false, error: null })
         })
@@ -36,7 +36,7 @@ describe('Fetch events', () => {
             sut.givenEvents(events)
             sut.setError()
 
-            await sut.retrieveEvents()
+            await sut.retrieveEvents({})
 
             expect(sut.eventsFromStore()).toEqual({
                 events: [],
@@ -49,7 +49,7 @@ describe('Fetch events', () => {
             events = sut.buildDefaultEvents(4)
             sut.givenEvents(events)
 
-            await sut.retrieveEvents()
+            sut.retrieveEvents({}).then()
 
             expect(sut.eventsFromStore()).toEqual({
                 events: [],
@@ -59,29 +59,60 @@ describe('Fetch events', () => {
         })
 
         describe('filter events by date', () => {
-            it('retrieve all events after a define date', async () => {
-                const events = [
+            beforeEach(() => {
+                events = [
                     sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d41',
                         startDate: new Date('2024-05-15').toDateString(),
                         endDate: new Date('2024-05-17').toDateString(),
                     }),
                     sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d42',
                         startDate: new Date('2024-05-25').toDateString(),
                         endDate: new Date('2024-05-27').toDateString(),
                     }),
                     sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d43',
+                        startDate: new Date('2024-06-07').toDateString(),
+                        endDate: new Date('2024-06-07').toDateString(),
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d44',
                         startDate: new Date('2024-06-02').toDateString(),
                         endDate: new Date('2024-06-04').toDateString(),
                     }),
                     sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d45',
                         startDate: new Date('2024-06-14').toDateString(),
                         endDate: new Date('2024-06-16').toDateString(),
                     }),
                 ]
-
+            })
+            it('retrieve all events after a define date', async () => {
                 sut.givenEvents(events)
 
-                await sut.retrieveEvents({ startDate: new Date('2024-05-26') })
+                await sut.retrieveEvents({ startDate: new Date('2024-05-26').toDateString() })
+
+                expect(sut.eventsFromStore()).toEqual({
+                    events: [events[1], events[2], events[3], events[4]],
+                    loading: false,
+                    error: null,
+                })
+            })
+
+            it('retrieve events in a specific date range', async () => {
+                sut.givenEvents(events)
+
+                await sut.retrieveEvents({
+                    startDate: new Date('2024-05-16').toDateString(),
+                    endDate: new Date('2024-06-14').toDateString(),
+                })
+
+                expect(sut.eventsFromStore()).toEqual({
+                    events: [events[0], events[1], events[2], events[3]],
+                    loading: false,
+                    error: null,
+                })
             })
         })
     })
@@ -106,8 +137,8 @@ class SUT {
         return events
     }
 
-    buildEvent({ startDate, endDate }: { startDate: string; endDate: string }) {
-        return new CalendarEventBuilder().setStartDate(startDate).setEndDate(endDate).build()
+    buildEvent({ id, startDate, endDate }: { id: string; startDate: string; endDate: string }) {
+        return new CalendarEventBuilder().setId(id).setStartDate(startDate).setEndDate(endDate).build()
     }
 
     givenEvents(events: CalendarEvent[]) {
@@ -115,7 +146,7 @@ class SUT {
     }
 
     async retrieveEvents({ startDate, endDate }: { startDate?: string; endDate?: string }) {
-        await this._store.dispatch(retrieveEvents())
+        await this._store.dispatch(retrieveEvents({ startDate, endDate }))
     }
 
     eventsFromStore() {

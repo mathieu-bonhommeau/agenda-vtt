@@ -1,10 +1,12 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
+import { EventsFilters } from '@/app/calendar-event/business/model/filter'
 import { EventsState, eventsSlice } from '@/app/calendar-event/business/reducer/event-reducer'
 import { CalendarEventBuilder } from '@/app/calendar-event/business/use-case/__test__/calendar-event-builder'
 import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events'
 import {
     eventsErrorsVM,
+    eventsFiltersVM,
     eventsLoadingVM,
     eventsReactBigCalendarVM,
     eventsVM,
@@ -38,6 +40,16 @@ describe('An retrieve events VM', () => {
         it('returns events if events are retrieved', () => {
             sut.givenEvents(events)
             expect(sut.eventsVM()).toEqual(events)
+        })
+    })
+
+    describe('Event filters VM generator', () => {
+        it('not returns events filters initially', () => {
+            expect(sut.filtersEventsVM()).toEqual(null)
+        })
+
+        it('returns events filters', () => {
+            sut.givenFilters({ startDate: new Date().toDateString() })
         })
     })
 
@@ -92,6 +104,9 @@ class SUT {
             type: retrieveEvents.rejected.type,
         })
     }
+    givenFilters(filters: EventsFilters) {
+        this._store.dispatch(eventsSlice.actions.onEventsFiltered(filters))
+    }
 
     givenARetrieveActionInPending() {
         this._store.dispatch({
@@ -117,5 +132,9 @@ class SUT {
 
     eventsLoadingVM() {
         return eventsLoadingVM()(this.getState())
+    }
+
+    filtersEventsVM() {
+        return eventsFiltersVM()(this.getState())
     }
 }

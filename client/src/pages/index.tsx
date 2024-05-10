@@ -14,7 +14,7 @@ export default function Index() {
     const [view, setView] = useState<ViewEvents>('map')
 
     useEffect(() => {
-        dispatch(retrieveEvents())
+        dispatch(retrieveEvents({ startDate: new Date().toDateString() }))
     }, [dispatch])
 
     const toggleView = (event: React.MouseEvent<HTMLElement>, newView: ViewEvents) => {

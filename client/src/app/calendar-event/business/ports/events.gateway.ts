@@ -1,5 +1,6 @@
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
+import { RetrieveEventsCommand } from '@/app/calendar-event/business/use-case/retrieve-events'
 
 export interface EventsGateway {
-    retrieveEvents(): Promise<CalendarEvent[]>
+    retrieveEvents(command: RetrieveEventsCommand): Promise<CalendarEvent[]>
 }

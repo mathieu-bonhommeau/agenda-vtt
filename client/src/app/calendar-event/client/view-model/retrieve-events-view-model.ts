@@ -28,6 +28,10 @@ export class ReactBigCalendarEventFactory {
     }
 }
 
+export const eventsFiltersVM = () => (state: AppState) => {
+    return state.eventsState.filters
+}
+
 export const eventsErrorsVM = () => (state: AppState) => {
     return state.eventsState.error
 }

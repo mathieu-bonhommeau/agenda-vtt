@@ -2,10 +2,15 @@ import { AppAsyncThunkConfig } from '@/app/_common/business/store/store'
 import { eventsSlice } from '@/app/calendar-event/business/reducer/event-reducer'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-export const retrieveEvents = createAsyncThunk<void, void, AppAsyncThunkConfig>(
+export type RetrieveEventsCommand = {
+    startDate?: string
+    endDate?: string
+}
+
+export const retrieveEvents = createAsyncThunk<void, RetrieveEventsCommand, AppAsyncThunkConfig>(
     'events/fetch',
-    async (_, { extra: { eventsGateway }, dispatch }) => {
-        const events = await eventsGateway.retrieveEvents()
+    async (command, { extra: { eventsGateway }, dispatch }) => {
+        const events = await eventsGateway.retrieveEvents(command)
         dispatch(eventsSlice.actions.onEventsRetrieved(events))
     },
 )
