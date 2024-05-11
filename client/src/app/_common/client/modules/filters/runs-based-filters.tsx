@@ -1,8 +1,9 @@
 import { CheckboxSet } from '@/app/_common/client/components/form/checkbox-set'
 import { SliderRange } from '@/app/_common/client/components/form/input-range'
+import { EventsFilters } from '@/app/calendar-event/business/model/filter'
 import { Box, Card, CardHeader } from '@mui/material'
 
-export function RunsBasedFilters() {
+export function RunsBasedFilters({ handleAddFilter }: { handleAddFilter: (filters: EventsFilters) => void }) {
     return (
         <Card variant="outlined" sx={{ maxWidth: 500, p: 2, my: 2 }}>
             <CardHeader title={'Filtrer les parcours'} sx={{ px: 0 }}></CardHeader>

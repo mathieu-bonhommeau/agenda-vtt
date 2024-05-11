@@ -1,6 +1,6 @@
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
 import { EventsGateway } from '@/app/calendar-event/business/ports/events.gateway'
-import { RetrieveEventsCommand } from '@/app/calendar-event/business/use-case/retrieve-events'
+import { RetrieveEventsCommand } from '@/app/calendar-event/business/use-case/retrieve-events/retrieve-events'
 
 export class InMemoryEventsGateway implements EventsGateway {
     public events: CalendarEvent[] = []

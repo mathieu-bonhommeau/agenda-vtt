@@ -1,8 +1,9 @@
 import { InputDateRangePicker } from '@/app/_common/client/components/form/date-range-picker'
+import { EventsFilters } from '@/app/calendar-event/business/model/filter'
 import { Card, CardHeader, TextField } from '@mui/material'
 import { useState } from 'react'
 
-export function EventsBasedFilters() {
+export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filters: EventsFilters) => void }) {
     const [searchPlace, setSearchPlace] = useState<string>('')
     const [searchByWord, setSearchByWord] = useState<string>('')
 
@@ -25,7 +26,12 @@ export function EventsBasedFilters() {
                 label="Lieu"
                 variant="outlined"
             />
-            <InputDateRangePicker startDateLabel={'De'} endDateLabel={'à'} locale={'fr'} />
+            <InputDateRangePicker
+                startDateLabel={'De'}
+                endDateLabel={'à'}
+                locale={'fr'}
+                handleAddFilter={handleAddFilter}
+            />
         </Card>
     )
 }

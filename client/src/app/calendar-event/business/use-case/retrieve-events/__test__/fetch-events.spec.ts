@@ -1,7 +1,7 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
-import { CalendarEventBuilder } from '@/app/calendar-event/business/use-case/__test__/calendar-event-builder'
-import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events'
+import { CalendarEventBuilder } from '@/app/calendar-event/business/use-case/retrieve-events/__test__/calendar-event-builder'
+import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events/retrieve-events'
 import { InMemoryEventsGateway } from '@/app/calendar-event/infrastructure/in-memory-events.gateway'
 
 describe('Fetch events', () => {
@@ -19,7 +19,7 @@ describe('Fetch events', () => {
 
             await sut.retrieveEvents({})
 
-            expect(sut.eventsFromStore()).toEqual({ events, loading: false, error: null })
+            expect(sut.events).toEqual(events)
         })
 
         it('retrieve nothing if events are not found', async () => {
@@ -28,7 +28,7 @@ describe('Fetch events', () => {
 
             await sut.retrieveEvents({})
 
-            expect(sut.eventsFromStore()).toEqual({ events: [], loading: false, error: null })
+            expect(sut.events).toEqual([])
         })
 
         it('retrieve nothing if get events from api return an error', async () => {
@@ -38,24 +38,8 @@ describe('Fetch events', () => {
 
             await sut.retrieveEvents({})
 
-            expect(sut.eventsFromStore()).toEqual({
-                events: [],
-                loading: false,
-                error: 'RETRIEVE_EVENTS_FAILED',
-            })
-        })
-
-        it('waiting if retrieve event is in pending', async () => {
-            events = sut.buildDefaultEvents(4)
-            sut.givenEvents(events)
-
-            sut.retrieveEvents({}).then()
-
-            expect(sut.eventsFromStore()).toEqual({
-                events: [],
-                loading: true,
-                error: null,
-            })
+            expect(sut.events).toEqual([])
+            expect(sut.error).toEqual('RETRIEVE_EVENTS_FAILED')
         })
 
         describe('filter events by date', () => {
@@ -93,11 +77,7 @@ describe('Fetch events', () => {
 
                 await sut.retrieveEvents({ startDate: new Date('2024-05-26').toDateString() })
 
-                expect(sut.eventsFromStore()).toEqual({
-                    events: [events[1], events[2], events[3], events[4]],
-                    loading: false,
-                    error: null,
-                })
+                expect(sut.events).toEqual([events[1], events[2], events[3], events[4]])
             })
 
             it('retrieve events in a specific date range', async () => {
@@ -108,11 +88,7 @@ describe('Fetch events', () => {
                     endDate: new Date('2024-06-14').toDateString(),
                 })
 
-                expect(sut.eventsFromStore()).toEqual({
-                    events: [events[0], events[1], events[2], events[3]],
-                    loading: false,
-                    error: null,
-                })
+                expect(sut.events).toEqual([events[0], events[1], events[2], events[3]])
             })
         })
     })
@@ -149,8 +125,12 @@ class SUT {
         await this._store.dispatch(retrieveEvents({ startDate, endDate }))
     }
 
-    eventsFromStore() {
-        return this._store.getState().eventsState
+    get events() {
+        return this._store.getState().eventsState.events
+    }
+
+    get error() {
+        return this._store.getState().eventsState.error
     }
 
     setError() {

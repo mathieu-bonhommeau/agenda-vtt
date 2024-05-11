@@ -1,6 +1,6 @@
 import { CalendarEvent } from '@/app/calendar-event/business/model/event'
 import { EventsFilters } from '@/app/calendar-event/business/model/filter'
-import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events'
+import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events/retrieve-events'
 import { createSlice } from '@reduxjs/toolkit'
 
 export type EventsError = 'RETRIEVE_EVENTS_FAILED'
@@ -14,7 +14,9 @@ export type EventsState = {
 
 export const initialState: EventsState = {
     events: [],
-    filters: null,
+    filters: {
+        startDate: new Date().toDateString(),
+    },
     error: null,
     loading: false,
 }
