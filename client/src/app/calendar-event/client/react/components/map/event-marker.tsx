@@ -1,7 +1,7 @@
-import { CalendarEvent } from '@/app/calendar-event/business/model/event'
-import { RFeature } from 'rlayers'
+import { CalendarEvent } from '@/app/calendar-event/business/models/event'
 import { Point } from 'ol/geom'
 import { fromLonLat } from 'ol/proj'
+import { RFeature } from 'rlayers'
 
 export function EventMarker({ event }: { event: CalendarEvent }) {
     return event.eventLocation ? (

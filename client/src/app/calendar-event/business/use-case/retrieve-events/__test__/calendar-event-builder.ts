@@ -5,7 +5,7 @@ import {
     GeoEventLocation,
     Price,
     Trace,
-} from '@/app/calendar-event/business/model/event'
+} from '@/app/calendar-event/business/models/event'
 
 export class CalendarEventBuilder {
     private _id: string = 'randomId'

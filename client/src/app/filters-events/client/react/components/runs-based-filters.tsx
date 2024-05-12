@@ -1,6 +1,6 @@
 import { CheckboxSet } from '@/app/_common/client/components/form/checkbox-set'
 import { SliderRange } from '@/app/_common/client/components/form/input-range'
-import { EventsFilters } from '@/app/calendar-event/business/model/filter'
+import { EventsFilters } from '@/app/filters-events/business/models/filter'
 import { Box, Card, CardHeader } from '@mui/material'
 
 export function RunsBasedFilters({ handleAddFilter }: { handleAddFilter: (filters: EventsFilters) => void }) {

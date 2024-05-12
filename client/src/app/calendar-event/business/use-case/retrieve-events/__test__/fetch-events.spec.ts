@@ -1,5 +1,5 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
-import { CalendarEvent } from '@/app/calendar-event/business/model/event'
+import { CalendarEvent } from '@/app/calendar-event/business/models/event'
 import { CalendarEventBuilder } from '@/app/calendar-event/business/use-case/retrieve-events/__test__/calendar-event-builder'
 import { retrieveEvents } from '@/app/calendar-event/business/use-case/retrieve-events/retrieve-events'
 import { InMemoryEventsGateway } from '@/app/calendar-event/infrastructure/in-memory-events.gateway'

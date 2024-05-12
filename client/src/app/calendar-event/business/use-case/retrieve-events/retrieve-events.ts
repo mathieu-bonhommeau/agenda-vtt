@@ -1,5 +1,5 @@
 import { AppAsyncThunkConfig } from '@/app/_common/business/store/store'
-import { eventsSlice } from '@/app/calendar-event/business/reducer/event-reducer'
+import { eventsSlice } from '@/app/calendar-event/business/reducers/event-reducer'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 export type RetrieveEventsCommand = {

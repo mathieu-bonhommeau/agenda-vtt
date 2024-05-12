@@ -1,4 +1,4 @@
-import { CalendarEvent } from '@/app/calendar-event/business/model/event'
+import { CalendarEvent } from '@/app/calendar-event/business/models/event'
 import { EventsGateway } from '@/app/calendar-event/business/ports/events.gateway'
 import { RetrieveEventsCommand } from '@/app/calendar-event/business/use-case/retrieve-events/retrieve-events'
 

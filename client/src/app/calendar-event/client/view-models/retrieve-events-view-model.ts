@@ -1,5 +1,5 @@
 import { AppState } from '@/app/_common/business/store/appState'
-import { CalendarEvent } from '@/app/calendar-event/business/model/event'
+import { CalendarEvent } from '@/app/calendar-event/business/models/event'
 import { Event } from 'react-big-calendar'
 
 export type EventsReactBigCalendarVM = Event[]
@@ -26,10 +26,6 @@ export class ReactBigCalendarEventFactory {
             end: new Date(event.endDate) || undefined,
         }
     }
-}
-
-export const eventsFiltersVM = () => (state: AppState) => {
-    return state.eventsState.filters
 }
 
 export const eventsErrorsVM = () => (state: AppState) => {

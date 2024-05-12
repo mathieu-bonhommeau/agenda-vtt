@@ -1,14 +1,14 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
-import { PlacesGateway } from '@/app/calendar-event/business/ports/places.gateway'
+import { PlacesGateway } from '@/app/filters-events/business/ports/places.gateway'
 import {
     PlacesSearchCommand,
-    SearchPlaces,
+    SearchPlace,
     searchPlaces,
-} from '@/app/calendar-event/business/use-case/search-place/search.places'
+} from '@/app/filters-events/business/use-cases/search-place/searchPlace'
 
 describe('Search place', () => {
     let sut: SUT
-    let searchPlaces: SearchPlaces[]
+    let searchPlaces: SearchPlace[]
 
     beforeEach(() => {
         sut = new SUT()
@@ -22,9 +22,17 @@ describe('Search place', () => {
     it('should return places based on user search', async () => {
         sut.givenPlaces(searchPlaces)
 
-        const locations = await sut.searchPlaces(searchPlaces[0].city!)
+        const places = await sut.searchPlaces(searchPlaces[0].city!)
 
-        expect(locations).toEqual([searchPlaces[0]])
+        expect(places).toEqual([searchPlaces[0]])
+    })
+
+    it('should not return places if no match is found with user input', async () => {
+        sut.givenPlaces(searchPlaces)
+
+        const places = await sut.searchPlaces('NoExistingCity')
+
+        expect(places).toEqual([])
     })
 })
 
@@ -39,7 +47,7 @@ class SUT {
         })
     }
 
-    givenPlaces(searchPlaces: SearchPlaces[]) {
+    givenPlaces(searchPlaces: SearchPlace[]) {
         this._placesGateway.searchPlaces = searchPlaces
     }
 
@@ -51,19 +59,19 @@ class SUT {
 }
 
 class StubPlacesGateway implements PlacesGateway {
-    public searchPlaces: SearchPlaces[] = []
+    public searchPlaces: SearchPlace[] = []
 
-    async searchBy(command: PlacesSearchCommand): Promise<SearchPlaces[]> {
+    async searchBy(command: PlacesSearchCommand): Promise<SearchPlace[]> {
         return this.searchPlaces.filter((searchPlace) => command.search === searchPlace.city) || null
     }
 }
 
-const searchPlaceFactory = (overrides: Partial<SearchPlaces> = {}): SearchPlaces => ({
+const searchPlaceFactory = (overrides: Partial<SearchPlace> = {}): SearchPlace => ({
     ...defaultLocation(),
     ...overrides,
 })
 
-const defaultLocation = (): SearchPlaces => ({
+const defaultLocation = (): SearchPlace => ({
     latLon: { lat: 0, lon: 0 },
     country: 'France',
     city: 'Arbitrary',

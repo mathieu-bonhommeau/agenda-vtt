@@ -1,6 +1,6 @@
-import { centerCountry } from '@/app/calendar-event/business/model/geolocation'
+import { centerCountry } from '@/app/calendar-event/business/models/geolocation'
 import { EventMarker } from '@/app/calendar-event/client/react/components/map/event-marker'
-import { eventsVM } from '@/app/calendar-event/client/view-model/retrieve-events-view-model'
+import { eventsVM } from '@/app/calendar-event/client/view-models/retrieve-events-view-model'
 import 'ol/ol.css'
 import { fromLonLat } from 'ol/proj'
 import { useEffect, useState } from 'react'

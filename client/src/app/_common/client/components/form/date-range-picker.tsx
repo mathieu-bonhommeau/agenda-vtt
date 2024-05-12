@@ -1,4 +1,3 @@
-import { EventsFilters } from '@/app/calendar-event/business/model/filter'
 import { Alert, Box } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -12,10 +11,10 @@ export type InputDatePickerProps = {
     startDateLabel: string
     endDateLabel: string
     locale: 'fr' | 'en'
-    handleAddFilter: (events: EventsFilters) => void
+    commitDates: (dates: { startDate?: string; endDate?: string }) => void
 }
 
-export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, handleAddFilter }: InputDatePickerProps) {
+export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, commitDates }: InputDatePickerProps) {
     const [startDate, setStartDate] = useState<Dayjs | null>(null)
     const [endDate, setEndDate] = useState<Dayjs | null>(null)
     const [error, setError] = useState<string | null>(null)
@@ -26,7 +25,7 @@ export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, han
             return
         }
         setStartDate(date)
-        handleAddFilter({ startDate: date?.toDate().toDateString() })
+        commitDates({ startDate: date?.toDate().toDateString() })
         setError(null)
     }
 
@@ -36,7 +35,7 @@ export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, han
             return
         }
         setEndDate(date)
-        handleAddFilter({ endDate: date?.toDate().toDateString() })
+        commitDates({ endDate: date?.toDate().toDateString() })
         setError(null)
     }
 

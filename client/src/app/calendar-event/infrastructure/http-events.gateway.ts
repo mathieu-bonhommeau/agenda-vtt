@@ -1,4 +1,4 @@
-import { CalendarEvent } from '@/app/calendar-event/business/model/event'
+import { CalendarEvent } from '@/app/calendar-event/business/models/event'
 import { EventsGateway } from '@/app/calendar-event/business/ports/events.gateway'
 
 export class HttpEventsGateway implements EventsGateway {

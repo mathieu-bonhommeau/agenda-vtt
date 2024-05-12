@@ -1,4 +1,4 @@
-import { eventsReactBigCalendarVM } from '@/app/calendar-event/client/view-model/retrieve-events-view-model'
+import { eventsReactBigCalendarVM } from '@/app/calendar-event/client/view-models/retrieve-events-view-model'
 import moment from 'moment'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import { useSelector } from 'react-redux'

@@ -1,8 +1,9 @@
 import { Dependencies } from '@/app/_common/business/store/store'
+import { searchPlaces } from '@/app/filters-events/business/use-cases/search-place/searchPlace'
 import React, { PropsWithChildren } from 'react'
 
 export type AppContextType = {
-    searchGeolocationFromExternalSource: ReturnType<typeof searchGeolocationFromExternalSource>
+    searchPlaces: ReturnType<typeof searchPlaces>
 }
 
 export const AppContext = React.createContext<AppContextType>({} as AppContextType)
@@ -14,8 +15,8 @@ export function AppContextProvider({
     return (
         <AppContext.Provider
             value={{
-                searchGeolocationFromExternalSource: searchGeolocationFromExternalSource({
-                    geolocationExternalGateway: dependencies.placesGateway,
+                searchPlaces: searchPlaces({
+                    placesGateway: dependencies.placesGateway,
                 }),
             }}
         >

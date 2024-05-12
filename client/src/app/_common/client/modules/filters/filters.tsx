@@ -1,7 +1,7 @@
-import { EventsBasedFilters } from '@/app/_common/client/modules/filters/events-based-filters'
-import { RunsBasedFilters } from '@/app/_common/client/modules/filters/runs-based-filters'
-import { EventsFilters } from '@/app/calendar-event/business/model/filter'
-import { eventsSlice } from '@/app/calendar-event/business/reducer/event-reducer'
+import { EventsFilters } from '@/app/filters-events/business/models/filter'
+import { filtersSlice } from '@/app/filters-events/business/reducers/filters-reducers'
+import { EventsBasedFilters } from '@/app/filters-events/client/react/components/events-based-filters'
+import { RunsBasedFilters } from '@/app/filters-events/client/react/components/runs-based-filters'
 import { Box } from '@mui/material'
 import { useDispatch } from 'react-redux'
 
@@ -9,7 +9,7 @@ export function Filters() {
     const dispatch = useDispatch()
 
     const handleAddFilter = (filters: EventsFilters) => {
-        dispatch(eventsSlice.actions.onEventsFiltered(filters))
+        dispatch(filtersSlice.actions.onEventsFiltered(filters))
     }
 
     return (
