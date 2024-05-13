@@ -2,7 +2,7 @@ import { eventsFixtures } from '@/app/_common/_config/fixtures/events.fixtures'
 import { Dependencies } from '@/app/_common/business/store/store'
 import { HttpEventsGateway } from '@/app/calendar-event/infrastructure/http-events.gateway'
 import { InMemoryEventsGateway } from '@/app/calendar-event/infrastructure/in-memory-events.gateway'
-import { NominatimPlacesGateway } from '@/app/calendar-event/infrastructure/nominatim-places-gateway'
+import { NominatimPlacesGateway } from '@/app/filters-events/infrastructure/nominatim-places-gateway'
 
 export const buildDependencies = (): Dependencies => {
     switch (process.env['REACT_APP']) {
