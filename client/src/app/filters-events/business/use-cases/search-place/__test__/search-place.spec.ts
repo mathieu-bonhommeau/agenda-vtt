@@ -1,10 +1,7 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
+import { SearchPlace } from '@/app/filters-events/business/models/filter'
 import { PlacesGateway } from '@/app/filters-events/business/ports/places.gateway'
-import {
-    PlacesSearchCommand,
-    SearchPlace,
-    searchPlaces,
-} from '@/app/filters-events/business/use-cases/search-place/searchPlace'
+import { PlacesSearchCommand, searchPlaces } from '@/app/filters-events/business/use-cases/search-place/searchPlace'
 
 describe('Search place', () => {
     let sut: SUT
@@ -73,6 +70,7 @@ const searchPlaceFactory = (overrides: Partial<SearchPlace> = {}): SearchPlace =
 
 const defaultLocation = (): SearchPlace => ({
     latLon: { lat: 0, lon: 0 },
+    postcode: '75000',
     country: 'France',
     city: 'Arbitrary',
 })

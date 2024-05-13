@@ -5,7 +5,7 @@ export type CalendarEvent = {
     createdAt: string
     startDate: string
     endDate: string
-    eventLocation?: EventLocation
+    eventLocation: EventLocation
     traces?: Trace[]
     price?: Price[]
     equipments?: string[] //equipements obligatoire comme casque ou certification medical
@@ -14,10 +14,10 @@ export type CalendarEvent = {
 
 export type EventLocation = {
     country: string
-    region: string
-    department: string
+    region?: string
+    department?: string
     city: string
-    zipCode: string
+    postcode?: string
     latLon: GeoEventLocation
 }
 

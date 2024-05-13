@@ -14,7 +14,7 @@ export class CalendarEventBuilder {
     private _createdAt: string = new Date().toDateString()
     private _startDate: string = new Date().toDateString()
     private _endDate: string = new Date().toDateString()
-    private _eventLocation?: EventLocation
+    private _eventLocation: EventLocation = new EventLocationBuilder().build()
     private _traces?: Trace[]
     private _prices?: Price[]
     private _equipments?: string[]
@@ -67,7 +67,7 @@ export class EventLocationBuilder {
     private _region: string = 'Nouvelle Aquitaine'
     private _department: string = 'Landes'
     private _city: string = 'Dax'
-    private _zipCode: string = '40000'
+    private _postcode: string = '40000'
     private _latLon: GeoEventLocation = { lon: 43.370312777615865, lat: -0.9990490074308079 }
 
     build(): EventLocation {
@@ -76,13 +76,38 @@ export class EventLocationBuilder {
             region: this._region,
             department: this._department,
             city: this._city,
-            zipCode: this._zipCode,
+            postcode: this._postcode,
             latLon: this._latLon,
         }
     }
 
     setLatLon(latLon: GeoEventLocation): EventLocationBuilder {
         this._latLon = latLon
+        return this
+    }
+
+    setCountry(country: string): EventLocationBuilder {
+        this._country = country
+        return this
+    }
+
+    setRegion(region: string): EventLocationBuilder {
+        this._region = region
+        return this
+    }
+
+    setDepartment(department: string): EventLocationBuilder {
+        this._department = department
+        return this
+    }
+
+    setCity(city: string): EventLocationBuilder {
+        this._city = city
+        return this
+    }
+
+    setPostcode(postcode: string): EventLocationBuilder {
+        this._postcode = postcode
         return this
     }
 }

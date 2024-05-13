@@ -5,6 +5,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 export type RetrieveEventsCommand = {
     startDate?: string
     endDate?: string
+    placeBbox?: number[]
 }
 
 export const retrieveEvents = createAsyncThunk<void, RetrieveEventsCommand, AppAsyncThunkConfig>(
