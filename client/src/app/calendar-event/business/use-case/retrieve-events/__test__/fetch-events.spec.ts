@@ -243,7 +243,7 @@ class SUT {
             city: '',
             latLon: { lat: 0, lon: 0 },
         }
-        await this._store.dispatch(retrieveEvents({ startDate, endDate, place }))
+        await this._store.dispatch(retrieveEvents({ filters: { startDate, endDate, place } }))
     }
 
     get events() {

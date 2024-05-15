@@ -18,7 +18,7 @@ export default function Index() {
     const [view, setView] = useState<ViewEvents>('map')
 
     useEffect(() => {
-        dispatch(retrieveEvents({ ...filters }))
+        dispatch(retrieveEvents({ filters }))
     }, [dispatch, filters])
 
     const toggleView = (event: React.MouseEvent<HTMLElement>, newView: ViewEvents) => {

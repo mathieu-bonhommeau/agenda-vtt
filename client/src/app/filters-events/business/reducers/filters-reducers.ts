@@ -1,16 +1,12 @@
-import { EventsFilters, SearchPlace } from '@/app/filters-events/business/models/filter'
+import { EventsFilters } from '@/app/filters-events/business/models/filter'
 import { createSlice } from '@reduxjs/toolkit'
 
 export type FiltersState = {
-    startDate: string | null
-    endDate: string | null
-    place: SearchPlace | null
+    filters: EventsFilters
 }
 
 export const initialState: FiltersState = {
-    startDate: new Date().toDateString(),
-    endDate: null,
-    place: null,
+    filters: { startDate: new Date().toDateString() },
 }
 
 export const filtersSlice = createSlice({
@@ -18,9 +14,8 @@ export const filtersSlice = createSlice({
     initialState,
     reducers: {
         onEventsFiltered: (state, { payload }: { payload: EventsFilters }) => {
-            if (payload.startDate) state.startDate = payload.startDate
-            if (payload.endDate) state.endDate = payload.endDate
-            if (payload.place) state.place = payload.place
+            console.log(payload)
+            state.filters = payload
         },
     },
     extraReducers: () => {},

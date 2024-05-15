@@ -1,12 +1,10 @@
 import { AppAsyncThunkConfig } from '@/app/_common/business/store/store'
 import { eventsSlice } from '@/app/calendar-event/business/reducers/event-reducer'
-import { SearchPlace } from '@/app/filters-events/business/models/filter'
+import { EventsFilters } from '@/app/filters-events/business/models/filter'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 export type RetrieveEventsCommand = {
-    startDate?: string
-    endDate?: string
-    place?: SearchPlace
+    filters: EventsFilters
 }
 
 export const retrieveEvents = createAsyncThunk<void, RetrieveEventsCommand, AppAsyncThunkConfig>(

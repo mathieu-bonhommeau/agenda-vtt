@@ -10,25 +10,23 @@ export class InMemoryEventsGateway implements EventsGateway {
     async retrieveEvents(command: RetrieveEventsCommand): Promise<CalendarEvent[]> {
         let filteredEvents = [...this.events]
 
-        console.log(filteredEvents)
-
         if (this.error) throw 'failed'
 
-        if (command.startDate && command.endDate)
-            filteredEvents = this.events.filter((event) => {
+        if (command.filters.startDate && command.filters.endDate)
+            filteredEvents = filteredEvents.filter((event) => {
                 return (
-                    new Date(command.startDate!) <= new Date(event.endDate) &&
-                    new Date(command.endDate!) >= new Date(event.endDate)
+                    new Date(command.filters.startDate!) <= new Date(event.endDate) &&
+                    new Date(command.filters.endDate!) >= new Date(event.endDate)
                 )
             })
-        if (command.startDate)
-            filteredEvents = this.events.filter((event) => {
-                return new Date(command.startDate!) <= new Date(event.endDate)
+        if (command.filters.startDate)
+            filteredEvents = filteredEvents.filter((event) => {
+                return new Date(command.filters.startDate!) <= new Date(event.endDate)
             })
 
-        if (command.place)
-            filteredEvents = this.events.filter((event) => {
-                return this.isPointInsideBoundingBox(event.eventLocation.latLon, command.place!.bbox)
+        if (command.filters.place)
+            filteredEvents = filteredEvents.filter((event) => {
+                return this.isPointInsideBoundingBox(event.eventLocation.latLon, command.filters.place!.bbox)
             })
 
         return filteredEvents

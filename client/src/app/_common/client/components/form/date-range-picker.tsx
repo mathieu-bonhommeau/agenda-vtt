@@ -1,4 +1,4 @@
-import { Alert, Box } from '@mui/material'
+import { Alert, Box, IconButton } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -25,7 +25,7 @@ export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, com
             return
         }
         setStartDate(date)
-        commitDates({ startDate: date?.toDate().toDateString() })
+        commitDates({ startDate: date?.toDate().toDateString(), endDate: endDate?.toDate().toDateString() })
         setError(null)
     }
 
@@ -35,7 +35,7 @@ export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, com
             return
         }
         setEndDate(date)
-        commitDates({ endDate: date?.toDate().toDateString() })
+        commitDates({ startDate: startDate?.toDate().toDateString(), endDate: date?.toDate().toDateString() })
         setError(null)
     }
 
@@ -55,6 +55,9 @@ export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, com
                     slotProps={{ textField: { error: !!error } }}
                 />
             </Box>
+            <IconButton aria-label="delete" disabled color="primary">
+                {/*<DeleteIcon />*/}
+            </IconButton>
             {error && <Alert severity="error">{error}</Alert>}
         </LocalizationProvider>
     )
