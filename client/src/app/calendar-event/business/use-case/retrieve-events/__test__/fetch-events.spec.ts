@@ -166,7 +166,15 @@ describe('Fetch events', () => {
 
                 await sut.retrieveEvents({ placeBbox: [-1.1020338, 43.7297539, -1.0250954, 43.675449] })
 
-                expect(sut.events).toEqual([events[1], events[3]])
+                expect(sut.events).toEqual([events[1], events[4]])
+            })
+
+            it('retrieve nothing if no place matches with bounding box', async () => {
+                sut.givenEvents(events)
+
+                await sut.retrieveEvents({ placeBbox: [-10, 43, -11, 44] })
+
+                expect(sut.events).toEqual([])
             })
         })
     })
@@ -229,7 +237,13 @@ class SUT {
         endDate?: string
         placeBbox?: number[]
     }) {
-        await this._store.dispatch(retrieveEvents({ startDate, endDate, placeBbox }))
+        const place = placeBbox && {
+            bbox: placeBbox,
+            country: '',
+            city: '',
+            latLon: { lat: 0, lon: 0 },
+        }
+        await this._store.dispatch(retrieveEvents({ startDate, endDate, place }))
     }
 
     get events() {

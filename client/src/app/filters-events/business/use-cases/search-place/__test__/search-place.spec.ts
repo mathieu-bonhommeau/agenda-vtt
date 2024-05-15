@@ -73,4 +73,5 @@ const defaultLocation = (): SearchPlace => ({
     postcode: '75000',
     country: 'France',
     city: 'Arbitrary',
+    bbox: [0, 0, 0, 0],
 })

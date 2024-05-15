@@ -1,6 +1,8 @@
 import { centerCountry } from '@/app/calendar-event/business/models/geolocation'
 import { EventMarker } from '@/app/calendar-event/client/react/components/map/event-marker'
 import { eventsVM } from '@/app/calendar-event/client/view-models/retrieve-events-view-model'
+import { eventsFiltersVM } from '@/app/filters-events/client/view-models/filters-view-models'
+import { boundingExtent, Extent } from 'ol/extent'
 import 'ol/ol.css'
 import { fromLonLat } from 'ol/proj'
 import { useEffect, useState } from 'react'
@@ -13,12 +15,25 @@ export function AppMap() {
 
     const events = useSelector(eventsVM())
 
+    console.log(events)
+
+    const filters = useSelector(eventsFiltersVM())
+
     useEffect(() => {
+        let extent: Extent
+        if (filters.place) {
+            extent = boundingExtent([
+                fromLonLat([filters.place.bbox[0], filters.place.bbox[1]]),
+                fromLonLat([filters.place.bbox[2], filters.place.bbox[3]]),
+            ])
+        }
+
         setMap(
             <RMap
                 width={'100%'}
                 height={'60vh'}
                 initial={{ center: fromLonLat([centerCountry['France'].lon, centerCountry['France'].lat]), zoom: 6 }}
+                extent={extent}
             >
                 <ROSM />
                 <RLayerVector zIndex={10}>
@@ -36,6 +51,6 @@ export function AppMap() {
                 </RLayerVector>
             </RMap>,
         )
-    }, [events])
+    }, [events, filters.place])
     return <>{map}</>
 }

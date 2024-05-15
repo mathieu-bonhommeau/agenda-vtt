@@ -6,7 +6,7 @@ import { RFeature } from 'rlayers'
 export function EventMarker({ event }: { event: CalendarEvent }) {
     return event.eventLocation ? (
         <RFeature
-            geometry={new Point(fromLonLat([event.eventLocation!.latLon.lat, event.eventLocation!.latLon.lon]))}
+            geometry={new Point(fromLonLat([event.eventLocation!.latLon.lon, event.eventLocation!.latLon.lat]))}
             onClick={(e) =>
                 e.map.getView().fit(e.target.getGeometry()!.getExtent(), {
                     duration: 250,

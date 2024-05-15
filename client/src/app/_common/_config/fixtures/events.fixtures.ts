@@ -9,7 +9,10 @@ const event1 = new CalendarEventBuilder()
     .setStartDate(new Date('2024-08-25').toDateString())
     .setEndDate(new Date('2024-08-28').toDateString())
     .setEventLocation(
-        new EventLocationBuilder().setLatLon({ lon: 43.84104254256443, lat: -0.9025669059047033 }).build(),
+        new EventLocationBuilder()
+            .setCity('Tartas')
+            .setLatLon({ lat: 43.83205527398835, lon: -0.8093727373267132 })
+            .build(),
     )
     .build()
 const event2 = new CalendarEventBuilder()
@@ -17,7 +20,12 @@ const event2 = new CalendarEventBuilder()
     .setTitle('Event2')
     .setStartDate(new Date('2024-06-14').toDateString())
     .setEndDate(new Date('2024-06-14').toDateString())
-    .setEventLocation(new EventLocationBuilder().setLatLon({ lon: 44.016408032038136, lat: 2.7471504416587 }).build())
+    .setEventLocation(
+        new EventLocationBuilder()
+            .setCity('Albi')
+            .setLatLon({ lat: 43.922621380148314, lon: 2.1485700393675473 })
+            .build(),
+    )
     .build()
 
 const event3 = new CalendarEventBuilder()
@@ -25,7 +33,12 @@ const event3 = new CalendarEventBuilder()
     .setTitle('Event3')
     .setStartDate(new Date('2024-07-03').toDateString())
     .setEndDate(new Date('2024-07-04').toDateString())
-    .setEventLocation(new EventLocationBuilder().setLatLon({ lon: 44.52167567977396, lat: 1.278700628059972 }).build())
+    .setEventLocation(
+        new EventLocationBuilder()
+            .setCity('Cahors')
+            .setLatLon({ lat: 44.447683200568534, lon: 1.4378868578584774 })
+            .build(),
+    )
     .build()
 
 const event4 = new CalendarEventBuilder()
@@ -33,7 +46,12 @@ const event4 = new CalendarEventBuilder()
     .setTitle('Event4')
     .setStartDate(new Date('2024-11-17').toDateString())
     .setEndDate(new Date('2024-11-17').toDateString())
-    .setEventLocation(new EventLocationBuilder().setLatLon({ lon: 48.38872425569981, lat: 6.717864620226212 }).build())
+    .setEventLocation(
+        new EventLocationBuilder()
+            .setCity('Rambervillers')
+            .setLatLon({ lat: 48.345867416163784, lon: 6.634133024680511 })
+            .build(),
+    )
     .build()
 
 const event5 = new CalendarEventBuilder()
@@ -42,7 +60,10 @@ const event5 = new CalendarEventBuilder()
     .setStartDate(new Date('2024-09-10').toDateString())
     .setEndDate(new Date('2024-09-12').toDateString())
     .setEventLocation(
-        new EventLocationBuilder().setLatLon({ lon: 47.93949675153852, lat: -0.09805089153013741 }).build(),
+        new EventLocationBuilder()
+            .setCity('Le Mans')
+            .setLatLon({ lat: 47.99607814018611, lon: 0.1961746266174072 })
+            .build(),
     )
     .build()
 

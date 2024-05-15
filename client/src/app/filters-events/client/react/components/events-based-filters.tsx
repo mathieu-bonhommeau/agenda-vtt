@@ -24,6 +24,7 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
             }, 1000)
             setTimeoutId(searchTimeout)
         }
+        handleAddFilter({ place: undefined })
         return () => clearTimeout(searchTimeout)
     }
 
@@ -32,9 +33,7 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
         const { options } = event.currentTarget
         for (let i = 0, l = options.length; i < l; i += 1) {
             if ((options[i] as HTMLOptionElement).selected) {
-                handleAddFilter({
-                    place: searchResults[i],
-                })
+                handleAddFilter({ place: searchResults[i] })
             }
         }
         setSearchResults([])

@@ -4,11 +4,11 @@ export type SearchPlace = {
     country: string
     city: string
     postcode?: string
-    latLon: { lat: number; lon: number }
+    latLon: LatLon
     bbox: number[]
 }
 export type EventsFilters = {
     startDate?: string
     endDate?: string
-    latLon?: LatLon
+    place?: SearchPlace
 }

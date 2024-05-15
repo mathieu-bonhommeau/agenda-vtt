@@ -3,7 +3,7 @@ import { ChangeEvent, ReactNode, useRef } from 'react'
 
 export type SearchTextAndSelectResult = {
     mainLabel: string
-    subLabel: string
+    subLabel?: string
     index: number
 }
 

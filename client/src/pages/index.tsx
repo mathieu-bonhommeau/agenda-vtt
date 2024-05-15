@@ -13,7 +13,7 @@ export default function Index() {
     const dispatch = useDispatch<AppDispatch>()
     const filters = useSelector(eventsFiltersVM())
 
-    console.log(filters)
+    console.log('filters', filters)
 
     const [view, setView] = useState<ViewEvents>('map')
 

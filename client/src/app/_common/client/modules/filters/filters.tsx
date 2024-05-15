@@ -9,6 +9,7 @@ export function Filters() {
     const dispatch = useDispatch()
 
     const handleAddFilter = (filters: EventsFilters) => {
+        console.log('filters  !!', filters)
         dispatch(filtersSlice.actions.onEventsFiltered(filters))
     }
 
