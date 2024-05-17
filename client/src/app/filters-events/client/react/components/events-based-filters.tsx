@@ -39,8 +39,6 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
         setSearchResults([])
     }
 
-    console.log(searchResults)
-
     return (
         <Card variant="outlined" sx={{ maxWidth: 500, p: 2, my: 2 }}>
             <CardHeader title={'Rechercher des évenements'} sx={{ px: 0 }}></CardHeader>

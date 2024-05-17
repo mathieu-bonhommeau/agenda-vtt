@@ -14,7 +14,6 @@ export const filtersSlice = createSlice({
     initialState,
     reducers: {
         onEventsFiltered: (state, { payload }: { payload: EventsFilters }) => {
-            console.log(payload)
             state.filters = payload
         },
     },

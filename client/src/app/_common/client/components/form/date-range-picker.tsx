@@ -6,6 +6,7 @@ import { Dayjs } from 'dayjs'
 import 'dayjs/locale/en'
 import 'dayjs/locale/fr'
 import { useState } from 'react'
+import { TiDelete } from 'react-icons/ti'
 
 export type InputDatePickerProps = {
     startDateLabel: string
@@ -39,25 +40,36 @@ export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, com
         setError(null)
     }
 
+    const handleReset = () => {
+        setStartDate(null)
+        setEndDate(null)
+        commitDates({ startDate: undefined, endDate: undefined })
+    }
+
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
             <Box sx={{ display: 'flex', gap: 2, my: 1 }}>
                 <DatePicker
                     label={startDateLabel}
+                    value={startDate}
                     onChange={(date) => handleStartDate(date)}
                     disablePast
                     slotProps={{ textField: { error: !!error } }}
                 />
                 <DatePicker
                     label={endDateLabel}
+                    value={endDate}
                     onChange={(date) => handleEndDate(date)}
                     disablePast
                     slotProps={{ textField: { error: !!error } }}
                 />
+                {(startDate || endDate) && (
+                    <IconButton aria-label="reset-dates" color="error" onClick={handleReset}>
+                        <TiDelete />
+                    </IconButton>
+                )}
             </Box>
-            <IconButton aria-label="delete" disabled color="primary">
-                {/*<DeleteIcon />*/}
-            </IconButton>
+
             {error && <Alert severity="error">{error}</Alert>}
         </LocalizationProvider>
     )

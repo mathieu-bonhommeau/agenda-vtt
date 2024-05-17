@@ -9,11 +9,10 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 export type ViewEvents = 'calendar' | 'map'
+
 export default function Index() {
     const dispatch = useDispatch<AppDispatch>()
     const filters = useSelector(eventsFiltersVM())
-
-    console.log('filters', filters)
 
     const [view, setView] = useState<ViewEvents>('map')
 

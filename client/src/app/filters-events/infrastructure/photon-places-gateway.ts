@@ -12,8 +12,6 @@ export class PhotonPlacesGateway implements PlacesGateway {
         try {
             const response = await axios.get<PhotonApiResponse>(SEARCH_LOCALITY_ENDPOINT + params)
 
-            console.log(response.data.features)
-
             return response.data.features
                 .filter(
                     (feature) =>
@@ -26,7 +24,7 @@ export class PhotonPlacesGateway implements PlacesGateway {
                     department: feature.properties['county']!,
                     region: feature.properties['state']!,
                     postcode: feature.properties['postcode']!,
-                    latLon: { lat: feature.geometry.coordinates[0], lon: feature.geometry.coordinates[1] },
+                    latLon: { lon: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
                     bbox: feature.properties['extent'],
                 }))
                 .sort((a, b) => {
