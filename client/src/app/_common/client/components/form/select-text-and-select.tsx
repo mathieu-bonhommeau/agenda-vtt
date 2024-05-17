@@ -1,5 +1,6 @@
-import { Box, FormControl, Select, SelectChangeEvent, TextField } from '@mui/material'
+import { Box, FormControl, IconButton, Select, SelectChangeEvent, TextField } from '@mui/material'
 import { ChangeEvent, ReactNode, useRef } from 'react'
+import { TiDelete } from 'react-icons/ti'
 
 export type SearchTextAndSelectResult = {
     mainLabel: string
@@ -10,11 +11,13 @@ export type SearchTextAndSelectResult = {
 export function SearchTextAndSelect({
     searchValue,
     handleInput,
+    handleReset,
     searchResults,
     commitSearchSelected,
 }: {
     searchValue: string
     handleInput: (e: ChangeEvent<HTMLInputElement>) => void
+    handleReset: () => void
     searchResults: SearchTextAndSelectResult[]
     commitSearchSelected: (event: ChangeEvent<HTMLSelectElement>, child: ReactNode) => void
 }) {
@@ -25,7 +28,7 @@ export function SearchTextAndSelect({
     }
 
     return (
-        <Box style={{ position: 'relative' }}>
+        <Box style={{ position: 'relative', display: 'flex' }}>
             <TextField
                 sx={{ width: 500, my: 1 }}
                 onChange={handleInput}
@@ -36,6 +39,11 @@ export function SearchTextAndSelect({
                 variant="outlined"
                 ref={searchInput}
             />
+            {searchValue && (
+                <IconButton aria-label="reset-dates" color="error" onClick={handleReset}>
+                    <TiDelete />
+                </IconButton>
+            )}
             {searchResults.length ? (
                 <FormControl
                     sx={{

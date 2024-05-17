@@ -6,56 +6,25 @@ import 'ol/ol.css'
 import { fromLonLat } from 'ol/proj'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { RView } from 'rlayers/RMap'
 
 export function AppMap() {
-    const [map, setMap] = useState(<></>)
-    /*const [focus, setFocus] = useState<RView>({
+    const [focus, setFocus] = useState<RView>({
         center: fromLonLat([centerCountry['France'].lon, centerCountry['France'].lat]),
         zoom: 6,
-    })*/
-    const [isFocusable, setIsFocusable] = useState(true)
+    })
 
     const events = useSelector(eventsVM())
     const filters = useSelector(eventsFiltersVM())
 
     useEffect(() => {
-        console.log('test')
-        if (filters.place && isFocusable) {
-            /*setFocus({
+        if (filters.place) {
+            setFocus({
                 center: fromLonLat([filters.place.latLon.lon, filters.place.latLon.lat]),
                 zoom: 11,
-            })*/
-            setIsFocusable(false)
-            setMap(
-                <OpenLayersMap
-                    events={events}
-                    filters={filters}
-                    focus={{
-                        center: fromLonLat([filters.place.latLon.lon, filters.place.latLon.lat]),
-                        zoom: 11,
-                    }}
-                />,
-            )
-            return
+            })
         }
+    }, [events, filters])
 
-        setMap(
-            <OpenLayersMap
-                events={events}
-                filters={filters}
-                focus={{
-                    center: fromLonLat([centerCountry['France'].lon, centerCountry['France'].lat]),
-                    zoom: 6,
-                }}
-            />,
-        )
-    }, [events, filters, isFocusable])
-
-    return <>{map}</>
-}
-
-const compareView = (oldView: number[], newView: number[]) => {
-    console.log(oldView)
-    console.log(newView)
-    return JSON.stringify(oldView) === JSON.stringify(newView)
+    return <OpenLayersMap events={events} filters={filters} focus={focus} setFocus={setFocus} />
 }

@@ -2,21 +2,22 @@ import { CalendarEvent } from '@/app/calendar-event/business/models/event'
 import { EventMarker } from '@/app/calendar-event/client/react/components/map/event-marker'
 import IconMap from '@/app/calendar-event/client/react/components/map/icon-map.png'
 import { EventsFilters } from '@/app/filters-events/business/models/filter'
-import { ReactNode } from 'react'
+import { Dispatch, ReactNode, SetStateAction } from 'react'
 import { RLayerVector, RMap, ROSM, RStyle } from 'rlayers'
 import { RView } from 'rlayers/RMap'
 
 export function OpenLayersMap({
     events,
-    filters,
     focus,
+    setFocus,
 }: {
     events: CalendarEvent[]
     filters: EventsFilters
     focus: RView
+    setFocus: Dispatch<SetStateAction<RView>>
 }): ReactNode {
     return (
-        <RMap width={'100%'} height={'60vh'} initial={focus}>
+        <RMap width={'100%'} height={'60vh'} initial={focus} view={[focus, setFocus]}>
             <ROSM />
             <RLayerVector zIndex={10}>
                 <RStyle.RStyle>

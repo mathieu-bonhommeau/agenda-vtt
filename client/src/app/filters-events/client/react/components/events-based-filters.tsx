@@ -7,11 +7,16 @@ import { ChangeEvent, ReactNode, useContext, useState } from 'react'
 
 export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filters: EventsFilters) => void }) {
     let searchTimeout: NodeJS.Timeout
-    const [searchPlace, setSearchPlace] = useState<string>()
+    const [searchPlace, setSearchPlace] = useState<string>('')
     const [searchByWord, setSearchByWord] = useState<string>('')
     const [searchResults, setSearchResults] = useState<SearchPlace[]>([])
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>()
     const { searchPlaces } = useContext(AppContext)
+
+    const handleReset = () => {
+        setSearchPlace('')
+        handleAddFilter({ place: undefined })
+    }
 
     const handleSearchPlace = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchPlace(e.target.value)
@@ -63,6 +68,7 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
             <SearchTextAndSelect
                 searchValue={searchPlace || ''}
                 handleInput={handleSearchPlace}
+                handleReset={handleReset}
                 searchResults={searchResults.map((result, index) => ({
                     mainLabel: result.city,
                     subLabel: result.postcode,
