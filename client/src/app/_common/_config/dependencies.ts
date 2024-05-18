@@ -1,8 +1,9 @@
 import { eventsFixtures } from '@/app/_common/_config/fixtures/events.fixtures'
 import { Dependencies } from '@/app/_common/business/store/store'
-import { HttpEventsGateway } from '@/app/calendar-event/infrastructure/http-events.gateway'
-import { InMemoryEventsGateway } from '@/app/calendar-event/infrastructure/in-memory-events.gateway'
+import { HttpEventsGateway } from '@/app/calendar-events/infrastructure/http-events.gateway'
+import { InMemoryEventsGateway } from '@/app/calendar-events/infrastructure/in-memory-events.gateway'
 import { PhotonPlacesGateway } from '@/app/filters-events/infrastructure/photon-places-gateway'
+import { UgatawaTracesApiGateway } from '@/app/traces/infrastructure/ugatawa-traces-api-gateway'
 
 export const buildDependencies = (): Dependencies => {
     switch (process.env['REACT_APP']) {
@@ -19,6 +20,7 @@ const buildRealDependencies = (): Dependencies => {
     return {
         eventsGateway: new HttpEventsGateway(apiBaseUrl),
         placesGateway: new PhotonPlacesGateway(),
+        tracesApiGateway: new UgatawaTracesApiGateway(),
     }
 }
 
@@ -26,10 +28,12 @@ const buildRealDependencies = (): Dependencies => {
 const buildInMemoryDependencies = (): Dependencies => {
     const eventsGateway = new InMemoryEventsGateway()
     const placesGateway = new PhotonPlacesGateway()
+    const tracesGateway = new UgatawaTracesApiGateway()
     eventsGateway.events = eventsFixtures
 
     return {
         eventsGateway,
         placesGateway,
+        tracesApiGateway: tracesGateway,
     }
 }

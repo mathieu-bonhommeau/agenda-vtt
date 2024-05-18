@@ -1,11 +1,11 @@
 import {
     CalendarEventBuilder,
     EventLocationBuilder,
-} from '@/app/calendar-event/business/use-case/retrieve-events/__test__/calendar-event-builder'
+} from '@/app/calendar-events/business/use-case/retrieve-events/__test__/calendar-event-builder'
 
 const event1 = new CalendarEventBuilder()
     .setId('2a587e71-3fdf-4778-8b2e-c08a62832181')
-    .setTitle('Event1')
+    .setTitle('Valsloppet VTT')
     .setStartDate(new Date('2024-08-25').toDateString())
     .setEndDate(new Date('2024-08-28').toDateString())
     .setEventLocation(
@@ -17,7 +17,7 @@ const event1 = new CalendarEventBuilder()
     .build()
 const event2 = new CalendarEventBuilder()
     .setId('2a587e71-3fdf-4778-8b2e-c08a62832182')
-    .setTitle('Event2')
+    .setTitle('Enduro du Vercors')
     .setStartDate(new Date('2024-06-14').toDateString())
     .setEndDate(new Date('2024-06-14').toDateString())
     .setEventLocation(
@@ -30,7 +30,7 @@ const event2 = new CalendarEventBuilder()
 
 const event3 = new CalendarEventBuilder()
     .setId('2a587e71-3fdf-4778-8b2e-c08a62832183')
-    .setTitle('Event3')
+    .setTitle('Les Crapauds 24 heures VTT')
     .setStartDate(new Date('2024-07-03').toDateString())
     .setEndDate(new Date('2024-07-04').toDateString())
     .setEventLocation(
@@ -43,7 +43,7 @@ const event3 = new CalendarEventBuilder()
 
 const event4 = new CalendarEventBuilder()
     .setId('2a587e71-3fdf-4778-8b2e-c08a62832184')
-    .setTitle('Event4')
+    .setTitle('ValsVertaco bike')
     .setStartDate(new Date('2024-11-17').toDateString())
     .setEndDate(new Date('2024-11-17').toDateString())
     .setEventLocation(
@@ -56,7 +56,7 @@ const event4 = new CalendarEventBuilder()
 
 const event5 = new CalendarEventBuilder()
     .setId('2a587e71-3fdf-4778-8b2e-c08a62832185')
-    .setTitle('Event5')
+    .setTitle('Oeno-balade en Beaujolais')
     .setStartDate(new Date('2024-09-10').toDateString())
     .setEndDate(new Date('2024-09-12').toDateString())
     .setEventLocation(

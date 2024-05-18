@@ -1,6 +1,6 @@
 import { OpenLayersMap } from '@/app/_common/client/modules/map/open-layers-map'
-import { centerCountry } from '@/app/calendar-event/business/models/geolocation'
-import { eventsVM } from '@/app/calendar-event/client/view-models/retrieve-events-view-model'
+import { centerCountry } from '@/app/calendar-events/business/models/geolocation'
+import { eventsVM } from '@/app/calendar-events/client/view-models/retrieve-events-view-model'
 import { eventsFiltersVM } from '@/app/filters-events/client/view-models/filters-view-models'
 import 'ol/ol.css'
 import { fromLonLat } from 'ol/proj'

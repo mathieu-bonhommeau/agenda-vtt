@@ -13,9 +13,18 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>()
     const { searchPlaces } = useContext(AppContext)
 
-    const handleReset = () => {
-        setSearchPlace('')
-        handleAddFilter({ place: undefined })
+    const handleSearchWord = (e: ChangeEvent<HTMLInputElement>) => {
+        setSearchByWord(e.target.value)
+        clearTimeout(timeoutId)
+        if (e.target.value.length >= 2) {
+            searchTimeout = setTimeout(() => {
+                handleAddFilter({ keyWord: e.target.value })
+                return
+            }, 1000)
+            setTimeoutId(searchTimeout)
+        }
+        if (e.target.value.length < 2) handleAddFilter({ keyWord: undefined })
+        return () => clearTimeout(searchTimeout)
     }
 
     const handleSearchPlace = (e: ChangeEvent<HTMLInputElement>) => {
@@ -44,31 +53,27 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
         setSearchResults([])
     }
 
+    const handleSearchReset = () => {
+        setSearchPlace('')
+        handleAddFilter({ place: undefined })
+    }
+
     return (
         <Card variant="outlined" sx={{ maxWidth: 500, p: 2, my: 2 }}>
             <CardHeader title={'Rechercher des évenements'} sx={{ px: 0 }}></CardHeader>
             <TextField
                 sx={{ width: 500, my: 1 }}
-                onChange={(e) => setSearchByWord(e.target.value)}
+                onChange={handleSearchWord}
                 placeholder={"Nom de l'évenement, Nom de l'organisateur, ..."}
                 id="outlined-basic"
                 label="Par mots clé"
                 variant="outlined"
+                value={searchByWord}
             />
-            {/*<SearchTextAndSelect
-                searchValue={searchByWord || ''}
-                handleInput={handleSearchWord}
-                searchResults={searchResults.map((result, index) => ({
-                    mainLabel: result.city,
-                    subLabel: result.postcode,
-                    index,
-                }))}
-                commitSearchSelected={commitSearchPlaceSelected}
-            />*/}
             <SearchTextAndSelect
                 searchValue={searchPlace || ''}
                 handleInput={handleSearchPlace}
-                handleReset={handleReset}
+                handleReset={handleSearchReset}
                 searchResults={searchResults.map((result, index) => ({
                     mainLabel: result.city,
                     subLabel: result.postcode,
