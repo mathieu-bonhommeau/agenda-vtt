@@ -7,6 +7,7 @@ import {
 } from '@/app/calendar-events/business/use-case/retrieve-events/__test__/calendar-event-builder'
 import { retrieveEvents } from '@/app/calendar-events/business/use-case/retrieve-events/retrieve-events'
 import { InMemoryEventsGateway } from '@/app/calendar-events/infrastructure/in-memory-events.gateway'
+import { Trace } from '@/app/traces/business/models/trace'
 
 describe('Fetch events', () => {
     let sut: SUT
@@ -17,7 +18,7 @@ describe('Fetch events', () => {
     })
 
     describe('Dispatch action for retrieve events', () => {
-        it('retrieve calendar events', async () => {
+        it('retrieves calendar events', async () => {
             events = sut.buildDefaultEvents(4)
             sut.givenEvents(events)
 
@@ -26,7 +27,7 @@ describe('Fetch events', () => {
             expect(sut.events).toEqual(events)
         })
 
-        it('retrieve nothing if events are not found', async () => {
+        it('retrieves nothing if events are not found', async () => {
             events = sut.buildDefaultEvents(0)
             sut.givenEvents(events)
 
@@ -35,7 +36,7 @@ describe('Fetch events', () => {
             expect(sut.events).toEqual([])
         })
 
-        it('retrieve nothing if get events from api return an error', async () => {
+        it('retrieves nothing if get events from api return an error', async () => {
             events = sut.buildDefaultEvents(4)
             sut.givenEvents(events)
             sut.setError()
@@ -46,7 +47,7 @@ describe('Fetch events', () => {
             expect(sut.error).toEqual('RETRIEVE_EVENTS_FAILED')
         })
 
-        describe('filter events by date', () => {
+        describe('filters events by date', () => {
             beforeEach(() => {
                 events = [
                     sut.buildEvent({
@@ -76,7 +77,7 @@ describe('Fetch events', () => {
                     }),
                 ]
             })
-            it('retrieve all events after a define date', async () => {
+            it('retrieves all events after a define date', async () => {
                 sut.givenEvents(events)
 
                 await sut.retrieveEvents({ startDate: new Date('2024-05-26').toDateString() })
@@ -84,7 +85,7 @@ describe('Fetch events', () => {
                 expect(sut.events).toEqual([events[1], events[2], events[3], events[4]])
             })
 
-            it('retrieve events in a specific date range', async () => {
+            it('retrieves events in a specific date range', async () => {
                 sut.givenEvents(events)
 
                 await sut.retrieveEvents({
@@ -162,7 +163,7 @@ describe('Fetch events', () => {
                 ]
             })
 
-            it('retrieve all events of a define place', async () => {
+            it('retrieves all events of a define place', async () => {
                 sut.givenEvents(events)
 
                 await sut.retrieveEvents({ placeBbox: [-1.1020338, 43.7297539, -1.0250954, 43.675449] })
@@ -170,7 +171,7 @@ describe('Fetch events', () => {
                 expect(sut.events).toEqual([events[1], events[4]])
             })
 
-            it('retrieve nothing if no place matches with bounding box', async () => {
+            it('retrieves nothing if no place matches with bounding box', async () => {
                 sut.givenEvents(events)
 
                 await sut.retrieveEvents({ placeBbox: [-10, 43, -11, 44] })
@@ -206,12 +207,94 @@ describe('Fetch events', () => {
                 ]
             })
 
-            it('retrieve events corresponding with search word', async () => {
+            it('retrieves events corresponding with search word', async () => {
                 sut.givenEvents(events)
-
                 await sut.retrieveEvents({ keyWord: 'Vals' })
 
                 expect(sut.events).toEqual([events[0], events[3]])
+            })
+
+            it('returns nothing if the search word does not matched with any events', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ keyWord: 'yyyy' })
+
+                expect(sut.events).toEqual([])
+            })
+        })
+
+        describe('Filter events by traces distance', () => {
+            beforeEach(async () => {
+                sut = new SUT()
+                events = events = [
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d41',
+                        traces: [
+                            {
+                                id: 12341,
+                                link: 'http://mytrace1.com',
+                                distance: 40,
+                            },
+                            {
+                                id: 12342,
+                                link: 'http://mytrace2.com',
+                                distance: 35,
+                            },
+                        ],
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d42',
+                        traces: [
+                            {
+                                id: 12343,
+                                link: 'http://mytrace3.com',
+                                distance: 15,
+                            },
+                            {
+                                id: 12344,
+                                link: 'http://mytrace4.com',
+                                distance: 30,
+                            },
+                        ],
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d43',
+                        traces: [
+                            {
+                                id: 12351,
+                                link: 'http://mytrace6.com',
+                                distance: 70,
+                            },
+                        ],
+                    }),
+                ]
+            })
+
+            it('retrieves all events that contain traces less than a define distance', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ distanceMax: 40 })
+
+                expect(sut.events).toEqual([events[0], events[1]])
+            })
+
+            it('retrieves all events that contain traces more than a define distance', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ distanceMin: 40 })
+
+                expect(sut.events).toEqual([events[0], events[2]])
+            })
+
+            it('retrieves all events that contain traces with distances less than distanceMax and more than distanceMin', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ distanceMax: 34, distanceMin: 20 })
+
+                expect(sut.events).toEqual([events[1]])
+            })
+
+            it('returns nothing if any events corresponds to the distance search', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ distanceMin: 200 })
+
+                expect(sut.events).toEqual([])
             })
         })
     })
@@ -242,12 +325,14 @@ class SUT {
         endDate,
         eventLocation,
         title,
+        traces,
     }: {
         id: string
         startDate?: string
         endDate?: string
         eventLocation?: EventLocation
         title?: string
+        traces?: Trace[]
     }) {
         const builder = new CalendarEventBuilder().setId(id)
         startDate && builder.setStartDate(startDate)
@@ -261,6 +346,7 @@ class SUT {
                     .build(),
             )
         title && builder.setTitle(title)
+        traces && builder.setTraces(traces)
         return builder.build()
     }
 
@@ -273,11 +359,15 @@ class SUT {
         endDate,
         placeBbox,
         keyWord,
+        distanceMax,
+        distanceMin,
     }: {
         startDate?: string
         endDate?: string
         placeBbox?: number[]
         keyWord?: string
+        distanceMax?: number
+        distanceMin?: number
     }) {
         const place = placeBbox && {
             bbox: placeBbox,
@@ -285,7 +375,9 @@ class SUT {
             city: '',
             latLon: { lat: 0, lon: 0 },
         }
-        await this._store.dispatch(retrieveEvents({ filters: { startDate, endDate, place, keyWord } }))
+        await this._store.dispatch(
+            retrieveEvents({ filters: { startDate, endDate, place, keyWord, distanceMax, distanceMin } }),
+        )
     }
 
     get events() {

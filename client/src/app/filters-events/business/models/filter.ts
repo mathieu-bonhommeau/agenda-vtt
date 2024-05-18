@@ -12,4 +12,6 @@ export type EventsFilters = {
     endDate?: string
     place?: SearchPlace
     keyWord?: string
+    distanceMin?: number
+    distanceMax?: number
 }

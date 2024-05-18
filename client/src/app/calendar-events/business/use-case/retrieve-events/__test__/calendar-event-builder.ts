@@ -55,6 +55,11 @@ export class CalendarEventBuilder {
         this._endDate = endDate
         return this
     }
+
+    setTraces(traces: Trace[]): CalendarEventBuilder {
+        this._traces = traces
+        return this
+    }
 }
 
 export class EventLocationBuilder {
@@ -86,23 +91,37 @@ export class EventLocationBuilder {
         return this
     }
 
-    setRegion(region: string): EventLocationBuilder {
-        this._region = region
-        return this
-    }
-
-    setDepartment(department: string): EventLocationBuilder {
-        this._department = department
-        return this
-    }
-
     setCity(city: string): EventLocationBuilder {
         this._city = city
         return this
     }
+}
 
-    setPostcode(postcode: string): EventLocationBuilder {
-        this._postcode = postcode
+export class TraceBuilder {
+    private _id: number = 12345
+    private _link: string = 'http://utagawavtt.com/trace'
+    private _distance: number = 30
+
+    build(): Trace {
+        return {
+            id: this._id,
+            link: this._link,
+            distance: this._distance,
+        }
+    }
+
+    setId(id: number): TraceBuilder {
+        this._id = id
+        return this
+    }
+
+    setLink(link: string): TraceBuilder {
+        this._link = link
+        return this
+    }
+
+    setDistance(distance: number): TraceBuilder {
+        this._distance = distance
         return this
     }
 }

@@ -1,9 +1,11 @@
 import { InputDateRangePicker } from '@/app/_common/client/components/form/date-range-picker'
+import { SliderRange } from '@/app/_common/client/components/form/input-range'
 import { SearchTextAndSelect } from '@/app/_common/client/components/form/select-text-and-select'
 import { AppContext } from '@/app/_common/client/context/app-context'
 import { EventsFilters, SearchPlace } from '@/app/filters-events/business/models/filter'
-import { Card, CardHeader, TextField } from '@mui/material'
+import { Box, Card, CardHeader, IconButton, TextField } from '@mui/material'
 import { ChangeEvent, ReactNode, useContext, useState } from 'react'
+import { TiDelete } from 'react-icons/ti'
 
 export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filters: EventsFilters) => void }) {
     let searchTimeout: NodeJS.Timeout
@@ -25,6 +27,11 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
         }
         if (e.target.value.length < 2) handleAddFilter({ keyWord: undefined })
         return () => clearTimeout(searchTimeout)
+    }
+
+    const handleSearchByWordReset = () => {
+        setSearchByWord('')
+        handleAddFilter({ keyWord: '' })
     }
 
     const handleSearchPlace = (e: ChangeEvent<HTMLInputElement>) => {
@@ -53,27 +60,39 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
         setSearchResults([])
     }
 
-    const handleSearchReset = () => {
+    const handleSearchPlaceReset = () => {
         setSearchPlace('')
+        setSearchResults([])
         handleAddFilter({ place: undefined })
+    }
+
+    const handleSliderDistance = ({ min, max }: { min?: number; max?: number }) => {
+        handleAddFilter({ distanceMax: max, distanceMin: min })
     }
 
     return (
         <Card variant="outlined" sx={{ maxWidth: 500, p: 2, my: 2 }}>
             <CardHeader title={'Rechercher des évenements'} sx={{ px: 0 }}></CardHeader>
-            <TextField
-                sx={{ width: 500, my: 1 }}
-                onChange={handleSearchWord}
-                placeholder={"Nom de l'évenement, Nom de l'organisateur, ..."}
-                id="outlined-basic"
-                label="Par mots clé"
-                variant="outlined"
-                value={searchByWord}
-            />
+            <Box style={{ display: 'flex' }}>
+                <TextField
+                    sx={{ width: 500, my: 1 }}
+                    onChange={handleSearchWord}
+                    placeholder={"Nom de l'évenement, Nom de l'organisateur, ..."}
+                    id="outlined-basic"
+                    label="Par mots clé"
+                    variant="outlined"
+                    value={searchByWord}
+                />
+                {searchByWord && (
+                    <IconButton aria-label="reset-dates" color="error" onClick={handleSearchByWordReset}>
+                        <TiDelete />
+                    </IconButton>
+                )}
+            </Box>
             <SearchTextAndSelect
                 searchValue={searchPlace || ''}
                 handleInput={handleSearchPlace}
-                handleReset={handleSearchReset}
+                handleReset={handleSearchPlaceReset}
                 searchResults={searchResults.map((result, index) => ({
                     mainLabel: result.city,
                     subLabel: result.postcode,
@@ -86,6 +105,14 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
                 endDateLabel={'à'}
                 locale={'fr'}
                 commitDates={handleAddFilter}
+            />
+            <SliderRange
+                label={'Kilométrages des parcours'}
+                min={0}
+                minLabel={'0 km'}
+                max={60}
+                maxLabel={'60 km et +'}
+                commitValues={handleSliderDistance}
             />
         </Card>
     )

@@ -1,55 +1,57 @@
-import { Mark } from '@mui/base'
-import { Box, Slider, Typography } from '@mui/material'
+import { Box, IconButton, Slider, Typography } from '@mui/material'
 import { useState } from 'react'
+import { TiDelete } from 'react-icons/ti'
 
 export type SliderRangeProps = {
     label: string
-    min?: number
-    max?: number
-    initValue?: number
+    min: number
+    max: number
     minLabel?: string
     maxLabel?: string
-    step: number
-    marks?: boolean | Mark[] | undefined
-    labelsStep?: string[]
+    labelsStep?: string
+    commitValues: ({ min, max }: { min?: number; max?: number }) => void
 }
 
-export function SliderRange({
-    label,
-    min,
-    max,
-    initValue,
-    minLabel,
-    maxLabel,
-    marks,
-    step,
-    labelsStep,
-}: SliderRangeProps) {
-    const [rangeValue, setRangeValue] = useState<number | undefined>(initValue)
+export function SliderRange({ label, min, max, minLabel, maxLabel, commitValues }: SliderRangeProps) {
+    const [rangeValue, setRangeValue] = useState<number[]>([min, max])
 
     const handleChange = (_: Event, newValue: number | number[]) => {
-        setRangeValue(newValue as number)
+        setRangeValue(newValue as number[])
+        if (newValue instanceof Array) {
+            commitValues({ min: newValue[0], max: newValue[1] !== 60 ? newValue[1] : undefined })
+        }
+    }
+
+    const handleReset = () => {
+        setRangeValue([0, 60])
+        commitValues({ min: 0, max: 0 })
     }
 
     return (
-        <Box sx={{ width: 500, gap: 2, my: 2 }}>
-            <Typography>{label}</Typography>
-            <Box sx={{ width: '100%' }}>
+        <Box sx={{ my: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 6 }}>
+                <Typography>{label}</Typography>
+                {JSON.stringify(rangeValue) !== JSON.stringify([0, 60]) && (
+                    <IconButton sx={{ p: 0 }} aria-label="reset-dates" color="error" onClick={handleReset}>
+                        <TiDelete />
+                    </IconButton>
+                )}
+            </Box>
+            <Box sx={{ px: 4 }}>
                 <Slider
-                    marks={marks}
-                    step={step}
+                    marks
                     value={rangeValue}
-                    valueLabelDisplay="auto"
+                    valueLabelDisplay="on"
                     min={min}
                     max={max}
                     onChange={handleChange}
-                    valueLabelFormat={(value) => labelsStep && labelsStep[value]}
+                    valueLabelFormat={(value) => value}
                 />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="body2" onClick={() => min && setRangeValue(min)} sx={{ cursor: 'pointer' }}>
+                    <Typography variant="body2" onClick={() => setRangeValue([min, min])} sx={{ cursor: 'pointer' }}>
                         {minLabel}
                     </Typography>
-                    <Typography variant="body2" onClick={() => max && setRangeValue(max)} sx={{ cursor: 'pointer' }}>
+                    <Typography variant="body2" onClick={() => setRangeValue([max, max])} sx={{ cursor: 'pointer' }}>
                         {maxLabel}
                     </Typography>
                 </Box>
