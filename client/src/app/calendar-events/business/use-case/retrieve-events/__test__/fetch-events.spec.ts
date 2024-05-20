@@ -106,6 +106,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Paris',
                             postcode: '75000',
+                            address: 'my address',
                             latLon: {
                                 lat: 48.857177778429715,
                                 lon: 2.353314452137148,
@@ -118,6 +119,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Dax',
                             postcode: '40000',
+                            address: 'my address',
                             latLon: {
                                 lat: 43.71658659046892,
                                 lon: -1.0491951154017876,
@@ -130,6 +132,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Marseille',
                             postcode: '13000',
+                            address: 'my address',
                             latLon: {
                                 lat: 43.306615804116724,
                                 lon: 5.379702329955738,
@@ -142,6 +145,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Angers',
                             postcode: '35000',
+                            address: 'my address',
                             latLon: {
                                 lat: 47.46885554586697,
                                 lon: -0.5693751476331029,
@@ -154,6 +158,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Dax',
                             postcode: '40000',
+                            address: 'my address',
                             latLon: {
                                 lat: 43.70946844046192,
                                 lon: -1.0528505714706378,
@@ -230,12 +235,12 @@ describe('Fetch events', () => {
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d41',
                         traces: [
                             {
-                                id: 12341,
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea1',
                                 link: 'http://mytrace1.com',
                                 distance: 40,
                             },
                             {
-                                id: 12342,
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea2',
                                 link: 'http://mytrace2.com',
                                 distance: 35,
                             },
@@ -245,12 +250,12 @@ describe('Fetch events', () => {
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d42',
                         traces: [
                             {
-                                id: 12343,
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea3',
                                 link: 'http://mytrace3.com',
                                 distance: 15,
                             },
                             {
-                                id: 12344,
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea4',
                                 link: 'http://mytrace4.com',
                                 distance: 30,
                             },
@@ -260,7 +265,7 @@ describe('Fetch events', () => {
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d43',
                         traces: [
                             {
-                                id: 12351,
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea5',
                                 link: 'http://mytrace6.com',
                                 distance: 70,
                             },

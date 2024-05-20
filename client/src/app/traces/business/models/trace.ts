@@ -2,17 +2,18 @@
 //export type TraceLoop = 'all' | 'onlyLoop' | 'noLoop'
 
 export type Trace = {
-    id: number
+    id: string
+    utagawaId?: number
     link: string
     //bikeType: BikeType
     //duration: number
     distance: number
-    //positiveElevation: number
+    positiveElevation?: number
     //negativeElevation: number
     //traceLoop: TraceLoop
-    //traceDifficulty: TraceDifficulty
+    traceColor?: TraceColor
 }
-//export type TraceColor = 'green' | 'blue' | 'red' | 'black'
+export type TraceColor = 'green' | 'blue' | 'red' | 'black'
 
 //export type TraceDifficulty = {
 //traceColor: TraceColor

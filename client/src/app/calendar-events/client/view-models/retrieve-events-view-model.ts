@@ -15,7 +15,11 @@ export type CalendarEventsVM = CalendarEventVM[]
 export const eventsVM =
     () =>
     (state: AppState): CalendarEventsVM => {
-        return state.eventsState.events
+        return state.eventsState.events.map((event) => ({
+            ...event,
+            startDate: new Date(event.startDate).toDateString(),
+            endDate: new Date(event.endDate).toDateString(),
+        }))
     }
 
 export class ReactBigCalendarEventFactory {
