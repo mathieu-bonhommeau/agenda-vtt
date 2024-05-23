@@ -22,7 +22,6 @@
       }
     ]
   },
-  "ignorePatterns": ["poc-neo4j/", "webpack.config.js"],
   "env": {
     "browser": true,
     "node": true,

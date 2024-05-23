@@ -15,6 +15,8 @@ export type Trace = {
 }
 export type TraceColor = 'green' | 'blue' | 'red' | 'black'
 
+export const traceLevelColor = { green: 1, blue: 2, red: 3, black: 4, notDefined: 5 }
+
 //export type TraceDifficulty = {
 //traceColor: TraceColor
 //technicalDifficulty: number //de 1 à 6

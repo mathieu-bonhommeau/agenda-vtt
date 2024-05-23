@@ -48,21 +48,23 @@ export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, com
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
-            <Box sx={{ display: 'flex', gap: 2, my: 1 }}>
-                <DatePicker
-                    label={startDateLabel}
-                    value={startDate}
-                    onChange={(date) => handleStartDate(date)}
-                    disablePast
-                    slotProps={{ textField: { error: !!error } }}
-                />
-                <DatePicker
-                    label={endDateLabel}
-                    value={endDate}
-                    onChange={(date) => handleEndDate(date)}
-                    disablePast
-                    slotProps={{ textField: { error: !!error } }}
-                />
+            <Box sx={{ display: 'flex', my: 1, width: '100%' }}>
+                <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', flexGrow: 1 }}>
+                    <DatePicker
+                        label={startDateLabel}
+                        value={startDate}
+                        onChange={(date) => handleStartDate(date)}
+                        disablePast
+                        slotProps={{ textField: { error: !!error } }}
+                    />
+                    <DatePicker
+                        label={endDateLabel}
+                        value={endDate}
+                        onChange={(date) => handleEndDate(date)}
+                        disablePast
+                        slotProps={{ textField: { error: !!error } }}
+                    />
+                </Box>
                 {(startDate || endDate) && (
                     <IconButton aria-label="reset-dates" color="error" onClick={handleReset}>
                         <TiDelete />

@@ -1,0 +1,35 @@
+
+$headerHeight: 76px;
+
+/* header */
+$mainMenuTxtHeight: 20px;
+$mainMenuVertPadding: 6px;
+$mainMenuBorder: 2px;
+$mainMenuHeight: $mainMenuTxtHeight + 2*$mainMenuVertPadding + 2*$mainMenuBorder;
+
+$mainMenuTop: 20px;
+
+
+// break points - using a mobile breakpoint at 480px (mobile portrait), then 768px and 1024px
+// example : @media #{$mqSmall} {}
+// List of common devices height&width : https://www.mydevice.io/#compare-devices
+
+$breakSmaller: 480px;
+$breakSmall: 768px;
+$breakMedium: 1024px;
+//$breakLarge: 1400px;
+
+$mqSmaller: "only screen and (max-width : " + $breakSmaller + ")";
+$mqSmall: "only screen and (max-width : " + $breakSmall + ")";
+$mqMedium: "only screen and (max-width : " + $breakMedium + ")";
+//$mqLarge: "only screen and (max-width : " + $breakLarge + ")";
+
+/*$mqSmallerMin: "only screen and (min-width : " + ($breakSmaller+1) + ")";*/
+$mqSmallMin: "only screen and (min-width : " + ($breakSmall+1) + ")";
+$mqMediumMin: "only screen and (min-width : " + ($breakMedium+1) + ")";
+//$mqLargeMin: "only screen and (min-width : " + ($breakLarge+1) + ")";
+
+
+$mqSmallLandscape: $mqSmall+"and (min-aspect-ratio: 1/1)";
+
+/*$mqLandscape: "(min-aspect-ratio: 1/1)";*/

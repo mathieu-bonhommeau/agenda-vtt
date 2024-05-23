@@ -1,7 +1,10 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
 import { CalendarEvent } from '@/app/calendar-events/business/models/event'
 import { EventsState, eventsSlice } from '@/app/calendar-events/business/reducers/event-reducer'
-import { CalendarEventBuilder } from '@/app/calendar-events/business/use-case/retrieve-events/__test__/calendar-event-builder'
+import {
+    CalendarEventBuilder,
+    TraceBuilder,
+} from '@/app/calendar-events/business/use-case/retrieve-events/__test__/calendar-event-builder'
 import { retrieveEvents } from '@/app/calendar-events/business/use-case/retrieve-events/retrieve-events'
 import {
     eventsErrorsVM,
@@ -38,6 +41,37 @@ describe('An retrieve events VM', () => {
         it('returns events if events are retrieved', () => {
             sut.givenEvents(events)
             expect(sut.eventsVM()).toEqual(events)
+        })
+
+        it('returns events with traces which are ordered by difficulty', () => {
+            const trace1 = new TraceBuilder()
+                .setTraceColor('red')
+                .setId('randomTrace1')
+                .setPositiveElevation(450)
+                .setDistance(50)
+                .build()
+            const trace2 = new TraceBuilder()
+                .setTraceColor('green')
+                .setId('randomTrace2')
+                .setPositiveElevation(450)
+                .setDistance(50)
+                .build()
+            const trace3 = new TraceBuilder()
+                .setTraceColor('black')
+                .setId('randomTrace3')
+                .setPositiveElevation(450)
+                .setDistance(50)
+                .build()
+            const trace4 = new TraceBuilder()
+                .setTraceColor('blue')
+                .setId('randomTrace4')
+                .setPositiveElevation(450)
+                .setDistance(50)
+                .build()
+
+            const eventsWithTraces = [new CalendarEventBuilder().setTraces([trace1, trace2, trace3, trace4]).build()]
+            sut.givenEvents(eventsWithTraces)
+            expect(sut.eventsVM()[0].traces).toEqual([trace2, trace4, trace1, trace3])
         })
     })
 

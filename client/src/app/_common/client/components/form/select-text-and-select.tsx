@@ -30,7 +30,7 @@ export function SearchTextAndSelect({
     return (
         <Box style={{ position: 'relative', display: 'flex' }}>
             <TextField
-                sx={{ width: 500, my: 1 }}
+                sx={{ width: '100%', my: 1 }}
                 onChange={handleInput}
                 value={searchValue}
                 placeholder={'Ville en 🇫🇷, 🇧🇪 ou 🇨🇭'}

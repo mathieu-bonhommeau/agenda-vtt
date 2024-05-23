@@ -3,7 +3,7 @@ import { SliderRange } from '@/app/_common/client/components/form/input-range'
 import { SearchTextAndSelect } from '@/app/_common/client/components/form/select-text-and-select'
 import { AppContext } from '@/app/_common/client/context/app-context'
 import { EventsFilters, SearchPlace } from '@/app/filters-events/business/models/filter'
-import { Box, Card, CardHeader, IconButton, TextField } from '@mui/material'
+import { Box, IconButton, TextField, Typography } from '@mui/material'
 import { ChangeEvent, ReactNode, useContext, useState } from 'react'
 import { TiDelete } from 'react-icons/ti'
 
@@ -71,11 +71,11 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
     }
 
     return (
-        <Card variant="outlined" sx={{ maxWidth: 500, p: 2, my: 2 }}>
-            <CardHeader title={'Rechercher des évenements'} sx={{ px: 0 }}></CardHeader>
-            <Box style={{ display: 'flex' }}>
+        <Box sx={{ p: 3 }}>
+            <Typography variant={'h6'}>Filtres</Typography>
+            <Box sx={{ my: 1, width: '100%', display: 'flex' }}>
                 <TextField
-                    sx={{ width: 500, my: 1 }}
+                    sx={{ my: 1, flexGrow: 1 }}
                     onChange={handleSearchWord}
                     placeholder={"Nom de l'évenement, Nom de l'organisateur, ..."}
                     id="outlined-basic"
@@ -114,6 +114,6 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
                 maxLabel={'60 km et +'}
                 commitValues={handleSliderDistance}
             />
-        </Card>
+        </Box>
     )
 }

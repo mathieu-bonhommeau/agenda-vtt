@@ -1,0 +1,46 @@
+@font-face {
+  font-family: 'Oleo Script';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Oleo Script'), local('OleoScript-Regular'), font-url('../fonts/oleo-script/OleoScript-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), font-url('../fonts/open-sans/open-sans.regular.ttf') format('ttf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Open Sans Bold'), local('OpenSans-Bold'), font-url('../fonts/open-sans/open-sans.bold.ttf') format('ttf');
+  font-display: swap;
+}
+/*
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans Light'), local('OpenSans-Light'), font-url('OpenSans-Light-webfont.woff') format('woff');
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 800;
+    src: local('Open Sans Extrabold'), local('OpenSans-Extrabold'), font-url('OpenSans-ExtraBold-webfont.woff') format('woff');
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Open Sans Semibold'), local('OpenSans-Semibold'), font-url('OpenSans-Semibold-webfont.woff') format('woff');
+    font-display: swap;
+}
+*/

@@ -28,16 +28,16 @@ export function SliderRange({ label, min, max, minLabel, maxLabel, commitValues 
     }
 
     return (
-        <Box sx={{ my: 2 }}>
+        <Box sx={{ width: '100%', my: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 6 }}>
-                <Typography>{label}</Typography>
+                <Typography variant="body2">{label}</Typography>
                 {JSON.stringify(rangeValue) !== JSON.stringify([0, 60]) && (
-                    <IconButton sx={{ p: 0 }} aria-label="reset-dates" color="error" onClick={handleReset}>
+                    <IconButton sx={{ py: 0 }} aria-label="reset-dates" color="error" onClick={handleReset}>
                         <TiDelete />
                     </IconButton>
                 )}
             </Box>
-            <Box sx={{ px: 4 }}>
+            <Box sx={{ px: 4, my: 2 }}>
                 <Slider
                     marks
                     value={rangeValue}
