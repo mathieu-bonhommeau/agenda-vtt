@@ -9,20 +9,24 @@ export type CalendarEvent = {
     startDate: string
     endDate: string
     eventLocation: EventLocation
-    traces?: Trace[] // id des traces dispo sur l'api
-    price?: Price[]
-    equipments?: string[] //equipements obligatoire comme casque ou certification medical
-    organizer?: EventOrganizer
+    traces: Trace[]
+    price?: EventPrice[]
+    services?: string[]
+    organizer: EventOrganizer
 }
 
-export type CustomerType = 'all' | 'licensee' | 'noLicensee'
-
-export type Price = {
-    customerType: CustomerType
+export type EventPrice = {
+    price: string
 }
 
 export type EventOrganizer = {
     name: string
     email: string
+    website?: string
+    contacts?: Contact[]
+}
+
+export type Contact = {
+    name: string
     phone: string
 }

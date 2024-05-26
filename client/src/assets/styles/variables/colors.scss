@@ -1,0 +1,69 @@
+
+/* color definition by name */
+$jaune_fluo: #D7FF00;
+
+$orange: #DB3714;
+$orange-light: #db4221;
+$orange-lighter: #db5235;
+$orange-megalight: #e68e7e;
+
+$bleu: #095EC8;
+$jaune: #FFCE00;
+
+
+$grey-gigalight: #F8F8F8;
+$grey-uberlight: #F6F6F6;
+$grey-supralight: #F2F2F2;
+$grey-ultralight: #F0F0F0;
+$grey-megalight: #E8E8E8;
+$grey-veryverylight: #e0e0e0;
+$grey-verylight: #dedede;
+$grey-lighter: #c5c5c5;
+$grey-light: #bababa;
+$grey-mediumlight: #AAAAAA;
+$grey-medium: #939393;
+$grey-mediumdark: #646464;
+$grey-darkmedium: #4f4f4f;
+$grey-dark: #292929;
+$grey-darker: #20221c;
+
+/* les gris-vert */
+$grisVert-verylight: #f2f3ef;
+$grisVert-lighter: #edeeea;
+$grisVert-light: #e3e4db;
+$grisVert-medium: #d4d5cc;
+$grisVert-mediumdark: #5A6344;
+$grisVert-dark: #343B29;
+
+/* layout color definition by role */
+
+$baseBackground: white;
+$bandBackground: white;
+
+$headerBackground: white;
+$behindHeaderBackground: $grey-ultralight;
+
+$footerBackground: $grey-darker;
+$footerTxt: #e8f1df;
+/*$footerBackground: white;
+$footerTxt: #8E9785;*/
+
+$baseBorder: #d0d0d0;
+$baseDarkTxt: $grey-dark;
+$baseActiveBlue: $bleu;
+
+/* cotation colors */
+$cotaLvl0: transparent;
+$cotaLvl1: #27a135;
+$cotaLvl2: #006db1;
+$cotaLvl3: #ff0000;
+$cotaLvl4: #000000;
+$cotaLvl5: #000000;
+
+/* Difficulte colors */
+$difficulteLvl1: #64ff33;
+$difficulteLvl2: #01a017;
+$difficulteLvl3: #ffad00;
+$difficulteLvl4: #ff6900;
+$difficulteLvl5: #ff0001;
+$difficulteLvl6: #850000;

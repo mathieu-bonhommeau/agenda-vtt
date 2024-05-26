@@ -1,3 +1,4 @@
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
@@ -5,6 +6,9 @@ const nextConfig = {
     transpilePackages: ['ol', 'rlayers'],
     experimental: {
         esmExternals: 'loose'
+    },
+    sassOptions: {
+        includePaths: ['./src/assets/styles'],
     }
 };
 

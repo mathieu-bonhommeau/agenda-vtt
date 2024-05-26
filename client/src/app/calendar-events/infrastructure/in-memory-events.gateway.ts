@@ -8,6 +8,8 @@ export class InMemoryEventsGateway implements EventsGateway {
     public events: CalendarEvent[] = []
     public error: boolean = false
 
+    constructor(private readonly now: () => Date = () => new Date()) {}
+
     async retrieveEvents(command: RetrieveEventsCommand): Promise<CalendarEvent[]> {
         let filteredEvents = [...this.events]
 
@@ -20,7 +22,8 @@ export class InMemoryEventsGateway implements EventsGateway {
                     new Date(command.filters.endDate!) >= new Date(event.endDate)
                 )
             })
-        if (command.filters.startDate)
+
+        if (command.filters.startDate && !command.filters.endDate)
             filteredEvents = filteredEvents.filter((event) => {
                 return new Date(command.filters.startDate!) <= new Date(event.endDate)
             })
@@ -33,7 +36,29 @@ export class InMemoryEventsGateway implements EventsGateway {
         if (command.filters.keyWord) {
             filteredEvents = this.searchByKeyWord(command.filters.keyWord!)
         }
-        console.log(filteredEvents)
+
+        if (command.filters.distanceMax && !command.filters.distanceMin) {
+            filteredEvents = filteredEvents.filter((event) => {
+                return event.traces?.find((trace) => trace.distance <= command.filters.distanceMax!)
+            })
+        }
+
+        if (command.filters.distanceMin && !command.filters.distanceMax) {
+            filteredEvents = filteredEvents.filter((event) => {
+                return event.traces?.find((trace) => trace.distance >= command.filters.distanceMin!)
+            })
+        }
+
+        if (command.filters.distanceMin && command.filters.distanceMax) {
+            filteredEvents = filteredEvents.filter((event) => {
+                return event.traces?.find(
+                    (trace) =>
+                        trace.distance <= command.filters.distanceMax! &&
+                        trace.distance >= command.filters.distanceMin!,
+                )
+            })
+        }
+
         return filteredEvents
     }
 
@@ -53,7 +78,7 @@ export class InMemoryEventsGateway implements EventsGateway {
         const fuse = new Fuse(this.events, {
             isCaseSensitive: false,
             includeScore: true,
-            keys: ['title'],
+            keys: ['title', 'organizer.name'],
             threshold: 0.3,
         })
 
