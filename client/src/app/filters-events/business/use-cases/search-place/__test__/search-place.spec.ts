@@ -74,4 +74,5 @@ const defaultLocation = (): SearchPlace => ({
     country: 'France',
     city: 'Arbitrary',
     bbox: [0, 0, 0, 0],
+    type: 'city',
 })

@@ -1,0 +1,258 @@
+
+html {
+  margin: 0;
+  padding: 0;
+  font-family: Open Sans, Arial, Helvetica, sans-serif;
+  font-size: $baseFontSize;
+  color: $baseDarkTxt;
+  height: 100%;
+  min-width: 320px;
+  background-color: $baseBackground;
+  line-height: 1.4em;
+
+  &.noMinWidthLimit {
+    min-width: auto;
+  }
+}
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: $baseBackground;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+
+  @media #{$mqSmall} {
+    background-image: none;
+  }
+}
+::-moz-selection {
+  background: $grisVert-medium;
+}
+::selection  {
+  background: $grisVert-medium;
+}
+
+a, a:visited, a:active {
+  color: $baseActiveBlue;
+  text-decoration: none;
+}
+
+a:hover {
+  color: $baseActiveBlue;
+  text-decoration: underline;
+}
+
+img {
+  border: 0;
+}
+
+ol {
+  margin: 10px auto 0 auto;
+  padding: 0;
+  padding-left: 20px;			/* juste assez pour avoir les numéros */
+  text-indent: 0;
+  text-align: left;
+}
+
+p {
+  margin: 6px auto 6px auto;
+  margin-bottom: 25px;
+}
+
+hr {
+  display: block;
+  border-style: inset;
+  border-width: 1px 0 0 0;
+  border-color: $grey-lighter;
+}
+
+/* --------------------- */
+/* styles généraux globaux */
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.3;
+  word-wrap: break-word;
+}
+
+h1 {
+  font-size: 36px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.h1_wrap{
+  display: inline-block;
+  text-align: center;
+  margin: 12px auto;
+  padding: 3px 12px;
+  width: 606px;
+  background-color: #4D553D;
+}
+
+.h1_topo{
+  margin-left: 0px;
+  width: 606px;
+}
+
+.h1_trace{
+  margin-left: 0px;
+  width: 606px;
+}
+
+.h1_index{
+  display: block;
+}
+
+.h1_generic {
+  position: relative;
+  text-align: center;
+  margin: 0px auto 20px;
+  padding: 5px 12px 15px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  color: $baseDarkTxt;
+
+  &::before {
+    position: absolute;
+    content: "";
+    bottom: 0px;
+    left: 45%;
+    width: 10%;
+    height: 0;
+    border-top: 4px solid $orange;
+  }
+}
+
+h2 {
+  font-size: 20px;
+  margin: 4px auto 4px auto;
+  text-align: center;
+}
+
+.h2_box {
+  display: block;
+  margin: 6px auto;
+  padding: 5px 0;
+  width: 75%;
+  border-bottom: 1px solid $baseBorder;
+  border-top: 1px solid $baseBorder;
+  color: $baseDarkTxt;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.width140 {
+  width: 140px;
+}
+.bold {
+  font-weight: bold;
+}
+
+.deux_colonnes{
+  -moz-column-count: 2;
+  -moz-column-gap: 20px;
+  -webkit-column-count: 2;
+  -webkit-column-gap: 20px;
+  column-count: 2;
+  column-gap: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.trois_colonnes{
+  -moz-column-count: 3;
+  -moz-column-gap: 20px;
+  -webkit-column-count: 3;
+  -webkit-column-gap: 20px;
+  column-count: 3;
+  column-gap: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+/* In form, we want a default font-size following $baseFormFontSize */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-size: $baseFormFontSize;
+}
+
+select {
+  background: white;
+  border: 1px solid $grey-mediumlight;
+  border-radius: 3px;
+  height: 34px;
+  padding: 3px 18px 3px 3px;
+}
+/*input[type="text"] {
+  background: white;
+  border: 1px solid $grey-mediumlight;
+  border-radius: 3px;
+  height: 26px;
+  padding: 3px 7px 3px 7px;
+}*/
+
+blockquote {
+  background: $grey-verylight none repeat scroll 0% 0%;
+  font-style: normal;
+  font-size: 16px;
+  padding: 30px 80px 30px 80px;
+  position: relative;
+  border-left: 10px solid $orange;
+
+  &::before {
+    background: none;
+    content: "“";
+    color: $orange;
+    display: block;
+    height: 60px;
+    font-size: 6rem;
+    font-style: normal;
+    line-height: 90px;
+    font-family: Georgia, Arial, Helvetica, sans-serif;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    text-align: center;
+    width: 60px;
+  }
+
+  &::after {
+    background : none;
+    color: $orange;
+    font-size : 6rem;
+    content: "\201E";
+    display: block;
+    height: 7rem;
+    font-style: normal;
+    line-height: 90px;
+    font-family: Georgia, Arial, Helvetica, sans-serif;
+    position: absolute;
+    right: 4px;
+    bottom: 0px;
+    text-align: center;
+    width: 60px;
+  }
+
+  @media #{$mqSmall} {
+    padding: 36px 10px 50px 10px;
+  }
+}
+
+blockquote, .pulQ div.left {
+  font-style: italic;
+  margin: 25px 0px;
+}
+blockquote, q {
+  quotes: none;
+}
+
+.Whoops {
+  z-index: 100;
+}

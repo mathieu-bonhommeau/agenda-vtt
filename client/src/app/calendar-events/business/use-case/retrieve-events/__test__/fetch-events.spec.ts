@@ -1,5 +1,5 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
-import { CalendarEvent } from '@/app/calendar-events/business/models/event'
+import { CalendarEvent, EventOrganizer } from '@/app/calendar-events/business/models/event'
 import { EventLocation } from '@/app/calendar-events/business/models/geolocation'
 import {
     CalendarEventBuilder,
@@ -7,6 +7,8 @@ import {
 } from '@/app/calendar-events/business/use-case/retrieve-events/__test__/calendar-event-builder'
 import { retrieveEvents } from '@/app/calendar-events/business/use-case/retrieve-events/retrieve-events'
 import { InMemoryEventsGateway } from '@/app/calendar-events/infrastructure/in-memory-events.gateway'
+import { PlaceType } from '@/app/filters-events/business/models/filter'
+import { Trace } from '@/app/traces/business/models/trace'
 
 describe('Fetch events', () => {
     let sut: SUT
@@ -17,7 +19,7 @@ describe('Fetch events', () => {
     })
 
     describe('Dispatch action for retrieve events', () => {
-        it('retrieve calendar events', async () => {
+        it('retrieves calendar events', async () => {
             events = sut.buildDefaultEvents(4)
             sut.givenEvents(events)
 
@@ -26,7 +28,7 @@ describe('Fetch events', () => {
             expect(sut.events).toEqual(events)
         })
 
-        it('retrieve nothing if events are not found', async () => {
+        it('retrieves nothing if events are not found', async () => {
             events = sut.buildDefaultEvents(0)
             sut.givenEvents(events)
 
@@ -35,7 +37,7 @@ describe('Fetch events', () => {
             expect(sut.events).toEqual([])
         })
 
-        it('retrieve nothing if get events from api return an error', async () => {
+        it('retrieves nothing if get events from api return an error', async () => {
             events = sut.buildDefaultEvents(4)
             sut.givenEvents(events)
             sut.setError()
@@ -46,7 +48,7 @@ describe('Fetch events', () => {
             expect(sut.error).toEqual('RETRIEVE_EVENTS_FAILED')
         })
 
-        describe('filter events by date', () => {
+        describe('filters events by date', () => {
             beforeEach(() => {
                 events = [
                     sut.buildEvent({
@@ -76,7 +78,7 @@ describe('Fetch events', () => {
                     }),
                 ]
             })
-            it('retrieve all events after a define date', async () => {
+            it('retrieves all events after a define date', async () => {
                 sut.givenEvents(events)
 
                 await sut.retrieveEvents({ startDate: new Date('2024-05-26').toDateString() })
@@ -84,7 +86,7 @@ describe('Fetch events', () => {
                 expect(sut.events).toEqual([events[1], events[2], events[3], events[4]])
             })
 
-            it('retrieve events in a specific date range', async () => {
+            it('retrieves events in a specific date range', async () => {
                 sut.givenEvents(events)
 
                 await sut.retrieveEvents({
@@ -105,6 +107,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Paris',
                             postcode: '75000',
+                            address: 'my address',
                             latLon: {
                                 lat: 48.857177778429715,
                                 lon: 2.353314452137148,
@@ -117,6 +120,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Dax',
                             postcode: '40000',
+                            address: 'my address',
                             latLon: {
                                 lat: 43.71658659046892,
                                 lon: -1.0491951154017876,
@@ -129,6 +133,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Marseille',
                             postcode: '13000',
+                            address: 'my address',
                             latLon: {
                                 lat: 43.306615804116724,
                                 lon: 5.379702329955738,
@@ -141,6 +146,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Angers',
                             postcode: '35000',
+                            address: 'my address',
                             latLon: {
                                 lat: 47.46885554586697,
                                 lon: -0.5693751476331029,
@@ -153,6 +159,7 @@ describe('Fetch events', () => {
                             country: 'France',
                             city: 'Dax',
                             postcode: '40000',
+                            address: 'my address',
                             latLon: {
                                 lat: 43.70946844046192,
                                 lon: -1.0528505714706378,
@@ -162,7 +169,7 @@ describe('Fetch events', () => {
                 ]
             })
 
-            it('retrieve all events of a define place', async () => {
+            it('retrieves all events of a define place', async () => {
                 sut.givenEvents(events)
 
                 await sut.retrieveEvents({ placeBbox: [-1.1020338, 43.7297539, -1.0250954, 43.675449] })
@@ -170,7 +177,7 @@ describe('Fetch events', () => {
                 expect(sut.events).toEqual([events[1], events[4]])
             })
 
-            it('retrieve nothing if no place matches with bounding box', async () => {
+            it('retrieves nothing if no place matches with bounding box', async () => {
                 sut.givenEvents(events)
 
                 await sut.retrieveEvents({ placeBbox: [-10, 43, -11, 44] })
@@ -186,32 +193,141 @@ describe('Fetch events', () => {
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d41',
                         title: 'Valsloppet VTT',
+                        organizer: {
+                            name: 'VTT enduro association',
+                            email: '',
+                        },
                     }),
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d42',
                         title: 'Enduro du Vercors',
+                        organizer: {
+                            name: 'orga 2',
+                            email: '',
+                        },
                     }),
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d43',
                         title: 'Les Crapauds 24 heures VTT',
+                        organizer: {
+                            name: 'orga 3',
+                            email: '',
+                        },
                     }),
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d44',
                         title: 'ValsVertaco bike',
+                        organizer: {
+                            name: 'not correspond',
+                            email: '',
+                        },
                     }),
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d45',
                         title: 'Oeno-balade en Beaujolais',
+                        organizer: {
+                            name: 'not correspond',
+                            email: '',
+                        },
                     }),
                 ]
             })
 
-            it('retrieve events corresponding with search word', async () => {
+            it('retrieves events corresponding with search word on event title', async () => {
                 sut.givenEvents(events)
-
                 await sut.retrieveEvents({ keyWord: 'Vals' })
 
                 expect(sut.events).toEqual([events[0], events[3]])
+            })
+
+            it('retrieves events corresponding with search word on event organizer', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ keyWord: 'orga' })
+
+                expect(sut.events).toEqual([events[1], events[2]])
+            })
+
+            it('returns nothing if the search word does not matched with any events', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ keyWord: 'yyyy' })
+
+                expect(sut.events).toEqual([])
+            })
+        })
+
+        describe('Filter events by traces distance', () => {
+            beforeEach(async () => {
+                sut = new SUT()
+                events = events = [
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d41',
+                        traces: [
+                            {
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea1',
+                                link: 'http://mytrace1.com',
+                                distance: 40,
+                            },
+                            {
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea2',
+                                link: 'http://mytrace2.com',
+                                distance: 35,
+                            },
+                        ],
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d42',
+                        traces: [
+                            {
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea3',
+                                link: 'http://mytrace3.com',
+                                distance: 15,
+                            },
+                            {
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea4',
+                                link: 'http://mytrace4.com',
+                                distance: 30,
+                            },
+                        ],
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d43',
+                        traces: [
+                            {
+                                id: 'c40b7367-cddf-46d8-a072-c1fa23b99ea5',
+                                link: 'http://mytrace6.com',
+                                distance: 70,
+                            },
+                        ],
+                    }),
+                ]
+            })
+
+            it('retrieves all events that contain traces less than a define distance', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ distanceMax: 40 })
+
+                expect(sut.events).toEqual([events[0], events[1]])
+            })
+
+            it('retrieves all events that contain traces more than a define distance', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ distanceMin: 40 })
+
+                expect(sut.events).toEqual([events[0], events[2]])
+            })
+
+            it('retrieves all events that contain traces with distances less than distanceMax and more than distanceMin', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ distanceMax: 34, distanceMin: 20 })
+
+                expect(sut.events).toEqual([events[1]])
+            })
+
+            it('returns nothing if any events corresponds to the distance search', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ distanceMin: 200 })
+
+                expect(sut.events).toEqual([])
             })
         })
     })
@@ -221,9 +337,10 @@ class SUT {
     private _store: ReduxStore
     private _calendarEventBuilder: CalendarEventBuilder
     private readonly _eventsGateway: InMemoryEventsGateway
+    private now = () => new Date('2024-05-12')
 
     constructor() {
-        this._eventsGateway = new InMemoryEventsGateway()
+        this._eventsGateway = new InMemoryEventsGateway(this.now)
         this._calendarEventBuilder = new CalendarEventBuilder()
         this._store = setupStore({ eventsGateway: this._eventsGateway })
     }
@@ -242,12 +359,16 @@ class SUT {
         endDate,
         eventLocation,
         title,
+        traces,
+        organizer,
     }: {
         id: string
         startDate?: string
         endDate?: string
         eventLocation?: EventLocation
         title?: string
+        traces?: Trace[]
+        organizer?: EventOrganizer
     }) {
         const builder = new CalendarEventBuilder().setId(id)
         startDate && builder.setStartDate(startDate)
@@ -261,6 +382,8 @@ class SUT {
                     .build(),
             )
         title && builder.setTitle(title)
+        traces && builder.setTraces(traces)
+        organizer && builder.setOrganizer(organizer)
         return builder.build()
     }
 
@@ -273,19 +396,26 @@ class SUT {
         endDate,
         placeBbox,
         keyWord,
+        distanceMax,
+        distanceMin,
     }: {
         startDate?: string
         endDate?: string
         placeBbox?: number[]
         keyWord?: string
+        distanceMax?: number
+        distanceMin?: number
     }) {
         const place = placeBbox && {
             bbox: placeBbox,
             country: '',
             city: '',
             latLon: { lat: 0, lon: 0 },
+            type: 'city' as PlaceType,
         }
-        await this._store.dispatch(retrieveEvents({ filters: { startDate, endDate, place, keyWord } }))
+        await this._store.dispatch(
+            retrieveEvents({ filters: { startDate, endDate, place, keyWord, distanceMax, distanceMin } }),
+        )
     }
 
     get events() {

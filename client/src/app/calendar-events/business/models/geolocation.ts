@@ -9,6 +9,7 @@ export type EventLocation = {
     department?: string
     city: string
     postcode?: string
+    address: string
     latLon: GeoEventLocation
 }
 export type GeoEventLocation = {
