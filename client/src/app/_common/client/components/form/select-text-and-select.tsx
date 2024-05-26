@@ -37,9 +37,9 @@ export function SearchTextAndSelect({
                 sx={{ width: '100%', my: 1 }}
                 onChange={handleInput}
                 value={searchValue}
-                placeholder={'Ville en 🇫🇷, 🇧🇪 ou 🇨🇭'}
+                placeholder={'Région, ville, ... en 🇫🇷, 🇧🇪 ou 🇨🇭'}
                 id="outlined-basic"
-                label="Lieu"
+                label="Par région, ville, ... en 🇫🇷, 🇧🇪 ou 🇨🇭"
                 variant="outlined"
                 ref={searchInput}
                 InputProps={{
