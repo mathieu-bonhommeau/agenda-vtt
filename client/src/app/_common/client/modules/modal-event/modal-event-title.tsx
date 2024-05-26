@@ -13,7 +13,15 @@ export function ModalEventTitle(props: {
     setOpen: Dispatch<SetStateAction<boolean>>
 }) {
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingBottom: 2 }}>
+        <Box
+            sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+                paddingBottom: 2,
+                textAlign: 'left',
+            }}
+        >
             <Box>
                 <Typography variant="h6" component="h2">
                     {props.title}

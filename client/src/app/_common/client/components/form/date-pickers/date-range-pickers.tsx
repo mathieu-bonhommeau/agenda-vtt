@@ -1,22 +1,19 @@
-import { Alert, Box, IconButton } from '@mui/material'
+import { Box } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { Dayjs } from 'dayjs'
-import 'dayjs/locale/en'
-import 'dayjs/locale/fr'
+import dayjs, { Dayjs } from 'dayjs'
 import { useState } from 'react'
-import { TiDelete } from 'react-icons/ti'
 
-export type InputDatePickerProps = {
+export type DateRangePickersProps = {
     startDateLabel: string
     endDateLabel: string
     locale: 'fr' | 'en'
     commitDates: (dates: { startDate?: string; endDate?: string }) => void
 }
 
-export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, commitDates }: InputDatePickerProps) {
-    const [startDate, setStartDate] = useState<Dayjs | null>(null)
+export function DateRangePickers({ startDateLabel, endDateLabel, locale, commitDates }: DateRangePickersProps) {
+    const [startDate, setStartDate] = useState<Dayjs | null>(dayjs(new Date()))
     const [endDate, setEndDate] = useState<Dayjs | null>(null)
     const [error, setError] = useState<string | null>(null)
 
@@ -40,39 +37,24 @@ export function InputDateRangePicker({ startDateLabel, endDateLabel, locale, com
         setError(null)
     }
 
-    const handleReset = () => {
-        setStartDate(null)
-        setEndDate(null)
-        commitDates({ startDate: undefined, endDate: undefined })
-    }
-
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
             <Box sx={{ display: 'flex', my: 1, width: '100%' }}>
-                <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', flexGrow: 1 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, gap: 1 }}>
                     <DatePicker
                         label={startDateLabel}
                         value={startDate}
                         onChange={(date) => handleStartDate(date)}
-                        disablePast
-                        slotProps={{ textField: { error: !!error } }}
+                        slotProps={{ textField: { error: !!error }, field: { clearable: true } }}
                     />
                     <DatePicker
                         label={endDateLabel}
                         value={endDate}
                         onChange={(date) => handleEndDate(date)}
-                        disablePast
-                        slotProps={{ textField: { error: !!error } }}
+                        slotProps={{ textField: { error: !!error }, field: { clearable: true } }}
                     />
                 </Box>
-                {(startDate || endDate) && (
-                    <IconButton aria-label="reset-dates" color="error" onClick={handleReset}>
-                        <TiDelete />
-                    </IconButton>
-                )}
             </Box>
-
-            {error && <Alert severity="error">{error}</Alert>}
         </LocalizationProvider>
     )
 }

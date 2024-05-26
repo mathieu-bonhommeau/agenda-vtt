@@ -1,6 +1,6 @@
-import { Box, FormControl, IconButton, Select, SelectChangeEvent, TextField } from '@mui/material'
+import { Box, FormControl, IconButton, Popover, Select, SelectChangeEvent, TextField } from '@mui/material'
 import { ChangeEvent, ReactNode, useRef } from 'react'
-import { TiDelete } from 'react-icons/ti'
+import { MdClear } from 'react-icons/md'
 
 export type SearchTextAndSelectResult = {
     mainLabel: string
@@ -27,6 +27,10 @@ export function SearchTextAndSelect({
         return searchInput?.current?.offsetHeight
     }
 
+    const handleChangePlace = (event: SelectChangeEvent<string>, child: ReactNode) => {
+        commitSearchSelected(event as unknown as ChangeEvent<HTMLSelectElement>, child)
+    }
+
     return (
         <Box style={{ position: 'relative', display: 'flex' }}>
             <TextField
@@ -38,12 +42,14 @@ export function SearchTextAndSelect({
                 label="Lieu"
                 variant="outlined"
                 ref={searchInput}
+                InputProps={{
+                    endAdornment: searchValue && (
+                        <IconButton aria-label="reset-dates" onClick={handleReset} sx={{ fontSize: '1.3rem' }}>
+                            <MdClear />
+                        </IconButton>
+                    ),
+                }}
             />
-            {searchValue && (
-                <IconButton aria-label="reset-dates" color="error" onClick={handleReset}>
-                    <TiDelete />
-                </IconButton>
-            )}
             {searchResults.length ? (
                 <FormControl
                     sx={{
@@ -56,26 +62,30 @@ export function SearchTextAndSelect({
                         zIndex: 10,
                     }}
                 >
-                    <Select
-                        style={{ background: 'white' }}
-                        multiple
-                        native
-                        onChange={
-                            commitSearchSelected as unknown as (
-                                event: SelectChangeEvent<string>,
-                                child: ReactNode,
-                            ) => void
-                        }
-                        inputProps={{
-                            id: 'select-multiple-native',
+                    <Popover
+                        open={!!searchResults}
+                        anchorEl={searchInput.current}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
                         }}
                     >
-                        {searchResults.map((result) => (
-                            <option key={`${result.mainLabel}-${result.index}`}>
-                                {`${result.mainLabel} - ${result.subLabel || ''}`}
-                            </option>
-                        ))}
-                    </Select>
+                        <Select
+                            style={{ background: 'white' }}
+                            multiple
+                            native
+                            onChange={handleChangePlace}
+                            inputProps={{
+                                id: 'select-multiple-native',
+                            }}
+                        >
+                            {searchResults.map((result) => (
+                                <option key={`${result.mainLabel}-${result.index}`}>
+                                    {`${result.mainLabel} - ${result.subLabel || ''}`}
+                                </option>
+                            ))}
+                        </Select>
+                    </Popover>
                 </FormControl>
             ) : (
                 <></>

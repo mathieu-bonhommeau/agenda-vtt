@@ -273,4 +273,45 @@ const event5 = new CalendarEventBuilder()
     ])
     .build()
 
-export const eventsFixtures = [event1, event2, event3, event4, event5]
+const event6 = new CalendarEventBuilder()
+    .setId('2a587e71-3fdf-4778-8b2e-c08a62832118')
+    .setTitle('Expired Event')
+    .setDescription(`blabla`)
+    .setStartDate(new Date('2023-08-25').toDateString())
+    .setEndDate(new Date('2023-08-28').toDateString())
+    .setEventLocation(
+        new EventLocationBuilder()
+            .setCity('YO NO SE')
+            .setLatLon({ lat: 45.95104692578515, lon: 2.2642373313446584 })
+            .setAddress('19 Av. du Casino')
+            .build(),
+    )
+    .setTraces([
+        new TraceBuilder()
+            .setId('cd7f541a-f111-470a-b2e3-6b2e095b1ccd')
+            .setUtagawaId(12345)
+            .setLink(
+                'https://www.utagawavtt.com/randonnee-vtt-gps/Single-de-Tartas-et-balade-le-long-de-la-Midouze-5961',
+            )
+            .setDistance(47)
+            .setPositiveElevation(550)
+            .setTraceColor('blue')
+            .build(),
+    ])
+    .setPrices([{ price: '5€ à 10€, gratuit moins 16ans' }])
+    .setOrganizer({
+        name: 'Jouques Génération Raid',
+        email: 'contact@jouques-generation-raid.fr',
+        website: 'https://www.jouques-generation-raid.fr',
+        contacts: [{ name: 'Thierry Dupond', phone: '06 80 57 95 11' }],
+    })
+    .setServices([
+        'VTTAE autorisés',
+        'Une Tombola est organisée',
+        'Buvette',
+        'Parking gratuit',
+        'Une plaque-vélo remise à chaque participant',
+    ])
+    .build()
+
+export const eventsFixtures = [event1, event2, event3, event4, event5, event6]

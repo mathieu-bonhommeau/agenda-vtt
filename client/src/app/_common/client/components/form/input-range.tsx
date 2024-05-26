@@ -1,9 +1,7 @@
-import { Box, IconButton, Slider, Typography } from '@mui/material'
+import { Box, Slider, Typography } from '@mui/material'
 import { useState } from 'react'
-import { TiDelete } from 'react-icons/ti'
 
 export type SliderRangeProps = {
-    label: string
     min: number
     max: number
     minLabel?: string
@@ -12,7 +10,7 @@ export type SliderRangeProps = {
     commitValues: ({ min, max }: { min?: number; max?: number }) => void
 }
 
-export function SliderRange({ label, min, max, minLabel, maxLabel, commitValues }: SliderRangeProps) {
+export function SliderRange({ min, max, minLabel, maxLabel, commitValues }: SliderRangeProps) {
     const [rangeValue, setRangeValue] = useState<number[]>([min, max])
 
     const handleChange = (_: Event, newValue: number | number[]) => {
@@ -22,24 +20,10 @@ export function SliderRange({ label, min, max, minLabel, maxLabel, commitValues 
         }
     }
 
-    const handleReset = () => {
-        setRangeValue([0, 60])
-        commitValues({ min: 0, max: 0 })
-    }
-
     return (
-        <Box sx={{ width: '100%', my: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 6 }}>
-                <Typography variant="body2">{label}</Typography>
-                {JSON.stringify(rangeValue) !== JSON.stringify([0, 60]) && (
-                    <IconButton sx={{ py: 0 }} aria-label="reset-dates" color="error" onClick={handleReset}>
-                        <TiDelete />
-                    </IconButton>
-                )}
-            </Box>
-            <Box sx={{ px: 4, my: 2 }}>
+        <Box sx={{ width: '100%' }}>
+            <Box sx={{ px: 4, marginTop: 6 }}>
                 <Slider
-                    marks
                     value={rangeValue}
                     valueLabelDisplay="on"
                     min={min}

@@ -1,4 +1,4 @@
-import { SearchPlace } from '@/app/filters-events/business/models/filter'
+import { PlaceType, SearchPlace } from '@/app/filters-events/business/models/filter'
 import { PlacesGateway } from '@/app/filters-events/business/ports/places.gateway'
 import { PlacesSearchCommand } from '@/app/filters-events/business/use-cases/search-place/searchPlace'
 import axios from 'axios'
@@ -8,17 +8,17 @@ export const ELIGIBLE_COUNTRIES = ['FR', 'ES', 'DE', 'CHE']
 
 export class PhotonPlacesGateway implements PlacesGateway {
     async searchBy(command: PlacesSearchCommand): Promise<SearchPlace[]> {
-        const params = `?q=${command.search}&layer=city&limit=100`
+        const params = `?q=${command.search}&limit=100`
         try {
             const response = await axios.get<PhotonApiResponse>(SEARCH_LOCALITY_ENDPOINT + params)
-
             return response.data.features
                 .filter(
                     (feature) =>
                         ELIGIBLE_COUNTRIES.includes(feature.properties['countrycode'] || '') &&
-                        feature.properties['type'] === 'city',
+                        ['city', 'state', 'county', 'country'].includes(feature.properties?.type || ''),
                 )
                 .map((feature) => ({
+                    type: feature.properties['type']!,
                     country: feature.properties['country']!,
                     city: feature.properties['name']!,
                     department: feature.properties['county']!,
@@ -51,7 +51,7 @@ type PhotonProperties = {
         postcode?: string
         name?: string
         country?: string
-        type?: string
+        type?: PlaceType
         extent: number[]
     }
     geometry: {

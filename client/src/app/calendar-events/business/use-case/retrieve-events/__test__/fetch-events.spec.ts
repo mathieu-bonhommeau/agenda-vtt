@@ -1,5 +1,5 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
-import { CalendarEvent } from '@/app/calendar-events/business/models/event'
+import { CalendarEvent, EventOrganizer } from '@/app/calendar-events/business/models/event'
 import { EventLocation } from '@/app/calendar-events/business/models/geolocation'
 import {
     CalendarEventBuilder,
@@ -7,6 +7,7 @@ import {
 } from '@/app/calendar-events/business/use-case/retrieve-events/__test__/calendar-event-builder'
 import { retrieveEvents } from '@/app/calendar-events/business/use-case/retrieve-events/retrieve-events'
 import { InMemoryEventsGateway } from '@/app/calendar-events/infrastructure/in-memory-events.gateway'
+import { PlaceType } from '@/app/filters-events/business/models/filter'
 import { Trace } from '@/app/traces/business/models/trace'
 
 describe('Fetch events', () => {
@@ -192,31 +193,58 @@ describe('Fetch events', () => {
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d41',
                         title: 'Valsloppet VTT',
+                        organizer: {
+                            name: 'VTT enduro association',
+                            email: '',
+                        },
                     }),
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d42',
                         title: 'Enduro du Vercors',
+                        organizer: {
+                            name: 'orga 2',
+                            email: '',
+                        },
                     }),
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d43',
                         title: 'Les Crapauds 24 heures VTT',
+                        organizer: {
+                            name: 'orga 3',
+                            email: '',
+                        },
                     }),
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d44',
                         title: 'ValsVertaco bike',
+                        organizer: {
+                            name: 'not correspond',
+                            email: '',
+                        },
                     }),
                     sut.buildEvent({
                         id: 'b37d37e5-2691-4378-8066-6b8415f60d45',
                         title: 'Oeno-balade en Beaujolais',
+                        organizer: {
+                            name: 'not correspond',
+                            email: '',
+                        },
                     }),
                 ]
             })
 
-            it('retrieves events corresponding with search word', async () => {
+            it('retrieves events corresponding with search word on event title', async () => {
                 sut.givenEvents(events)
                 await sut.retrieveEvents({ keyWord: 'Vals' })
 
                 expect(sut.events).toEqual([events[0], events[3]])
+            })
+
+            it('retrieves events corresponding with search word on event organizer', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ keyWord: 'orga' })
+
+                expect(sut.events).toEqual([events[1], events[2]])
             })
 
             it('returns nothing if the search word does not matched with any events', async () => {
@@ -309,9 +337,10 @@ class SUT {
     private _store: ReduxStore
     private _calendarEventBuilder: CalendarEventBuilder
     private readonly _eventsGateway: InMemoryEventsGateway
+    private now = () => new Date('2024-05-12')
 
     constructor() {
-        this._eventsGateway = new InMemoryEventsGateway()
+        this._eventsGateway = new InMemoryEventsGateway(this.now)
         this._calendarEventBuilder = new CalendarEventBuilder()
         this._store = setupStore({ eventsGateway: this._eventsGateway })
     }
@@ -331,6 +360,7 @@ class SUT {
         eventLocation,
         title,
         traces,
+        organizer,
     }: {
         id: string
         startDate?: string
@@ -338,6 +368,7 @@ class SUT {
         eventLocation?: EventLocation
         title?: string
         traces?: Trace[]
+        organizer?: EventOrganizer
     }) {
         const builder = new CalendarEventBuilder().setId(id)
         startDate && builder.setStartDate(startDate)
@@ -352,6 +383,7 @@ class SUT {
             )
         title && builder.setTitle(title)
         traces && builder.setTraces(traces)
+        organizer && builder.setOrganizer(organizer)
         return builder.build()
     }
 
@@ -379,6 +411,7 @@ class SUT {
             country: '',
             city: '',
             latLon: { lat: 0, lon: 0 },
+            type: 'city' as PlaceType,
         }
         await this._store.dispatch(
             retrieveEvents({ filters: { startDate, endDate, place, keyWord, distanceMax, distanceMin } }),

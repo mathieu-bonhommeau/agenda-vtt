@@ -8,6 +8,8 @@ export class InMemoryEventsGateway implements EventsGateway {
     public events: CalendarEvent[] = []
     public error: boolean = false
 
+    constructor(private readonly now: () => Date = () => new Date()) {}
+
     async retrieveEvents(command: RetrieveEventsCommand): Promise<CalendarEvent[]> {
         let filteredEvents = [...this.events]
 
@@ -20,6 +22,7 @@ export class InMemoryEventsGateway implements EventsGateway {
                     new Date(command.filters.endDate!) >= new Date(event.endDate)
                 )
             })
+
         if (command.filters.startDate && !command.filters.endDate)
             filteredEvents = filteredEvents.filter((event) => {
                 return new Date(command.filters.startDate!) <= new Date(event.endDate)
@@ -75,7 +78,7 @@ export class InMemoryEventsGateway implements EventsGateway {
         const fuse = new Fuse(this.events, {
             isCaseSensitive: false,
             includeScore: true,
-            keys: ['title'],
+            keys: ['title', 'organizer.name'],
             threshold: 0.3,
         })
 

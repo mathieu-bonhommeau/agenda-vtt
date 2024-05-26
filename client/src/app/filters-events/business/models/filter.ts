@@ -1,6 +1,9 @@
 import { LatLon } from '@/app/calendar-events/business/models/geolocation'
 
+export type PlaceType = 'country' | 'state' | 'county' | 'city'
+
 export type SearchPlace = {
+    type: PlaceType
     country: string
     city: string
     postcode?: string
