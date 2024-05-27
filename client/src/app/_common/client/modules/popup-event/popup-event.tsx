@@ -1,6 +1,6 @@
+import { determineTraceColor } from '@/app/_common/helpers/trace-helpers'
 import { CalendarEvent } from '@/app/calendar-events/business/models/event'
 import { Trace } from '@/app/traces/business/models/trace'
-import { difficultyColorsStyle } from '@/theme/theme'
 import { Box, Typography } from '@mui/material'
 import { Dispatch, SetStateAction } from 'react'
 
@@ -71,5 +71,3 @@ const style = {
         borderBottom: '11px solid white',
     },
 }
-
-const determineTraceColor = (trace: Trace) => (trace.traceColor ? difficultyColorsStyle[trace.traceColor] : 'grey')

@@ -1,4 +1,5 @@
 import { EventLocation } from '@/app/calendar-events/business/models/geolocation'
+import { CalendarEventVM } from '@/app/calendar-events/client/view-models/retrieve-events-view-model'
 import { Chip, IconButton, Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -10,7 +11,7 @@ export function ModalEventTitle(props: {
     eventLocation: EventLocation
     startDate: string
     endDate: string
-    setOpen: Dispatch<SetStateAction<boolean>>
+    setOpen: Dispatch<SetStateAction<{ open: boolean; event: CalendarEventVM | undefined }>>
 }) {
     return (
         <Box
@@ -22,7 +23,7 @@ export function ModalEventTitle(props: {
                 textAlign: 'left',
             }}
         >
-            <Box>
+            <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'}>
                 <Typography variant="h6" component="h2">
                     {props.title}
                 </Typography>
@@ -31,7 +32,7 @@ export function ModalEventTitle(props: {
                 </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <IconButton onClick={() => props.setOpen(false)} color={'inherit'}>
+                <IconButton onClick={() => props.setOpen({ open: false, event: undefined })} color={'inherit'}>
                     <IoLogOut />
                 </IconButton>
                 {props.startDate === props.endDate && (
