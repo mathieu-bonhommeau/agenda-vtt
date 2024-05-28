@@ -12,6 +12,7 @@ export type AppContextType = {
     openModal: { open: boolean; event: CalendarEventVM | undefined }
     setOpenModal: Dispatch<SetStateAction<{ open: boolean; event: CalendarEventVM | undefined }>>
     searchPlaces: ReturnType<typeof searchPlaces>
+    locale: 'fr' | 'en'
 }
 
 export const AppContext = React.createContext<AppContextType>({} as AppContextType)
@@ -39,6 +40,7 @@ export function AppContextProvider({
                 searchPlaces: searchPlaces({
                     placesGateway: dependencies.placesGateway,
                 }),
+                locale: 'fr',
             }}
         >
             {children}

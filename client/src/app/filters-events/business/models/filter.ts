@@ -17,4 +17,5 @@ export type EventsFilters = {
     keyWord?: string
     distanceMin?: number
     distanceMax?: number
+    sortBy?: 'location' | 'date'
 }

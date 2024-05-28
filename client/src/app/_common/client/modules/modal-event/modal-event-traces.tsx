@@ -46,7 +46,7 @@ export function ModalEventTraces(props: { eventLocation: EventLocation; traces: 
                                 </TableCell>
                                 <TableCell>{trace.positiveElevation || 'non communiqué'}</TableCell>
                                 <TableCell>
-                                    <Link href={trace.link} variant="body2">
+                                    <Link href={trace.link} target={'_blank'} variant="body2">
                                         Lien vers la trace Gpx
                                     </Link>
                                 </TableCell>

@@ -28,6 +28,9 @@ const event1 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Tartas')
+            .setRegion('Nouvelle Aquitaine')
+            .setDepartment('Landes')
+            .setPostCode('40000')
             .setLatLon({ lat: 43.83205527398835, lon: -0.8093727373267132 })
             .setAddress('19 Av. du Casino')
             .build(),
@@ -81,6 +84,9 @@ const event2 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Albi')
+            .setRegion('Occitanie')
+            .setDepartment('Var')
+            .setPostCode('13542')
             .setLatLon({ lat: 43.922621380148314, lon: 2.1485700393675473 })
             .setAddress('3 Rte de Chartreuse')
             .build(),
@@ -129,6 +135,9 @@ const event3 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Cahors')
+            .setRegion('Pays de la loire')
+            .setDepartment('Loir et Cher')
+            .setPostCode('58475')
             .setLatLon({ lat: 44.447683200568534, lon: 1.4378868578584774 })
             .setAddress('253 Rte de la Gare')
             .build(),
@@ -187,6 +196,9 @@ const event4 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Rambervillers')
+            .setRegion('Ile de France')
+            .setDepartment('Yvelines')
+            .setPostCode('75023')
             .setLatLon({ lat: 48.345867416163784, lon: 6.634133024680511 })
             .setAddress('253 Rte de la Gare')
             .build(),
@@ -240,6 +252,9 @@ const event5 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Le Mans')
+            .setRegion('Bretagne')
+            .setDepartment('Morbihan')
+            .setPostCode('56478')
             .setLatLon({ lat: 47.99607814018611, lon: 0.1961746266174072 })
             .setAddress("150 Chem. d' Orgeoise")
             .build(),
@@ -282,6 +297,9 @@ const event6 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('YO NO SE')
+            .setRegion('Normandie')
+            .setDepartment('Departement')
+            .setPostCode('63254')
             .setLatLon({ lat: 45.95104692578515, lon: 2.2642373313446584 })
             .setAddress('19 Av. du Casino')
             .build(),

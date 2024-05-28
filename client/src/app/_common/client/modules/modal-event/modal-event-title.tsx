@@ -1,9 +1,10 @@
+import { AppContext } from '@/app/_common/client/context/app-context'
 import { EventLocation } from '@/app/calendar-events/business/models/geolocation'
 import { CalendarEventVM } from '@/app/calendar-events/client/view-models/retrieve-events-view-model'
 import { Chip, IconButton, Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useContext } from 'react'
 import { IoLogOut } from 'react-icons/io5'
 
 export function ModalEventTitle(props: {
@@ -13,6 +14,8 @@ export function ModalEventTitle(props: {
     endDate: string
     setOpen: Dispatch<SetStateAction<{ open: boolean; event: CalendarEventVM | undefined }>>
 }) {
+    const { locale } = useContext(AppContext)
+
     return (
         <Box
             sx={{
@@ -38,7 +41,7 @@ export function ModalEventTitle(props: {
                 {props.startDate === props.endDate && (
                     <Stack direction="row" spacing={1}>
                         <Chip
-                            label={`${new Date(props.startDate).toLocaleDateString()}`}
+                            label={`${new Date(props.startDate).toLocaleDateString(locale)}`}
                             color="warning"
                             variant={'outlined'}
                         />
@@ -47,12 +50,12 @@ export function ModalEventTitle(props: {
                 {props.startDate !== props.endDate && (
                     <Stack direction="row" spacing={1}>
                         <Chip
-                            label={`Du ${new Date(props.startDate).toLocaleDateString()}`}
+                            label={`Du ${new Date(props.startDate).toLocaleDateString(locale)}`}
                             color="warning"
                             variant={'outlined'}
                         />
                         <Chip
-                            label={`au ${new Date(props.endDate).toLocaleDateString()}`}
+                            label={`au ${new Date(props.endDate).toLocaleDateString(locale)}`}
                             color="warning"
                             variant={'outlined'}
                         />

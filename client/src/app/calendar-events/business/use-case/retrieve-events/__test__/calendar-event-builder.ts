@@ -87,7 +87,7 @@ export class EventLocationBuilder {
     private _region: string = 'Nouvelle Aquitaine'
     private _department: string = 'Landes'
     private _city: string = 'Dax'
-    private _postcode: string = '40000'
+    private _postcode?: string
     private _latLon: GeoEventLocation = { lon: 43.370312777615865, lat: -0.9990490074308079 }
     private _address: string = '155 rue de la mairie'
 
@@ -120,6 +120,21 @@ export class EventLocationBuilder {
 
     setAddress(address: string): EventLocationBuilder {
         this._address = address
+        return this
+    }
+
+    setRegion(region: string): EventLocationBuilder {
+        this._region = region
+        return this
+    }
+
+    setDepartment(department: string): EventLocationBuilder {
+        this._department = department
+        return this
+    }
+
+    setPostCode(postcode?: string): EventLocationBuilder {
+        this._postcode = postcode
         return this
     }
 }
