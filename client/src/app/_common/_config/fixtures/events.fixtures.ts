@@ -254,7 +254,7 @@ const event5 = new CalendarEventBuilder()
             .setCity('Le Mans')
             .setRegion('Bretagne')
             .setDepartment('Morbihan')
-            .setPostCode('56478')
+            .setPostCode('13478')
             .setLatLon({ lat: 47.99607814018611, lon: 0.1961746266174072 })
             .setAddress("150 Chem. d' Orgeoise")
             .build(),
