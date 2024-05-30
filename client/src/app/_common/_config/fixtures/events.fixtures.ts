@@ -5,7 +5,7 @@ import {
 } from '@/app/calendar-events/business/use-case/retrieve-events/__test__/calendar-event-builder'
 
 const event1 = new CalendarEventBuilder()
-    .setId('2a587e71-3fdf-4778-8b2e-c08a62832181')
+    .setId('2a587e71-3fdf-4778-8b2e-c08a62832281')
     .setTitle('Valsloppet VTT')
     .setDescription(
         `Le Cyclo Club Tricastin organise sa traditionnelle rando VTT nocturne : 10ème édition de la veillée des carriers !
@@ -28,6 +28,9 @@ const event1 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Tartas')
+            .setRegion('Nouvelle Aquitaine')
+            .setCounty('Landes')
+            .setPostCode('40000')
             .setLatLon({ lat: 43.83205527398835, lon: -0.8093727373267132 })
             .setAddress('19 Av. du Casino')
             .build(),
@@ -81,6 +84,9 @@ const event2 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Albi')
+            .setRegion('Occitanie')
+            .setCounty('Var')
+            .setPostCode('13542')
             .setLatLon({ lat: 43.922621380148314, lon: 2.1485700393675473 })
             .setAddress('3 Rte de Chartreuse')
             .build(),
@@ -129,6 +135,9 @@ const event3 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Cahors')
+            .setRegion('Pays de la loire')
+            .setCounty('Loir et Cher')
+            .setPostCode('58475')
             .setLatLon({ lat: 44.447683200568534, lon: 1.4378868578584774 })
             .setAddress('253 Rte de la Gare')
             .build(),
@@ -187,6 +196,9 @@ const event4 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Rambervillers')
+            .setRegion('Ile de France')
+            .setCounty('Yvelines')
+            .setPostCode('75023')
             .setLatLon({ lat: 48.345867416163784, lon: 6.634133024680511 })
             .setAddress('253 Rte de la Gare')
             .build(),
@@ -240,6 +252,9 @@ const event5 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('Le Mans')
+            .setRegion('Bretagne')
+            .setCounty('Morbihan')
+            .setPostCode('13478')
             .setLatLon({ lat: 47.99607814018611, lon: 0.1961746266174072 })
             .setAddress("150 Chem. d' Orgeoise")
             .build(),
@@ -282,6 +297,9 @@ const event6 = new CalendarEventBuilder()
     .setEventLocation(
         new EventLocationBuilder()
             .setCity('YO NO SE')
+            .setRegion('Normandie')
+            .setCounty('Departement')
+            .setPostCode('63254')
             .setLatLon({ lat: 45.95104692578515, lon: 2.2642373313446584 })
             .setAddress('19 Av. du Casino')
             .build(),
@@ -314,4 +332,121 @@ const event6 = new CalendarEventBuilder()
     ])
     .build()
 
-export const eventsFixtures = [event1, event2, event3, event4, event5, event6]
+const event7 = new CalendarEventBuilder()
+    .setId('2a587e71-3fdf-4778-8b2e-c08a62832181')
+    .setTitle('Valsloppet VTT')
+    .setDescription(
+        `Le Cyclo Club Tricastin organise sa traditionnelle rando VTT nocturne : 10ème édition de la veillée des carriers !
+            Vous aurez le choix entre de la marche et du VTT nocturne, à la carte :
+            - VTT : 2 boucles, d’environ 10km et 19km
+             - MARCHE : 2 boucles, d’environ 5km et 9km.
+            Inscriptions à partir de 19h15, et départs libres entre 19h30 et 21h30, depuis les caves cathédrales du Mas Théo, sur le plateau de St Restitut.
+             Tarifs :
+             VTT: 7 euros licenciés FFCT, 9 euros les autres;
+             Marche: 7 euros;
+            Gratuit pour les moins de 14 ans, et pour les moins de 18 ans (si FFCT)
+            Port du casque et des éclairages très fortement recommandé !
+             Ravitaillement sur les parcours, et la traditionnelle soupe à l’oignon / croutons à l’arrivée.
+             Vous êtes sur un massif où les sentiers sont très ludiques, mais aussi parfois techniques et physiques (poussages, passages plus techniques …) : les parcours sont le reflet du massif, et vous aurez l’occasion de découvrir quelques uns des plus jolis sentiers du massif, à la tombée de la nuit, au milieu dans anciennes carrières, avec les premières senteurs estivales ! ambiance garantie !
+            
+            Attention : nous allons lancer cette année une très forte action de réduction des déchets, en supprimant la distribution de gobelets aux ravitaillements. Pensez donc à vous munir de vos propres gobelets (réutilisés bien entendu) !!`,
+    )
+    .setStartDate(new Date('2024-08-29').toDateString())
+    .setEndDate(new Date('2024-08-30').toDateString())
+    .setEventLocation(
+        new EventLocationBuilder()
+            .setCity('Tartas')
+            .setRegion('Nouvelle Aquitaine')
+            .setCounty('Landes')
+            .setPostCode('40000')
+            .setLatLon({ lat: 43.63205527398835, lon: -0.1593727373267132 })
+            .setAddress('19 Av. du Casino')
+            .build(),
+    )
+    .setTraces([
+        new TraceBuilder()
+            .setId('cd7f541a-f111-470a-b2e3-6b2e095b1ccd')
+            .setUtagawaId(12345)
+            .setLink(
+                'https://www.utagawavtt.com/randonnee-vtt-gps/Single-de-Tartas-et-balade-le-long-de-la-Midouze-5961',
+            )
+            .setDistance(47)
+            .setPositiveElevation(550)
+            .setTraceColor('blue')
+            .build(),
+    ])
+    .setPrices([{ price: '5€ à 10€, gratuit moins 16ans' }])
+    .setOrganizer({
+        name: 'Jouques Génération Raid',
+        email: 'contact@jouques-generation-raid.fr',
+        website: 'https://www.jouques-generation-raid.fr',
+        contacts: [{ name: 'Thierry Dupond', phone: '06 80 57 95 11' }],
+    })
+    .setServices([
+        'VTTAE autorisés',
+        'Une Tombola est organisée',
+        'Buvette',
+        'Parking gratuit',
+        'Une plaque-vélo remise à chaque participant',
+    ])
+    .build()
+
+const event8 = new CalendarEventBuilder()
+    .setId('2a587e71-3fdf-4778-8b2e-c08a62832189')
+    .setTitle('Oeno-balade en Beaujolais')
+    .setDescription(
+        `TRI-LOISIRS DE MARGON
+         Course à pied 3 kms
+         VTT 22 kms 
+         Canoë 1 kms
+        2 VERSIONS
+         Avec classement licence ou formulaire santé obligatoire âge minimum 16 ans
+         Hors classement sous forme de randonnée ouvert à tous à partir de 10 ans
+        Engagement par équipe : Prix 25 € + 5€ sur place
+         Autres renseignements: Site Facebook: (https://www.facebook.com/C.S.MARGON)Nous contacter: c.s.margon@wanadoo.fr
+        Inscription: https://inscriptions.ufolep.org/tri-loisirs-margonnais-2024/
+        DEPART 9 H 00 AU PLAN D’EAU DE MARGON PAR EQUIPE DE DEUX
+        Avec l’aimable participation des AMBULANCES CHARLES`,
+    )
+    .setStartDate(new Date('2024-09-11').toDateString())
+    .setEndDate(new Date('2024-09-12').toDateString())
+    .setEventLocation(
+        new EventLocationBuilder()
+            .setCity('Le Mans')
+            .setRegion('Bretagne')
+            .setCounty('Morbihan')
+            .setPostCode('13478')
+            .setLatLon({ lat: 48.99607814018611, lon: 0.2561746266174072 })
+            .setAddress("150 Chem. d' Orgeoise")
+            .build(),
+    )
+    .setTraces([
+        new TraceBuilder()
+            .setId('c40b7367-cddf-46d8-a072-c1fa23b99eaa')
+            .setUtagawaId(91234)
+            .setLink('https://www.utagawavtt.com/randonnee-vtt-gps/Le-Mans-sud-Pruille-le-Chetif-1770')
+            .setDistance(22)
+            .setPositiveElevation(300)
+            .build(),
+    ])
+    .setPrices([
+        { price: '7 € pour les licenciés' },
+        { price: ' 10 € non licenciés' },
+        { price: '16 € pour le 30 km chronométré' },
+    ])
+    .setOrganizer({
+        name: 'Club Omnisport de Tarentaise',
+        email: 'cotarentaise@gmail.com',
+        website: 'http://www.cot-tarentaise.fr/',
+        contacts: [{ name: 'Olivier Durant', phone: '06 56 25 47 89' }],
+    })
+    .setServices([
+        'VTTAE autorisés',
+        'Parking gratuit',
+        'Inscription possible sur place',
+        'Buvette',
+        "Sandwich gratuit à l'arrivée",
+    ])
+    .build()
+
+export const eventsFixtures = [event1, event2, event3, event4, event5, event6, event7, event8]

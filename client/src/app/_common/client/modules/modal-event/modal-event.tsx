@@ -1,24 +1,19 @@
+import { AppContext } from '@/app/_common/client/context/app-context'
 import { ModalEventFacilities } from '@/app/_common/client/modules/modal-event/modal-event-facilities'
 import { ModalEventMap } from '@/app/_common/client/modules/modal-event/modal-event-map'
 import { ModalEventOrganizer } from '@/app/_common/client/modules/modal-event/modal-event-organizer'
 import { ModalEventPrices } from '@/app/_common/client/modules/modal-event/modal-event-prices'
 import { ModalEventTitle } from '@/app/_common/client/modules/modal-event/modal-event-title'
 import { ModalEventTraces } from '@/app/_common/client/modules/modal-event/modal-event-traces'
-import { CalendarEvent } from '@/app/calendar-events/business/models/event'
 import { Divider } from '@mui/material'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Typography from '@mui/material/Typography'
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 
-export type ModalEventProps = {
-    event: CalendarEvent
-    open: boolean
-    setOpen: Dispatch<SetStateAction<boolean>>
-}
-
-export default function ModalEvent({ event, open, setOpen }: ModalEventProps) {
+export default function ModalEvent() {
     const modalRef = useRef<HTMLDivElement>(null)
+    const { openModal, setOpenModal } = useContext(AppContext)
 
     useEffect(() => {
         if (!modalRef.current) return
@@ -26,40 +21,47 @@ export default function ModalEvent({ event, open, setOpen }: ModalEventProps) {
     }, [])
 
     const handleClose = () => {
-        setOpen(false)
+        setOpenModal({ open: false, event: undefined })
     }
 
     return (
         <div>
-            <Modal
-                ref={modalRef}
-                keepMounted
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="keep-mounted-modal-title"
-                aria-describedby="keep-mounted-modal-description"
-            >
-                <Box sx={style}>
-                    <ModalEventTitle
-                        title={event.title}
-                        eventLocation={event.eventLocation}
-                        startDate={event.startDate}
-                        endDate={event.endDate}
-                        setOpen={setOpen}
-                    />
-                    {open && <ModalEventMap eventLocation={event.eventLocation} event={event} />}
-                    <Divider />
-                    <Typography sx={{ my: 2 }}>{event.description}</Typography>
-                    <Divider />
-                    <ModalEventTraces eventLocation={event.eventLocation} traces={event.traces} />
-                    <Divider />
-                    <ModalEventPrices price={event.price} />
-                    <Divider />
-                    <ModalEventOrganizer organizer={event.organizer} />
-                    <Divider />
-                    <ModalEventFacilities services={event.services} />
-                </Box>
-            </Modal>
+            {openModal.event && (
+                <Modal
+                    ref={modalRef}
+                    keepMounted
+                    open={openModal.open}
+                    onClose={handleClose}
+                    aria-labelledby="keep-mounted-modal-title"
+                    aria-describedby="keep-mounted-modal-description"
+                >
+                    <Box sx={style}>
+                        <ModalEventTitle
+                            title={openModal.event.title}
+                            eventLocation={openModal.event.eventLocation}
+                            startDate={openModal.event.startDate}
+                            endDate={openModal.event.endDate}
+                            setOpen={setOpenModal}
+                        />
+                        {openModal.open && (
+                            <ModalEventMap eventLocation={openModal.event.eventLocation} event={openModal.event} />
+                        )}
+                        <Divider />
+                        <Typography sx={{ my: 2 }}>{openModal.event.description}</Typography>
+                        <Divider />
+                        <ModalEventTraces
+                            eventLocation={openModal.event.eventLocation}
+                            traces={openModal.event.traces}
+                        />
+                        <Divider />
+                        <ModalEventPrices price={openModal.event.price} />
+                        <Divider />
+                        <ModalEventOrganizer organizer={openModal.event.organizer} />
+                        <Divider />
+                        <ModalEventFacilities services={openModal.event.services} />
+                    </Box>
+                </Modal>
+            )}
         </div>
     )
 }

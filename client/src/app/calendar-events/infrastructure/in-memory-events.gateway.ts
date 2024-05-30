@@ -59,7 +59,37 @@ export class InMemoryEventsGateway implements EventsGateway {
             })
         }
 
-        return filteredEvents
+        return this.sortEvents(filteredEvents, command.filters?.sortBy)
+    }
+
+    private sortEvents(events: CalendarEvent[], sortBy: 'date' | 'location' = 'location'): CalendarEvent[] {
+        if (sortBy === 'date') {
+            return events.sort((a, b) => {
+                const dateA = new Date(a.startDate).getTime()
+                const dateB = new Date(b.startDate).getTime()
+
+                if (dateA !== dateB) {
+                    return dateA - dateB
+                } else {
+                    const locationA = parseInt(a.eventLocation.postcode?.slice(0, 2) || '')
+                    const locationB = parseInt(b.eventLocation.postcode?.slice(0, 2) || '')
+
+                    return locationA - locationB
+                }
+            })
+        }
+        return events.sort((a, b) => {
+            const locationA = parseInt(a.eventLocation.postcode?.slice(0, 2) || '')
+            const locationB = parseInt(b.eventLocation.postcode?.slice(0, 2) || '')
+
+            if (locationA !== locationB) {
+                return locationA - locationB
+            } else {
+                const dateA = new Date(a.startDate).getTime()
+                const dateB = new Date(b.startDate).getTime()
+                return dateA - dateB
+            }
+        })
     }
 
     private isPointInsideBoundingBox(latLon: LatLon, boundingBox: number[]): boolean {

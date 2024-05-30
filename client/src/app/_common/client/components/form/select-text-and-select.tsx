@@ -1,5 +1,6 @@
+import { AppContext } from '@/app/_common/client/context/app-context'
 import { Box, FormControl, IconButton, Popover, Select, SelectChangeEvent, TextField } from '@mui/material'
-import { ChangeEvent, ReactNode, useRef } from 'react'
+import { ChangeEvent, Dispatch, ReactNode, SetStateAction, useContext, useRef } from 'react'
 import { MdClear } from 'react-icons/md'
 
 export type SearchTextAndSelectResult = {
@@ -10,18 +11,23 @@ export type SearchTextAndSelectResult = {
 
 export function SearchTextAndSelect({
     searchValue,
+    setSearchValue,
     handleInput,
     handleReset,
     searchResults,
+    openSelectResults,
     commitSearchSelected,
 }: {
     searchValue: string
+    setSearchValue: Dispatch<SetStateAction<string>>
     handleInput: (e: ChangeEvent<HTMLInputElement>) => void
     handleReset: () => void
     searchResults: SearchTextAndSelectResult[]
+    openSelectResults: boolean
     commitSearchSelected: (event: ChangeEvent<HTMLSelectElement>, child: ReactNode) => void
 }) {
     const searchInput = useRef<HTMLDivElement | null>(null)
+    const { resetFilters, setResetFilters } = useContext(AppContext)
 
     const defineHeightInput = () => {
         return searchInput?.current?.offsetHeight
@@ -36,7 +42,13 @@ export function SearchTextAndSelect({
             <TextField
                 sx={{ width: '100%', my: 1 }}
                 onChange={handleInput}
-                value={searchValue}
+                onFocus={() => {
+                    if (resetFilters) {
+                        setResetFilters(false)
+                        setSearchValue('')
+                    }
+                }}
+                value={!resetFilters ? searchValue : ''}
                 placeholder={'Région, ville, ... en 🇫🇷, 🇧🇪 ou 🇨🇭'}
                 id="outlined-basic"
                 label="Par région, ville, ... en 🇫🇷, 🇧🇪 ou 🇨🇭"
@@ -63,7 +75,7 @@ export function SearchTextAndSelect({
                     }}
                 >
                     <Popover
-                        open={!!searchResults}
+                        open={openSelectResults}
                         anchorEl={searchInput.current}
                         anchorOrigin={{
                             vertical: 'bottom',

@@ -23,7 +23,7 @@ export function ModalEventOrganizer(props: { organizer: EventOrganizer }) {
                 {props.organizer.website && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <RiChromeLine style={{ fontSize: 22 }} />
-                        <Link href={props.organizer.website} variant="body2">
+                        <Link href={props.organizer.website} target={'_blank'} variant="body2">
                             {props.organizer.website}
                         </Link>
                     </Box>
