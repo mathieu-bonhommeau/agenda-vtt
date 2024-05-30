@@ -330,6 +330,128 @@ describe('Fetch events', () => {
                 expect(sut.events).toEqual([])
             })
         })
+
+        describe('sort events', () => {
+            beforeEach(() => {
+                events = [
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d41',
+                        startDate: new Date('2024-05-15').toDateString(),
+                        endDate: new Date('2024-05-17').toDateString(),
+                        eventLocation: {
+                            country: 'France',
+                            county: 'Yvelines',
+                            postcode: '77000',
+                            city: 'Paris',
+                            region: 'Ile de France',
+                            address: 'my address',
+                            latLon: {
+                                lat: 48.857177778429715,
+                                lon: 2.353314452137148,
+                            },
+                        },
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d44',
+                        startDate: new Date('2024-05-15').toDateString(),
+                        endDate: new Date('2024-05-17').toDateString(),
+                        eventLocation: {
+                            country: 'France',
+                            county: 'Gers',
+                            postcode: '22254',
+                            city: 'Tartas',
+                            region: 'Nouvelle Aquitaine',
+                            address: 'my address',
+                            latLon: {
+                                lat: 47.46885554586697,
+                                lon: -0.5693751476331029,
+                            },
+                        },
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d43',
+                        startDate: new Date('2024-04-15').toDateString(),
+                        endDate: new Date('2024-04-17').toDateString(),
+                        eventLocation: {
+                            country: 'France',
+                            county: 'Yvelines',
+                            postcode: '77000',
+                            city: 'Neuilly',
+                            region: 'Ile de France',
+                            address: 'my address',
+                            latLon: {
+                                lat: 43.306615804116724,
+                                lon: 5.379702329955738,
+                            },
+                        },
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d45',
+                        startDate: new Date('2024-05-15').toDateString(),
+                        endDate: new Date('2024-05-17').toDateString(),
+                        eventLocation: {
+                            country: 'France',
+                            county: 'Landes',
+                            postcode: '40330',
+                            city: 'Dax',
+                            region: 'Nouvelle Aquitaine',
+                            address: 'my address',
+                            latLon: {
+                                lat: 43.70946844046192,
+                                lon: -1.0528505714706378,
+                            },
+                        },
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d45',
+                        startDate: new Date('2024-05-15').toDateString(),
+                        endDate: new Date('2024-05-17').toDateString(),
+                        eventLocation: {
+                            country: 'Belgique',
+                            county: 'Departement belge',
+                            postcode: undefined,
+                            city: 'Bruxelle',
+                            region: 'Sud Belgique',
+                            address: 'my address',
+                            latLon: {
+                                lat: 43.70946844046192,
+                                lon: -1.0528505714706378,
+                            },
+                        },
+                    }),
+                    sut.buildEvent({
+                        id: 'b37d37e5-2691-4378-8066-6b8415f60d45',
+                        startDate: new Date('2024-03-15').toDateString(),
+                        endDate: new Date('2024-03-17').toDateString(),
+                        eventLocation: {
+                            country: 'France',
+                            county: 'Landes',
+                            postcode: '77000',
+                            city: 'Dax',
+                            region: 'Nouvelle Aquitaine',
+                            address: 'my address',
+                            latLon: {
+                                lat: 43.70946844046192,
+                                lon: -1.0528505714706378,
+                            },
+                        },
+                    }),
+                ]
+            })
+
+            it('initially sort the events by county and by date', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({})
+                expect(sut.events).toEqual([events[1], events[3], events[5], events[2], events[0], events[4]])
+            })
+
+            it('sort the events by date and by county', async () => {
+                sut.givenEvents(events)
+                await sut.retrieveEvents({ sortBy: 'date' })
+
+                expect(sut.events).toEqual([events[5], events[2], events[1], events[3], events[0], events[4]])
+            })
+        })
     })
 })
 
@@ -377,6 +499,7 @@ class SUT {
             builder.setEventLocation(
                 new EventLocationBuilder()
                     .setCity(eventLocation.city)
+                    .setPostCode(eventLocation.postcode)
                     .setCountry(eventLocation.country)
                     .setLatLon(eventLocation.latLon)
                     .build(),
@@ -398,6 +521,7 @@ class SUT {
         keyWord,
         distanceMax,
         distanceMin,
+        sortBy,
     }: {
         startDate?: string
         endDate?: string
@@ -405,6 +529,7 @@ class SUT {
         keyWord?: string
         distanceMax?: number
         distanceMin?: number
+        sortBy?: 'date' | 'location'
     }) {
         const place = placeBbox && {
             bbox: placeBbox,
@@ -414,7 +539,7 @@ class SUT {
             type: 'city' as PlaceType,
         }
         await this._store.dispatch(
-            retrieveEvents({ filters: { startDate, endDate, place, keyWord, distanceMax, distanceMin } }),
+            retrieveEvents({ filters: { startDate, endDate, place, keyWord, distanceMax, distanceMin, sortBy } }),
         )
     }
 

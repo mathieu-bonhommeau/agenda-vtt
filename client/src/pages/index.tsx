@@ -1,7 +1,8 @@
 import { AppDispatch } from '@/app/_common/business/store/store'
-import { AppCalendar } from '@/app/_common/client/modules/calendar/calendar'
 import { Filters } from '@/app/_common/client/modules/filters/filters'
+import { AppEventList } from '@/app/_common/client/modules/list/event-list'
 import { AppMap } from '@/app/_common/client/modules/map/map'
+import ModalEvent from '@/app/_common/client/modules/modal-event/modal-event'
 import { retrieveEvents } from '@/app/calendar-events/business/use-case/retrieve-events/retrieve-events'
 import { eventsFiltersVM } from '@/app/filters-events/client/view-models/filters-view-models'
 import { Box, Tab, Tabs } from '@mui/material'
@@ -50,11 +51,12 @@ export default function Index() {
             <Box sx={{ width: '100%', py: 3, display: 'flex', flexDirection: 'column', gap: 2, marginRight: 1 }}>
                 <Tabs value={view} aria-label="disabled tabs example" onChange={toggleView}>
                     <Tab label="Carte" value={'map'} />
-                    <Tab label="Agenda" value={'calendar'} />
+                    <Tab label="Liste" value={'calendar'} />
                 </Tabs>
-                {view === 'calendar' && <AppCalendar />}
+                {view === 'calendar' && <AppEventList />}
                 {view === 'map' && <AppMap />}
             </Box>
+            <ModalEvent />
         </Box>
     )
 }

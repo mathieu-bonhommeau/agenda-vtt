@@ -21,7 +21,7 @@ export class PhotonPlacesGateway implements PlacesGateway {
                     type: feature.properties['type']!,
                     country: feature.properties['country']!,
                     city: feature.properties['name']!,
-                    department: feature.properties['county']!,
+                    county: feature.properties['county']!,
                     region: feature.properties['state']!,
                     postcode: feature.properties['postcode']!,
                     latLon: { lon: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },

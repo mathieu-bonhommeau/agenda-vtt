@@ -9,7 +9,6 @@ import { retrieveEvents } from '@/app/calendar-events/business/use-case/retrieve
 import {
     eventsErrorsVM,
     eventsLoadingVM,
-    eventsReactBigCalendarVM,
     eventsVM,
 } from '@/app/calendar-events/client/view-models/retrieve-events-view-model'
 
@@ -20,17 +19,6 @@ describe('An retrieve events VM', () => {
     beforeEach(() => {
         sut = new SUT()
         events = [new CalendarEventBuilder().build()]
-    })
-
-    describe('Events for react big calendar VM generator', () => {
-        it('not returns events initially', () => {
-            expect(sut.eventsReactBigCalendarVM()).toEqual([])
-        })
-
-        it('returns events for react big calendar if events are retrieved', () => {
-            sut.givenEvents(events)
-            expect(sut.eventsReactBigCalendarVM()).toEqual(sut.transformEventsForReactBigCalendar(events))
-        })
     })
 
     describe('Events VM generator', () => {
@@ -113,10 +101,6 @@ class SUT {
         this._store.getState().eventsState = actionPayload
     }
 
-    eventsReactBigCalendarVM() {
-        return eventsReactBigCalendarVM()(this.getState())
-    }
-
     givenEvents(events: CalendarEvent[]) {
         this._store.dispatch(eventsSlice.actions.onEventsRetrieved(events))
     }
@@ -135,14 +119,6 @@ class SUT {
 
     eventsVM() {
         return eventsVM()(this.getState())
-    }
-
-    transformEventsForReactBigCalendar(events: CalendarEvent[]) {
-        return events.map((event) => ({
-            title: event.title,
-            start: new Date(event.startDate),
-            end: new Date(event.endDate),
-        }))
     }
 
     eventsErrorsVM() {

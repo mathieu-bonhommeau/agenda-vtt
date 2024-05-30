@@ -6,7 +6,7 @@ import { PhotonPlacesGateway } from '@/app/filters-events/infrastructure/photon-
 import { UgatawaTracesApiGateway } from '@/app/traces/infrastructure/ugatawa-traces-api-gateway'
 
 export const buildDependencies = (): Dependencies => {
-    switch (process.env['REACT_APP']) {
+    switch (process.env['NEXT_PUBLIC_REACT_APP'] || '') {
         case 'prod':
             return buildRealDependencies()
         default:
