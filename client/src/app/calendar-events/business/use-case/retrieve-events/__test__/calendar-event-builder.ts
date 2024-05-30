@@ -95,7 +95,7 @@ export class EventLocationBuilder {
         return {
             country: this._country,
             region: this._region,
-            department: this._department,
+            county: this._department,
             city: this._city,
             postcode: this._postcode,
             latLon: this._latLon,
@@ -128,8 +128,8 @@ export class EventLocationBuilder {
         return this
     }
 
-    setDepartment(department: string): EventLocationBuilder {
-        this._department = department
+    setCounty(county: string): EventLocationBuilder {
+        this._department = county
         return this
     }
 

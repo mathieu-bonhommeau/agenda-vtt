@@ -31,7 +31,7 @@ export function ModalEventTitle(props: {
                     {props.title}
                 </Typography>
                 <Typography variant={'caption'}>
-                    {`${props.eventLocation.address} - ${props.eventLocation.city} - ${props.eventLocation.postcode} - ${props.eventLocation.department}`}
+                    {`${props.eventLocation.address} - ${props.eventLocation.city} - ${props.eventLocation.postcode} - ${props.eventLocation.county}`}
                 </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>

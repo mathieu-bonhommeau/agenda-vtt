@@ -1,12 +1,12 @@
-export type DepartmentDetails = {
+export type CountyDetails = {
     dep_name: string
     region_name: string
 }
 
-export type DepartmentsList = {
-    [key: string]: DepartmentDetails
+export type CountiesList = {
+    [key: string]: CountyDetails
 }
-export const departmentsList: DepartmentsList = {
+export const departmentsList: CountiesList = {
     '01': { dep_name: 'Ain', region_name: 'Auvergne-Rhône-Alpes' },
     '02': { dep_name: 'Aisne', region_name: 'Hauts-de-France' },
     '03': { dep_name: 'Allier', region_name: 'Auvergne-Rhône-Alpes' },

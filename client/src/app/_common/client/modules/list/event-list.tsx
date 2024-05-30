@@ -1,144 +1,54 @@
 import { AppDispatch } from '@/app/_common/business/store/store'
-import { AppContext } from '@/app/_common/client/context/app-context'
-import { departmentsList } from '@/app/_common/helpers/deparment-helpers'
-import { determineTraceColor } from '@/app/_common/helpers/trace-helpers'
-import { eventsVMByDepartment } from '@/app/calendar-events/client/view-models/retrieve-events-view-model'
+import { EventsListByCounty } from '@/app/_common/client/modules/list/event-list-by-county'
+import { EventsListByDate } from '@/app/_common/client/modules/list/events-list-by-date'
 import { filtersSlice } from '@/app/filters-events/business/reducers/filters-reducers'
 import { eventsFiltersVM } from '@/app/filters-events/client/view-models/filters-view-models'
-import { Trace } from '@/app/traces/business/models/trace'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Box,
-    Card,
-    Chip,
-    FormControlLabel,
-    Switch,
-    Typography,
-} from '@mui/material'
-import { ChangeEvent, useContext } from 'react'
+import { Badge, BadgeProps } from '@mui/base'
+import { Box, FormControlLabel, Switch, Typography } from '@mui/material'
+import { styled } from '@mui/system'
+import { ChangeEvent, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 export function AppEventList() {
     const dispatch = useDispatch<AppDispatch>()
-    const events = useSelector(eventsVMByDepartment())
-    console.log(events)
-    const { setOpenModal, locale } = useContext(AppContext)
-
     const filters = useSelector(eventsFiltersVM())
+    const [eventsListDisplayed, setEventsListDisplayed] = useState<'by-county' | 'by-date'>('by-date')
 
     const handleAddFilters = (e: ChangeEvent<HTMLInputElement>) => {
-        e.target.checked && dispatch(filtersSlice.actions.onEventsFiltered({ ...filters, sortBy: 'date' }))
-        !e.target.checked && dispatch(filtersSlice.actions.onEventsFiltered({ ...filters, sortBy: 'location' }))
+        if (!e.target.checked) {
+            dispatch(filtersSlice.actions.onEventsFiltered({ ...filters, sortBy: 'date' }))
+            setEventsListDisplayed('by-date')
+        }
+        if (e.target.checked) {
+            dispatch(filtersSlice.actions.onEventsFiltered({ ...filters, sortBy: 'location' }))
+            setEventsListDisplayed('by-county')
+        }
     }
 
     return (
         <Box sx={{ border: '1px solid rgba(0, 0, 0, .3)', flexGrow: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: 2, px: 2 }}>
-                <Typography>Trier par : </Typography>
+                <Typography>Trier par </Typography>
                 <FormControlLabel
-                    value="date"
+                    value="county"
                     control={<Switch color="primary" onChange={handleAddFilters} />}
-                    label="Date"
+                    label="département"
                     labelPlacement="start"
                 />
             </Box>
-            <Box sx={{ p: 2 }}>
-                {Object.keys(events).map((department: string, index: number) => (
-                    <Accordion key={`${department}-${index}`}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="department">
-                            {department !== 'not-defined' && (
-                                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                                    <Chip
-                                        label={department}
-                                        variant="outlined"
-                                        sx={{ fontWeight: 'bold', fontSize: '1.3rem' }}
-                                    />
-                                    <Typography
-                                        variant={'caption'}
-                                    >{`${departmentsList[department].dep_name} - ${departmentsList[department].region_name}`}</Typography>
-                                </Box>
-                            )}
-                            {department === 'not-defined' && <Typography>Non défini</Typography>}
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {events[department].map((event, i) => (
-                                <Card
-                                    key={event.id}
-                                    sx={eventCardStyle}
-                                    onClick={() => {
-                                        setOpenModal({ open: true, event })
-                                    }}
-                                >
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 2, py: 1 }}>
-                                        <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
-                                            {event.startDate === event.endDate && (
-                                                <Typography
-                                                    variant={'caption'}
-                                                    sx={{ fontWeight: 'bold' }}
-                                                >{`Le ${new Date(event.startDate).toLocaleDateString(
-                                                    locale,
-                                                )}`}</Typography>
-                                            )}
-                                            {event.startDate !== event.endDate && (
-                                                <Typography
-                                                    variant={'caption'}
-                                                    sx={{ fontWeight: 'bold' }}
-                                                >{`Du ${new Date(event.startDate).toLocaleDateString(
-                                                    locale,
-                                                )} au ${new Date(event.endDate).toLocaleDateString(
-                                                    locale,
-                                                )}`}</Typography>
-                                            )}
-                                            <Typography variant={'h6'}>{event.title}</Typography>
-                                            <Box sx={{ my: 1, display: 'flex', gap: 1, alignItems: 'center' }}>
-                                                {event.traces.map((trace: Trace) => (
-                                                    <Typography
-                                                        key={trace.id}
-                                                        variant={'caption'}
-                                                        height={'25px'}
-                                                        sx={{
-                                                            fontWeight: 'bold',
-                                                            color: determineTraceColor(trace),
-                                                            borderBottom: `5px solid ${determineTraceColor(trace)}`,
-                                                        }}
-                                                    >{`${trace.distance} kms`}</Typography>
-                                                ))}
-                                            </Box>
-                                        </Box>
-                                        <Box
-                                            display={'flex'}
-                                            flexDirection={'column'}
-                                            justifyContent={'space-around'}
-                                            alignItems={'flex-end'}
-                                        >
-                                            <Typography sx={{ fontSize: '2rem', fontWeight: 'bold', opacity: '0.5' }}>
-                                                {event.eventLocation.postcode?.slice(0, 2)}
-                                            </Typography>
-                                            <Box display={'flex'} gap={1}>
-                                                <Chip label={event.eventLocation.city} size={'small'} />
-                                            </Box>
-                                        </Box>
-                                    </Box>
-                                </Card>
-                            ))}
-                        </AccordionDetails>
-                    </Accordion>
-                ))}
-            </Box>
+            {/* eslint-disable-next-line react/jsx-no-undef */}
+            {eventsListDisplayed === 'by-date' && <EventsListByDate />}
+            {eventsListDisplayed === 'by-county' && <EventsListByCounty />}
         </Box>
     )
 }
 
-const eventCardStyle = {
-    p: 0,
-    m: 2,
-    width: '500px',
-    scale: 1,
-    transition: 'transform 0.3s',
-    '&:hover': {
-        transform: 'scale(1.02)',
+export const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+    '& .MuiBadge-badge': {
+        right: -3,
+        top: 13,
+        border: `2px solid grey`,
+        background: '',
+        padding: '0 4px',
     },
-}
+}))

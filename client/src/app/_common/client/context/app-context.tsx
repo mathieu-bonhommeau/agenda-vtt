@@ -13,6 +13,8 @@ export type AppContextType = {
     setOpenModal: Dispatch<SetStateAction<{ open: boolean; event: CalendarEventVM | undefined }>>
     searchPlaces: ReturnType<typeof searchPlaces>
     locale: 'fr' | 'en'
+    resetFilters: boolean
+    setResetFilters: Dispatch<SetStateAction<boolean>>
 }
 
 export const AppContext = React.createContext<AppContextType>({} as AppContextType)
@@ -30,6 +32,8 @@ export function AppContextProvider({
         event: undefined,
     })
 
+    const [resetFilters, setResetFilters] = useState(false)
+
     return (
         <AppContext.Provider
             value={{
@@ -41,6 +45,8 @@ export function AppContextProvider({
                     placesGateway: dependencies.placesGateway,
                 }),
                 locale: 'fr',
+                resetFilters: resetFilters,
+                setResetFilters: setResetFilters,
             }}
         >
             {children}

@@ -14,8 +14,9 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
     const [searchPlace, setSearchPlace] = useState<string>('')
     const [searchByWord, setSearchByWord] = useState<string>('')
     const [searchResults, setSearchResults] = useState<SearchPlace[]>([])
+    const [openPlacesResults, setOpenPlacesResults] = useState<boolean>(false)
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>()
-    const { searchPlaces, setFocus } = useContext(AppContext)
+    const { searchPlaces, setFocus, resetFilters, setResetFilters } = useContext(AppContext)
 
     const handleSearchWord = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchByWord(e.target.value)
@@ -43,6 +44,7 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
             searchTimeout = setTimeout(() => {
                 searchPlaces({ search: e.target.value }).then((places) => {
                     setSearchResults(places)
+                    setOpenPlacesResults(true)
                 })
             }, 1000)
             setTimeoutId(searchTimeout)
@@ -84,11 +86,15 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
                     <TextField
                         sx={{ my: 1, flexGrow: 1 }}
                         onChange={handleSearchWord}
+                        onFocus={() => {
+                            setResetFilters(false)
+                            setSearchByWord('')
+                        }}
                         placeholder={"Nom de l'évenement, Nom de l'organisateur, ..."}
                         id="outlined-basic"
                         label="Par mots clé"
                         variant="outlined"
-                        value={searchByWord}
+                        value={!resetFilters ? searchByWord : ''}
                         InputProps={{
                             endAdornment: searchByWord && (
                                 <IconButton
@@ -104,6 +110,7 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
                 </Box>
                 <SearchTextAndSelect
                     searchValue={searchPlace || ''}
+                    setSearchValue={setSearchPlace}
                     handleInput={handleSearchPlace}
                     handleReset={handleSearchPlaceReset}
                     searchResults={searchResults.map((result, index) => ({
@@ -111,6 +118,7 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
                         subLabel: result.postcode,
                         index,
                     }))}
+                    openSelectResults={openPlacesResults}
                     commitSearchSelected={commitSearchPlaceSelected}
                 />
             </Card>

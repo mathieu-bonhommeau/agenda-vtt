@@ -1,10 +1,11 @@
+import { AppContext } from '@/app/_common/client/context/app-context'
 import { monthsFr } from '@/app/_common/helpers/date-helpers'
 import { IconButton, Paper, Popover, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material'
 import { MonthCalendar, YearCalendar } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import dayjs, { Dayjs } from 'dayjs'
-import { MouseEvent, useState } from 'react'
+import { MouseEvent, useContext, useEffect, useState } from 'react'
 import { MdOutlineArrowLeft, MdOutlineArrowRight } from 'react-icons/md'
 
 export type YearMonthPickersProps = {
@@ -17,6 +18,14 @@ export function YearMonthPickers({ commitDates, locale }: YearMonthPickersProps)
     const [yearValue, setYearValue] = useState<number>(new Date().getFullYear())
     const [openMonthPicker, setOpenMonthPicker] = useState<HTMLTableRowElement | null>(null)
     const [openYearPicker, setOpenYearPicker] = useState<HTMLTableRowElement | null>(null)
+    const { resetFilters, setResetFilters } = useContext(AppContext)
+
+    useEffect(() => {
+        if (resetFilters) {
+            setMonthValue(dayjs(new Date()).month())
+            setYearValue(dayjs(new Date()).year())
+        }
+    }, [resetFilters])
 
     const handleMonth = (date: Dayjs | null) => {
         date && setMonthValue(date.month())
@@ -57,7 +66,7 @@ export function YearMonthPickers({ commitDates, locale }: YearMonthPickersProps)
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} onFocus={() => resetFilters && setResetFilters(false)}>
                 <Table>
                     <TableBody>
                         <TableRow>

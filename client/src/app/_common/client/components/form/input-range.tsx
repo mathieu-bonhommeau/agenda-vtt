@@ -1,5 +1,6 @@
+import { AppContext } from '@/app/_common/client/context/app-context'
 import { Box, Slider, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 export type SliderRangeProps = {
     min: number
@@ -12,6 +13,7 @@ export type SliderRangeProps = {
 
 export function SliderRange({ min, max, minLabel, maxLabel, commitValues }: SliderRangeProps) {
     const [rangeValue, setRangeValue] = useState<number[]>([min, max])
+    const { resetFilters, setResetFilters } = useContext(AppContext)
 
     const handleChange = (_: Event, newValue: number | number[]) => {
         setRangeValue(newValue as number[])
@@ -20,9 +22,13 @@ export function SliderRange({ min, max, minLabel, maxLabel, commitValues }: Slid
         }
     }
 
+    useEffect(() => {
+        resetFilters && setRangeValue([min, max])
+    }, [max, min, resetFilters])
+
     return (
         <Box sx={{ width: '100%' }}>
-            <Box sx={{ px: 4, marginTop: 6 }}>
+            <Box sx={{ px: 4, marginTop: 6 }} onFocus={() => resetFilters && setResetFilters(false)}>
                 <Slider
                     value={rangeValue}
                     valueLabelDisplay="on"

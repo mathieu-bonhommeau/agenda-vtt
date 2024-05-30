@@ -1,7 +1,13 @@
 import { AppState } from '@/app/_common/business/store/appState'
 import { CalendarEvent } from '@/app/calendar-events/business/models/event'
 import { traceLevelColor } from '@/app/traces/business/models/trace'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { createSelector } from 'reselect'
+dayjs.extend(localizedFormat)
+dayjs.extend(weekOfYear)
+dayjs.locale('fr')
 
 export type CalendarEventVM = CalendarEvent
 export type CalendarEventsVM = CalendarEventVM[]
@@ -14,34 +20,57 @@ export const eventsVM = () =>
         return events.map((event) => prepareEvent(event))
     })
 
-export type DepartmentNumber = string | 'not-defined'
-export type CalendarEventsSortedByDepartment = { [departmentNumber: DepartmentNumber]: CalendarEventsVM }
+export type CountyNumber = string | 'not-defined'
+export type CalendarEventsSortedByCounty = { [departmentNumber: CountyNumber]: CalendarEventsVM }
 
-export const eventsVMByDepartment = () =>
-    createSelector([selectEvents], (events): CalendarEventsSortedByDepartment => {
-        const eventsVMByDepartment: CalendarEventsSortedByDepartment = { ['not-defined']: [] }
+export const eventsVMByCounty = () =>
+    createSelector([selectEvents], (events): CalendarEventsSortedByCounty => {
+        const eventsVMByCounty: CalendarEventsSortedByCounty = { ['not-defined']: [] }
         const preparedEvents = events.map((event) => prepareEvent(event))
 
         preparedEvents.forEach((event: CalendarEventVM) => {
             if (!event.eventLocation.postcode) {
-                eventsVMByDepartment['not-defined'].push(event)
+                eventsVMByCounty['not-defined'].push(event)
                 return
             }
 
-            if (!Object.hasOwn(eventsVMByDepartment, event.eventLocation.postcode!.slice(0, 2))) {
-                eventsVMByDepartment[event.eventLocation.postcode!.slice(0, 2)] = [event]
+            if (!Object.hasOwn(eventsVMByCounty, event.eventLocation.postcode!.slice(0, 2))) {
+                eventsVMByCounty[event.eventLocation.postcode!.slice(0, 2)] = [event]
                 return
             }
 
-            if (Object.hasOwn(eventsVMByDepartment, event.eventLocation.postcode!.slice(0, 2))) {
-                eventsVMByDepartment[event.eventLocation.postcode!.slice(0, 2)] = [
-                    ...eventsVMByDepartment[event.eventLocation.postcode!.slice(0, 2)],
+            if (Object.hasOwn(eventsVMByCounty, event.eventLocation.postcode!.slice(0, 2))) {
+                eventsVMByCounty[event.eventLocation.postcode!.slice(0, 2)] = [
+                    ...eventsVMByCounty[event.eventLocation.postcode!.slice(0, 2)],
                     event,
                 ]
             }
         })
 
-        return eventsVMByDepartment
+        return eventsVMByCounty
+    })
+
+export type CalendarEventsSortedByDate = { [weekNumber: string]: CalendarEventsVM }
+
+export const eventsVMByDate = () =>
+    createSelector([selectEvents], (events): CalendarEventsSortedByDate => {
+        const eventsVMByDate: CalendarEventsSortedByDate = {}
+        const preparedEvents = events.map((event) => prepareEvent(event))
+
+        preparedEvents.forEach((event: CalendarEventVM) => {
+            const eventWeekIndex = dayjs(new Date(event.startDate)).week()
+
+            if (!eventsVMByDate[eventWeekIndex]) {
+                eventsVMByDate[eventWeekIndex] = [event]
+                return
+            }
+
+            if (eventsVMByDate[eventWeekIndex]) {
+                eventsVMByDate[eventWeekIndex] = [...eventsVMByDate[eventWeekIndex], event]
+                return
+            }
+        })
+        return eventsVMByDate
     })
 
 const prepareEvent = (event: CalendarEvent) => ({

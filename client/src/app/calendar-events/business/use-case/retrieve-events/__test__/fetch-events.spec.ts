@@ -340,7 +340,7 @@ describe('Fetch events', () => {
                         endDate: new Date('2024-05-17').toDateString(),
                         eventLocation: {
                             country: 'France',
-                            department: 'Yvelines',
+                            county: 'Yvelines',
                             postcode: '77000',
                             city: 'Paris',
                             region: 'Ile de France',
@@ -357,7 +357,7 @@ describe('Fetch events', () => {
                         endDate: new Date('2024-05-17').toDateString(),
                         eventLocation: {
                             country: 'France',
-                            department: 'Gers',
+                            county: 'Gers',
                             postcode: '22254',
                             city: 'Tartas',
                             region: 'Nouvelle Aquitaine',
@@ -374,7 +374,7 @@ describe('Fetch events', () => {
                         endDate: new Date('2024-04-17').toDateString(),
                         eventLocation: {
                             country: 'France',
-                            department: 'Yvelines',
+                            county: 'Yvelines',
                             postcode: '77000',
                             city: 'Neuilly',
                             region: 'Ile de France',
@@ -391,7 +391,7 @@ describe('Fetch events', () => {
                         endDate: new Date('2024-05-17').toDateString(),
                         eventLocation: {
                             country: 'France',
-                            department: 'Landes',
+                            county: 'Landes',
                             postcode: '40330',
                             city: 'Dax',
                             region: 'Nouvelle Aquitaine',
@@ -408,7 +408,7 @@ describe('Fetch events', () => {
                         endDate: new Date('2024-05-17').toDateString(),
                         eventLocation: {
                             country: 'Belgique',
-                            department: 'Departement belge',
+                            county: 'Departement belge',
                             postcode: undefined,
                             city: 'Bruxelle',
                             region: 'Sud Belgique',
@@ -425,7 +425,7 @@ describe('Fetch events', () => {
                         endDate: new Date('2024-03-17').toDateString(),
                         eventLocation: {
                             country: 'France',
-                            department: 'Landes',
+                            county: 'Landes',
                             postcode: '77000',
                             city: 'Dax',
                             region: 'Nouvelle Aquitaine',
@@ -439,14 +439,13 @@ describe('Fetch events', () => {
                 ]
             })
 
-            it('initially sort the events by department and by date', async () => {
+            it('initially sort the events by county and by date', async () => {
                 sut.givenEvents(events)
                 await sut.retrieveEvents({})
-                console.log(sut.events)
                 expect(sut.events).toEqual([events[1], events[3], events[5], events[2], events[0], events[4]])
             })
 
-            it('sort the events by date and by department', async () => {
+            it('sort the events by date and by county', async () => {
                 sut.givenEvents(events)
                 await sut.retrieveEvents({ sortBy: 'date' })
 
