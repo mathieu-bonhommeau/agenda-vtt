@@ -9,6 +9,9 @@ const nextConfig = {
     },
     sassOptions: {
         includePaths: ['./src/assets/styles'],
+    },
+    images: {
+        unoptimized: true
     }
 };
 
