@@ -25,7 +25,7 @@ export function AppContextProvider({
 }: PropsWithChildren<NonNullable<unknown>> & { dependencies: Dependencies }) {
     const [focus, setFocus] = useState<RView>({
         center: fromLonLat([centerCountry['France'].lon, centerCountry['France'].lat]),
-        zoom: 6,
+        zoom: 6.5,
     })
     const [openModal, setOpenModal] = useState<{ open: boolean; event: CalendarEventVM | undefined }>({
         open: false,
