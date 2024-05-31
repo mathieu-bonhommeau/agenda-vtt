@@ -64,7 +64,7 @@ deploy-frontend-production:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     FRONTEND_TAG: ${CI_REGISTRY_IMAGE}/client:${CI_ENVIRONMENT_NAME}
-  needs: [build-frontend]
+  # needs: [build-frontend]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
