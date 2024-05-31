@@ -73,7 +73,7 @@ deploy-frontend-production:
       - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
       - touch .env
-      - cp $ENV_FILE_FRONT .env
+      - cp $NEXT_PUBLIC_REACT_APP > .env
   script:
     - docker build --no-cache -f ./docker/client/client.dockerfile -t ${FRONTEND_TAG} .
     - docker push ${FRONTEND_TAG}
