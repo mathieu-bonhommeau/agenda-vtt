@@ -44,7 +44,7 @@ build-frontend:
   needs: [lint, test]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-      when: always
+      when: manual
     - when: never
   before_script:
     - *modules
@@ -64,16 +64,16 @@ deploy-frontend-production:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     FRONTEND_TAG: ${CI_REGISTRY_IMAGE}/client:${CI_ENVIRONMENT_NAME}
-  # needs: [build-frontend]
+  needs: [build-frontend]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-      when: always
+      when: manual
     - when: never
   before_script:
       - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
       - touch .env
-      - cp $NEXT_PUBLIC_REACT_APP > .env
+      - echo $NEXT_PUBLIC_REACT_APP > .env
   script:
     - docker build --no-cache -f ./docker/client/client.dockerfile -t ${FRONTEND_TAG} .
     - docker push ${FRONTEND_TAG}
