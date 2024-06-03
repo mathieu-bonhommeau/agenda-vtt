@@ -4,7 +4,7 @@
 export type Trace = {
     id: string
     utagawaId?: number
-    link: string
+    link?: string
     //bikeType: BikeType
     //duration: number
     distance: number

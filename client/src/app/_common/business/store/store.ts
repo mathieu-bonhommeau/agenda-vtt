@@ -2,6 +2,7 @@ import { buildDependencies } from '@/app/_common/_config/dependencies'
 import { AppState } from '@/app/_common/business/store/appState'
 import { EventsGateway } from '@/app/calendar-events/business/ports/events.gateway'
 import { eventsReducer } from '@/app/calendar-events/business/reducers/event-reducer'
+import { newEventReducer } from '@/app/calendar-events/business/reducers/new-event-reducer'
 import { PlacesGateway } from '@/app/filters-events/business/ports/places.gateway'
 import { filtersReducer } from '@/app/filters-events/business/reducers/filters-reducers'
 import { tracesReducer } from '@/app/traces/business/reducers/traces.reducers'
@@ -22,6 +23,7 @@ export const setupStore = (dependencies: Partial<Dependencies>) => {
             eventsState: eventsReducer,
             filtersState: filtersReducer,
             tracesState: tracesReducer,
+            newEventState: newEventReducer,
         },
         devTools: true,
         middleware: (getDefaultMiddleware: GetDefaultMiddleware<AppState>) =>
