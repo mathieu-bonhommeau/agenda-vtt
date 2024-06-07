@@ -1,6 +1,6 @@
 import { AppContext } from '@/app/_common/client/context/app-context'
-import PopupEvent from '@/app/_common/client/modules/popup-event/popup-event'
 import { CalendarEvent } from '@/app/calendar-events/business/models/event'
+import PopupEvent from '@/app/calendar-events/client/react/components/popup-event/popup-event'
 import { Point } from 'ol/geom'
 import { fromLonLat } from 'ol/proj'
 import { useContext, useRef, useState } from 'react'

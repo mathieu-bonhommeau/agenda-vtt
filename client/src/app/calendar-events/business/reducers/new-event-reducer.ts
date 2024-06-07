@@ -1,5 +1,6 @@
 import { Contact, EventOrganizer, EventPrice } from '@/app/calendar-events/business/models/event'
 import { EventLocation, LatLon } from '@/app/calendar-events/business/models/geolocation'
+import { saveNewEvent } from '@/app/calendar-events/business/use-case/add-event/save-new.event'
 import { Trace, TraceColor } from '@/app/traces/business/models/trace'
 import { createSlice } from '@reduxjs/toolkit'
 
@@ -12,7 +13,7 @@ export type NewEventDraft = {
     startDate?: string
     endDate?: string
     eventLocation?: EventLocation
-    traces?: Trace[]
+    traces?: Partial<Trace>[]
     price?: EventPrice[]
     services?: string[]
     organizer?: EventOrganizer
@@ -51,7 +52,7 @@ export type NewEventState = {
 }
 
 export type AdditionalDataPayload = {
-    prices?: EventPrice[]
+    price?: EventPrice[]
     organizer: {
         name: string
         email: string
@@ -84,6 +85,17 @@ export const newEventSlice = createSlice({
             state.steps = [...state.steps, 'OVERVIEW']
             state.draft = { ...state.draft, ...payload }
         },
+        onLastStepAsked: (state) => {
+            state.steps = state.steps.slice(0, -1)
+        },
+        onCloseEventCreationAsked: (state) => {
+            state.steps = []
+        },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(saveNewEvent.fulfilled, () => {
+            return initialState
+        })
     },
 })
 

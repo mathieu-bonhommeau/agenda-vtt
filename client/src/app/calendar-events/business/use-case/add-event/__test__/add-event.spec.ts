@@ -1,18 +1,27 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
+import { CalendarEvent } from '@/app/calendar-events/business/models/event'
+import {
+    NewCalendarEvent,
+    toCalendarEventFromNewCalendarEvent,
+} from '@/app/calendar-events/business/models/new-calendar.event'
+import { EventCreationRepository } from '@/app/calendar-events/business/ports/event-creation.repository'
 import {
     AdditionalDataPayload,
     MainDataPayload,
     TracesDataPayload,
     newEventSlice,
 } from '@/app/calendar-events/business/reducers/new-event-reducer'
+import { saveNewEvent } from '@/app/calendar-events/business/use-case/add-event/save-new.event'
+
 describe('Add event', () => {
     let sut: SUT
     let newEventMainData: MainDataPayload
     let newEventTracesData: TracesDataPayload
     let newEventAdditionalData: AdditionalDataPayload
+    const now = () => new Date('2024-05-26')
 
     beforeEach(() => {
-        sut = new SUT()
+        sut = new SUT(now)
         newEventMainData = {
             title: 'my event',
             description: 'my description',
@@ -42,7 +51,7 @@ describe('Add event', () => {
             ],
         }
         newEventAdditionalData = {
-            prices: [{ price: 'Gratuit pour les - de 16 ans' }, { price: '10€' }],
+            price: [{ price: 'Gratuit pour les - de 16 ans' }, { price: '10€' }],
             organizer: {
                 name: 'VTT des Landes',
                 email: 'vtt-landes@gmail.com',
@@ -91,19 +100,67 @@ describe('Add event', () => {
         expect(sut.draft).toEqual({ ...newEventMainData, ...newEventTracesData, ...newEventAdditionalData })
     })
 
-    it('saves the new event and reset the draft if creation success', async () => {
+    it('saves the new event and reset the draft if creation has been successful', async () => {
         sut.startEventCreation()
         sut.goToSecondStep(newEventMainData)
         sut.goToThirdStep(newEventTracesData)
         sut.goToOverviewStep(newEventAdditionalData)
+        await sut.saveNewEvent()
+
+        expect(sut.eventCreationStep).toEqual([])
+        expect(sut.draft).toEqual({})
+        expect(sut.eventJustCreated[0]).toEqual({
+            ...newEventMainData,
+            createdAt: now().toLocaleDateString(),
+            traces: newEventTracesData.traces!.map((trace, index) => ({
+                ...trace,
+                id: 'random-id',
+            })),
+            ...newEventAdditionalData,
+            id: 'random-id',
+        })
+    })
+
+    it('return to the last step keeping data already stored', async () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+        sut.goToThirdStep(newEventTracesData)
+        sut.goToOverviewStep(newEventAdditionalData)
+
+        sut.backToLastStep()
+        expect(sut.eventCreationStep).toEqual(['MAIN_DATA', 'TRACES', 'ADDITIONAL_DATA'])
+
+        sut.backToLastStep()
+        expect(sut.eventCreationStep).toEqual(['MAIN_DATA', 'TRACES'])
+
+        sut.backToLastStep()
+        expect(sut.eventCreationStep).toEqual(['MAIN_DATA'])
+
+        expect(sut.draft).toEqual({ ...newEventMainData, ...newEventTracesData, ...newEventAdditionalData })
+    })
+
+    it('empty step if the creation is closed', () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+
+        sut.closeEventCreation()
+
+        expect(sut.eventCreationStep).toEqual([])
     })
 })
 
 class SUT {
+    private readonly _generatorId: () => string
+    private readonly _eventCreationRepository: StubEventCreationRepository
     private _store: ReduxStore
 
-    constructor() {
-        this._store = setupStore({})
+    constructor(private readonly _now: () => Date) {
+        this._generatorId = () => 'random-id'
+        this._eventCreationRepository = new StubEventCreationRepository(this._now)
+        this._store = setupStore({
+            generatorId: this._generatorId,
+            eventCreationRepository: this._eventCreationRepository,
+        })
     }
 
     startEventCreation() {
@@ -121,11 +178,41 @@ class SUT {
     goToOverviewStep(payload: AdditionalDataPayload) {
         this._store.dispatch(newEventSlice.actions.onAdditionalDataValidate(payload))
     }
+
+    async saveNewEvent() {
+        await this._store.dispatch(saveNewEvent())
+    }
+
+    backToLastStep() {
+        this._store.dispatch(newEventSlice.actions.onLastStepAsked())
+    }
+
+    closeEventCreation() {
+        this._store.dispatch(newEventSlice.actions.onCloseEventCreationAsked())
+    }
+
     get eventCreationStep() {
         return this._store.getState().newEventState.steps
     }
 
     get draft() {
         return this._store.getState().newEventState.draft
+    }
+
+    get eventJustCreated() {
+        return this._eventCreationRepository.eventsJustCreated
+    }
+}
+
+class StubEventCreationRepository implements EventCreationRepository {
+    private _eventsJustCreated: CalendarEvent[] = []
+
+    constructor(private readonly now: () => Date) {}
+    async saveNewEvent(newEvent: NewCalendarEvent): Promise<void> {
+        this._eventsJustCreated.push(toCalendarEventFromNewCalendarEvent(newEvent, this.now))
+    }
+
+    get eventsJustCreated() {
+        return this._eventsJustCreated
     }
 }

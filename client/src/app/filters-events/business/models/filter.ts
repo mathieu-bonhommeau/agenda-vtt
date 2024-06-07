@@ -1,15 +1,7 @@
-import { LatLon } from '@/app/calendar-events/business/models/geolocation'
+import { SearchPlace } from '@/app/geolocation/business/models/search-place'
 
 export type PlaceType = 'country' | 'state' | 'county' | 'city'
 
-export type SearchPlace = {
-    type: PlaceType
-    country: string
-    city: string
-    postcode?: string
-    latLon: LatLon
-    bbox: number[]
-}
 export type EventsFilters = {
     startDate?: string
     endDate?: string

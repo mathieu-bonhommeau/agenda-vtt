@@ -1,9 +1,11 @@
 import { AppDispatch } from '@/app/_common/business/store/store'
-import { Filters } from '@/app/_common/client/modules/filters/filters'
-import { AppEventList } from '@/app/_common/client/modules/list/event-list'
-import { AppMap } from '@/app/_common/client/modules/map/map'
-import ModalEvent from '@/app/_common/client/modules/modal-event/modal-event'
+import { newEventSlice } from '@/app/calendar-events/business/reducers/new-event-reducer'
 import { retrieveEvents } from '@/app/calendar-events/business/use-case/retrieve-events/retrieve-events'
+import { AppEventList } from '@/app/calendar-events/client/react/components/list/event-list'
+import { AppMap } from '@/app/calendar-events/client/react/components/map/map'
+import ModalEvent from '@/app/calendar-events/client/react/components/modal-event/modal-event'
+import { ModalNewEvent } from '@/app/calendar-events/client/react/components/modal-new-event/modal-new-event'
+import { Filters } from '@/app/filters-events/client/react/components/filters/filters'
 import { eventsFiltersVM } from '@/app/filters-events/client/view-models/filters-view-models'
 import AddIcon from '@mui/icons-material/Add'
 import LoginIcon from '@mui/icons-material/Login'
@@ -23,7 +25,7 @@ export default function Index() {
         dispatch(retrieveEvents({ filters }))
     }, [dispatch, filters])
 
-    const toggleView = (event: React.SyntheticEvent, newView: ViewEvents) => {
+    const toggleView = (_: React.SyntheticEvent, newView: ViewEvents) => {
         setView(newView)
     }
 
@@ -51,8 +53,8 @@ export default function Index() {
                         <Filters />
                     </Box>
                 </Box>
-                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <Box display={'flex'} justifyContent={'space-between'}>
+                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
+                    <Box display={'flex'} justifyContent={'space-between'} alignItems={'flex-end'}>
                         <Tabs value={view} aria-label="disabled tabs example" onChange={toggleView}>
                             <Tab label="Carte" value={'map'} />
                             <Tab label="Liste" value={'calendar'} />
@@ -66,9 +68,15 @@ export default function Index() {
                 </Box>
                 <ModalEvent />
             </Box>
-            <Fab color="primary" aria-label="add" sx={floatStyleButton}>
+            <Fab
+                color="primary"
+                aria-label="add"
+                sx={floatStyleButton}
+                onClick={() => dispatch(newEventSlice.actions.onStartEventCreation())}
+            >
                 <AddIcon />
             </Fab>
+            <ModalNewEvent />
         </>
     )
 }
