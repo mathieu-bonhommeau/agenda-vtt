@@ -15,7 +15,7 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
     const [searchPlace, setSearchPlace] = useState<string>('')
     const [searchByWord, setSearchByWord] = useState<string>('')
     const [searchResults, setSearchResults] = useState<SearchPlace[]>([])
-    const [openPlacesResults, setOpenPlacesResults] = useState<boolean>(false)
+    const [openPlacesResults, setOpenPlacesResults] = useState<'place' | null>(null)
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>()
     const { searchPlaces, setFocus, resetFilters, setResetFilters } = useContext(AppContext)
 
@@ -45,7 +45,7 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
             searchTimeout = setTimeout(() => {
                 searchPlaces({ search: e.target.value }).then((places) => {
                     setSearchResults(places)
-                    setOpenPlacesResults(true)
+                    setOpenPlacesResults('place')
                 })
             }, 1000)
             setTimeoutId(searchTimeout)
@@ -110,15 +110,12 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
                     />
                 </Box>
                 <SearchLocationsAndSelect
+                    name={'place'}
                     searchValue={searchPlace || ''}
                     setSearchValue={setSearchPlace}
                     handleInput={handleSearchPlace}
                     handleReset={handleSearchPlaceReset}
-                    searchResults={searchResults.map((result, index) => ({
-                        mainLabel: result.city,
-                        subLabel: result.postcode,
-                        index,
-                    }))}
+                    searchResults={searchResults}
                     openSelectResults={openPlacesResults}
                     commitSearchSelected={commitSearchPlaceSelected}
                     placeholder={'Région, ville, ... en 🇫🇷, 🇧🇪 ou 🇨🇭'}

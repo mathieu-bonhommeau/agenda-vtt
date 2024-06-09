@@ -11,9 +11,16 @@ export type DateRangePickersProps = {
     endDateLabel: string
     locale: 'fr' | 'en'
     commitDates: (dates: { startDate?: string; endDate?: string }) => void
+    customCss: { [property: string]: string | number }
 }
 
-export function DateRangePickers({ startDateLabel, endDateLabel, locale, commitDates }: DateRangePickersProps) {
+export function DateRangePickers({
+    startDateLabel,
+    endDateLabel,
+    locale,
+    commitDates,
+    customCss,
+}: DateRangePickersProps) {
     const [startDate, setStartDate] = useState<Dayjs | null>(dayjs(new Date()))
     const [endDate, setEndDate] = useState<Dayjs | null>(null)
     const [error, setError] = useState<string | null>(null)
@@ -49,18 +56,20 @@ export function DateRangePickers({ startDateLabel, endDateLabel, locale, commitD
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
             <Box sx={{ display: 'flex', my: 1, width: '100%' }} onFocus={() => resetFilters && setResetFilters(false)}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, gap: 1 }}>
+                <Box sx={customCss}>
                     <DatePicker
                         label={startDateLabel}
                         value={startDate}
                         onChange={(date) => handleStartDate(date)}
                         slotProps={{ textField: { error: !!error }, field: { clearable: true } }}
+                        sx={{ width: '100%' }}
                     />
                     <DatePicker
                         label={endDateLabel}
                         value={endDate}
                         onChange={(date) => handleEndDate(date)}
                         slotProps={{ textField: { error: !!error }, field: { clearable: true } }}
+                        sx={{ width: '100%' }}
                     />
                 </Box>
             </Box>

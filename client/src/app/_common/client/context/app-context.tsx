@@ -2,6 +2,7 @@ import { Dependencies } from '@/app/_common/business/store/store'
 import { centerCountry } from '@/app/calendar-events/business/models/geolocation'
 import { CalendarEventVM } from '@/app/calendar-events/client/view-models/retrieve-events-view-model'
 import { findLocationsByAddress } from '@/app/geolocation/business/use-cases/find-locations-by-address/find-locations-by.address'
+import { reverseGeocode } from '@/app/geolocation/business/use-cases/reverse-geocode/reverse.geocode'
 import { searchPlaces } from '@/app/geolocation/business/use-cases/search-place/searchPlace'
 import { fromLonLat } from 'ol/proj'
 import React, { Dispatch, PropsWithChildren, SetStateAction, useState } from 'react'
@@ -14,6 +15,7 @@ export type AppContextType = {
     setOpenModal: Dispatch<SetStateAction<{ open: boolean; event: CalendarEventVM | undefined }>>
     searchPlaces: ReturnType<typeof searchPlaces>
     findLocationsByAddress: ReturnType<typeof findLocationsByAddress>
+    reverseGeocode: ReturnType<typeof reverseGeocode>
     locale: 'fr' | 'en'
     resetFilters: boolean
     setResetFilters: Dispatch<SetStateAction<boolean>>
@@ -49,6 +51,7 @@ export function AppContextProvider({
                 findLocationsByAddress: findLocationsByAddress({
                     locationsGateway: dependencies.locationsGateway,
                 }),
+                reverseGeocode: reverseGeocode({ locationsGateway: dependencies.locationsGateway }),
                 locale: 'fr',
                 resetFilters: resetFilters,
                 setResetFilters: setResetFilters,

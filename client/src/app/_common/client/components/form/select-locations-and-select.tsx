@@ -1,15 +1,16 @@
 import { AppContext } from '@/app/_common/client/context/app-context'
+import { EventLocation } from '@/app/calendar-events/business/models/geolocation'
+import { SearchPlace } from '@/app/geolocation/business/models/search-place'
 import { Box, IconButton, Popper, Select, SelectChangeEvent, TextField } from '@mui/material'
 import { ChangeEvent, Dispatch, ReactNode, SetStateAction, useContext, useRef } from 'react'
 import { MdClear } from 'react-icons/md'
 
-export type SearchLocationsAndSelectResult = {
-    mainLabel: string
-    subLabel?: string
-    index: number
+function isSearchPlace(result: SearchPlace | EventLocation): result is SearchPlace {
+    return (result as SearchPlace).bbox !== undefined
 }
 
 export function SearchLocationsAndSelect({
+    name,
     searchValue,
     setSearchValue,
     handleInput,
@@ -20,12 +21,13 @@ export function SearchLocationsAndSelect({
     placeholder,
     label,
 }: {
+    name: string
     searchValue: string
     setSearchValue: Dispatch<SetStateAction<string>>
     handleInput: (e: ChangeEvent<HTMLInputElement>) => void
     handleReset?: () => void
-    searchResults: SearchLocationsAndSelectResult[]
-    openSelectResults: boolean
+    searchResults: SearchPlace[] | EventLocation[]
+    openSelectResults: string | null
     commitSearchSelected: (event: ChangeEvent<HTMLSelectElement>, child: ReactNode) => void
     placeholder: string
     label: string
@@ -36,8 +38,6 @@ export function SearchLocationsAndSelect({
     const handleChangePlace = (event: SelectChangeEvent<string>, child: ReactNode) => {
         commitSearchSelected(event as unknown as ChangeEvent<HTMLSelectElement>, child)
     }
-
-    console.log(searchResults)
 
     return (
         <Box style={{ position: 'relative', display: 'flex' }}>
@@ -66,7 +66,7 @@ export function SearchLocationsAndSelect({
             />
             {searchResults.length ? (
                 <Popper
-                    open={openSelectResults}
+                    open={openSelectResults === name}
                     anchorEl={searchInput.current}
                     placement="bottom-start"
                     style={{ zIndex: 10000 }}
@@ -80,11 +80,22 @@ export function SearchLocationsAndSelect({
                             id: 'select-multiple-native',
                         }}
                     >
-                        {searchResults.map((result) => (
-                            <option key={`${result.mainLabel}-${result.index}`}>
-                                {`${result.mainLabel} - ${result.subLabel || ''}`}
-                            </option>
-                        ))}
+                        {searchResults.map((result, index) => {
+                            if (isSearchPlace(result)) {
+                                return (
+                                    <option key={`${result.city}-${index}`}>
+                                        {`${result.city || ''} ${result.postcode || ''} ${result.county || ''}`}
+                                    </option>
+                                )
+                            }
+                            return (
+                                <option key={`${result.address}-${index}`}>
+                                    {`${result.housenumber || ''} ${result.address || ''} ${result.postcode || ''} ${
+                                        result.city || ''
+                                    }, ${result.country || ''}`}
+                                </option>
+                            )
+                        })}
                     </Select>
                 </Popper>
             ) : (

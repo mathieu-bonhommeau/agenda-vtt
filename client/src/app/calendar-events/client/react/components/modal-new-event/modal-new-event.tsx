@@ -1,6 +1,6 @@
 import { AppDispatch } from '@/app/_common/business/store/store'
 import { newEventSlice } from '@/app/calendar-events/business/reducers/new-event-reducer'
-import { MainDataNewEventModal } from '@/app/calendar-events/client/react/components/modal-new-event/main-data-new-event-modal'
+import { MainDataNewEventModal } from '@/app/calendar-events/client/react/components/modal-new-event/main-data-new-event-modal/main-data-new-event-modal'
 import { styleModal } from '@/app/calendar-events/client/react/styles/style-modal'
 import {
     newEventDraftCurrentStepVM,
@@ -41,7 +41,7 @@ export function ModalNewEvent() {
             aria-describedby="keep-mounted-modal-description"
         >
             <Box sx={styleModal}>
-                <Box display={'flex'} justifyContent={'space-between'}>
+                <Box display={'flex'} justifyContent={'space-between'} sx={{ py: 1 }}>
                     <Box display={'flex'} gap={1} alignItems={'center'}>
                         <IconButton>
                             <GrLinkPrevious />
@@ -53,7 +53,7 @@ export function ModalNewEvent() {
                     </IconButton>
                 </Box>
                 <Divider />
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', paddingTop: 1 }}>
                     {currentStep === 'MAIN_DATA' && <MainDataNewEventModal />}
                     {currentStep === 'TRACES' && <Typography>Traces form</Typography>}
                     {currentStep === 'ADDITIONAL_DATA' && <Typography>Additional data form</Typography>}
