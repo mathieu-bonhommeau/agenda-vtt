@@ -1,7 +1,7 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
+    reactStrictMode: false,
     output: 'export',
     transpilePackages: ['ol', 'rlayers'],
     experimental: {

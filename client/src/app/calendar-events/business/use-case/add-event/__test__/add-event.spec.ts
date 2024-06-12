@@ -8,6 +8,7 @@ import { EventCreationRepository } from '@/app/calendar-events/business/ports/ev
 import {
     AdditionalDataPayload,
     MainDataPayload,
+    NewEventDraftSteps,
     TracesDataPayload,
     newEventSlice,
 } from '@/app/calendar-events/business/reducers/new-event-reducer'
@@ -121,19 +122,13 @@ describe('Add event', () => {
         })
     })
 
-    it('return to the last step keeping data already stored', async () => {
+    it('return to the define step with keeping data already stored', async () => {
         sut.startEventCreation()
         sut.goToSecondStep(newEventMainData)
         sut.goToThirdStep(newEventTracesData)
         sut.goToOverviewStep(newEventAdditionalData)
 
-        sut.backToLastStep()
-        expect(sut.eventCreationStep).toEqual(['MAIN_DATA', 'TRACES', 'ADDITIONAL_DATA'])
-
-        sut.backToLastStep()
-        expect(sut.eventCreationStep).toEqual(['MAIN_DATA', 'TRACES'])
-
-        sut.backToLastStep()
+        sut.backToDefineStep('MAIN_DATA')
         expect(sut.eventCreationStep).toEqual(['MAIN_DATA'])
 
         expect(sut.draft).toEqual({ ...newEventMainData, ...newEventTracesData, ...newEventAdditionalData })
@@ -183,8 +178,8 @@ class SUT {
         await this._store.dispatch(saveNewEvent())
     }
 
-    backToLastStep() {
-        this._store.dispatch(newEventSlice.actions.onLastStepAsked())
+    backToDefineStep(step: NewEventDraftSteps) {
+        this._store.dispatch(newEventSlice.actions.onDefineStepAsked(step))
     }
 
     closeEventCreation() {

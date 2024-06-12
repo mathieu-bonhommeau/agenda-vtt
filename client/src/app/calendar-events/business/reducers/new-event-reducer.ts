@@ -2,9 +2,10 @@ import { Contact, EventOrganizer, EventPrice } from '@/app/calendar-events/busin
 import { EventLocation, LatLon } from '@/app/calendar-events/business/models/geolocation'
 import { saveNewEvent } from '@/app/calendar-events/business/use-case/add-event/save-new.event'
 import { Trace, TraceColor } from '@/app/traces/business/models/trace'
-import { createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-export type NewEventDraftSteps = 'MAIN_DATA' | 'TRACES' | 'ADDITIONAL_DATA' | 'OVERVIEW'
+export const newEventDraftSteps = ['MAIN_DATA', 'TRACES', 'ADDITIONAL_DATA', 'OVERVIEW'] as const
+export type NewEventDraftSteps = (typeof newEventDraftSteps)[number]
 
 export type NewEventDraft = {
     id?: string
@@ -85,8 +86,9 @@ export const newEventSlice = createSlice({
             state.steps = [...state.steps, 'OVERVIEW']
             state.draft = { ...state.draft, ...payload }
         },
-        onLastStepAsked: (state) => {
-            state.steps = state.steps.slice(0, -1)
+        onDefineStepAsked: (state, { payload }: PayloadAction<NewEventDraftSteps>) => {
+            const index = state.steps.indexOf(payload)
+            state.steps = state.steps.slice(0, index + 1)
         },
         onCloseEventCreationAsked: (state) => {
             state.steps = []

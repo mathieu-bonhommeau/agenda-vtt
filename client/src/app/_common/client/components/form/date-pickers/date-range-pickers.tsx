@@ -7,6 +7,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import { useContext, useEffect, useState } from 'react'
 
 export type DateRangePickersProps = {
+    initialValues?: { startDate: string; endDate: string }
     startDateLabel: string
     endDateLabel: string
     locale: 'fr' | 'en'
@@ -15,14 +16,19 @@ export type DateRangePickersProps = {
 }
 
 export function DateRangePickers({
+    initialValues,
     startDateLabel,
     endDateLabel,
     locale,
     commitDates,
     customCss,
 }: DateRangePickersProps) {
-    const [startDate, setStartDate] = useState<Dayjs | null>(dayjs(new Date()))
-    const [endDate, setEndDate] = useState<Dayjs | null>(null)
+    const [startDate, setStartDate] = useState<Dayjs | null>(
+        initialValues?.startDate ? dayjs(new Date(initialValues?.startDate)) : dayjs(new Date()),
+    )
+    const [endDate, setEndDate] = useState<Dayjs | null>(
+        initialValues?.endDate ? dayjs(new Date(initialValues?.endDate)) : null,
+    )
     const [error, setError] = useState<string | null>(null)
     const { resetFilters, setResetFilters } = useContext(AppContext)
 

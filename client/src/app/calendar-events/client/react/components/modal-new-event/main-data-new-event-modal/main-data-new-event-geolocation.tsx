@@ -6,7 +6,7 @@ import PinXC from '@/assets/icons/pin_xc.svg'
 import { Card, CardContent } from '@mui/material'
 import { Point } from 'ol/geom'
 import { fromLonLat } from 'ol/proj'
-import { ChangeEvent, Dispatch, ReactNode, SetStateAction, useContext, useState } from 'react'
+import { ChangeEvent, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from 'react'
 import { RFeature, RLayerVector, RMap, ROSM, RStyle } from 'rlayers'
 import { RView } from 'rlayers/RMap'
 
@@ -20,10 +20,10 @@ export function MainDataNewEventGeolocation({
     let searchTimeout: NodeJS.Timeout
     const { findLocationsByAddress, reverseGeocode } = useContext(AppContext)
     const [openPopperResults, setOpenPopperResults] = useState<'address' | 'geocode' | null>('address')
-    const [address, setAddress] = useState<string>('')
+    const [address, setAddress] = useState<string>(location ? buildAddress(location) : '')
     const [findLocationsResults, setFindLocationsResults] = useState<EventLocation[]>([])
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>()
-    const [geocode, setGeocode] = useState<string>('')
+    const [geocode, setGeocode] = useState<string>(location ? buildGeocodeString(location) : '')
     const [focus, setFocus] = useState<RView>({
         center: fromLonLat([centerCountry['France'].lon, centerCountry['France'].lat]),
         zoom: 11,
@@ -76,12 +76,8 @@ export function MainDataNewEventGeolocation({
         for (let i = 0, l = options.length; i < l; i += 1) {
             if ((options[i] as HTMLOptionElement).selected) {
                 setLocation(findLocationsResults[i])
-                setGeocode(`${findLocationsResults[i].latLon.lat} ${findLocationsResults[i].latLon.lon}`)
-                setAddress(
-                    `${findLocationsResults[i].housenumber || ''} ${findLocationsResults[i].address || ''} ${
-                        findLocationsResults[i].postcode || ''
-                    } ${findLocationsResults[i].city || ''}, ${findLocationsResults[i].country || ''}`,
-                )
+                setGeocode(buildGeocodeString(findLocationsResults[i]))
+                setAddress(buildAddress(findLocationsResults[i]))
                 setFocus({
                     center: fromLonLat([findLocationsResults[i].latLon.lon, findLocationsResults[i].latLon.lat]),
                     zoom: 11,
@@ -90,6 +86,15 @@ export function MainDataNewEventGeolocation({
         }
         setFindLocationsResults([])
     }
+
+    useEffect(() => {
+        if (location) {
+            setFocus({
+                center: fromLonLat([location.latLon.lon, location.latLon.lat]),
+                zoom: 11,
+            })
+        }
+    }, [location])
 
     return (
         <Card>
@@ -146,7 +151,16 @@ export function MainDataNewEventGeolocation({
                     )}
                 </RLayerVector>
             </RMap>
-            ,
         </Card>
     )
+}
+
+const buildAddress = (location: EventLocation) => {
+    return `${location.housenumber || ''} ${location.address || ''} ${location.postcode || ''} ${
+        location.city || ''
+    }, ${location.country || ''}`
+}
+
+const buildGeocodeString = (location: EventLocation) => {
+    return `${location.latLon.lat} ${location.latLon.lon}`
 }

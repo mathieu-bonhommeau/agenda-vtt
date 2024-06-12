@@ -8,6 +8,10 @@ export const newEventDraftCurrentStepVM = (state: AppState) => {
     return state.newEventState.steps[state.newEventState.steps.length - 1]
 }
 
+export const newEventDraftStepsVM = (state: AppState) => {
+    return state.newEventState.steps
+}
+
 export const newEventDraftStepsName = {
     MAIN_DATA: `Détails de l'événement`,
     TRACES: `Itinéraires et difficulté`,
