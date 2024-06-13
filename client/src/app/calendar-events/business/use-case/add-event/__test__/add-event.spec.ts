@@ -13,6 +13,7 @@ import {
     newEventSlice,
 } from '@/app/calendar-events/business/reducers/new-event-reducer'
 import { saveNewEvent } from '@/app/calendar-events/business/use-case/add-event/save-new.event'
+import { Trace } from '@/app/traces/business/models/trace'
 
 describe('Add event', () => {
     let sut: SUT
@@ -38,13 +39,15 @@ describe('Add event', () => {
         newEventTracesData = {
             traces: [
                 {
-                    utagawaId: '123456',
+                    id: 'random-id-1',
+                    utagawaId: 123456,
                     link: 'https://utagawavtt.com/trace/123456',
                     distance: 20,
                     traceColor: 'blue',
                 },
                 {
-                    utagawaId: '123457',
+                    id: 'random-id-2',
+                    utagawaId: 123457,
                     link: 'https://utagawavtt.com/trace/123457',
                     distance: 40,
                     positiveElevation: 1200,
@@ -89,6 +92,27 @@ describe('Add event', () => {
 
         expect(sut.eventCreationStep).toEqual(['MAIN_DATA', 'TRACES', 'ADDITIONAL_DATA'])
         expect(sut.draft).toEqual({ ...newEventMainData, ...newEventTracesData })
+    })
+
+    it('add a new trace in draft', () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+
+        sut.addTrace(newEventTracesData.traces![0])
+
+        expect(sut.draft.traces).toEqual([newEventTracesData.traces![0]])
+    })
+
+    it(`remove a trace from draft`, () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+
+        sut.addTrace(newEventTracesData.traces![0])
+        sut.addTrace(newEventTracesData.traces![1])
+
+        sut.deleteTrace('random-id-1')
+
+        expect(sut.draft.traces).toEqual([newEventTracesData.traces![1]])
     })
 
     it('continues with the next step to check with the overview', async () => {
@@ -167,11 +191,20 @@ class SUT {
     }
 
     goToThirdStep(payload: TracesDataPayload) {
-        this._store.dispatch(newEventSlice.actions.onTracesDataValidate(payload))
+        payload.traces?.forEach((trace) => this._store.dispatch(newEventSlice.actions.onAddTrace(trace)))
+        this._store.dispatch(newEventSlice.actions.onTracesDataValidate())
     }
 
     goToOverviewStep(payload: AdditionalDataPayload) {
         this._store.dispatch(newEventSlice.actions.onAdditionalDataValidate(payload))
+    }
+
+    addTrace(payload: Trace) {
+        this._store.dispatch(newEventSlice.actions.onAddTrace(payload))
+    }
+
+    deleteTrace(payload: Trace['id']) {
+        this._store.dispatch(newEventSlice.actions.onDeleteTrace(payload))
     }
 
     async saveNewEvent() {

@@ -36,7 +36,8 @@ export type MainDataPayload = {
 }
 
 export type TraceDataPayload = {
-    utagawaId?: string
+    id: string
+    utagawaId?: number
     link?: string
     distance: number
     traceColor?: TraceColor
@@ -74,13 +75,22 @@ export const newEventSlice = createSlice({
         onStartEventCreation: (state) => {
             state.steps = ['MAIN_DATA']
         },
-        onMainDataValidate: (state, { payload }) => {
+        onMainDataValidate: (state, { payload }: { payload: NewEventMainDraft }) => {
             state.steps = [...state.steps, 'TRACES']
             state.draft = { ...payload }
         },
-        onTracesDataValidate: (state, { payload }) => {
+        onAddTrace: (state, { payload }: { payload: Trace }) => {
+            if (state.draft.traces) {
+                state.draft.traces.push(payload)
+                return
+            }
+            state.draft.traces = [payload]
+        },
+        onDeleteTrace: (state, { payload }: { payload: Trace['id'] }) => {
+            if (state.draft.traces) state.draft.traces = state.draft.traces.filter((trace) => trace.id !== payload)
+        },
+        onTracesDataValidate: (state) => {
             state.steps = [...state.steps, 'ADDITIONAL_DATA']
-            state.draft = { ...state.draft, ...payload }
         },
         onAdditionalDataValidate: (state, { payload }) => {
             state.steps = [...state.steps, 'OVERVIEW']
@@ -100,5 +110,13 @@ export const newEventSlice = createSlice({
         })
     },
 })
+
+export type NewEventMainDraft = {
+    title?: string
+    description?: string
+    startDate?: string
+    endDate?: string
+    eventLocation?: EventLocation
+}
 
 export const newEventReducer = newEventSlice.reducer

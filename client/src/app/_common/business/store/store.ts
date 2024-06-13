@@ -6,9 +6,8 @@ import { eventsReducer } from '@/app/calendar-events/business/reducers/event-red
 import { newEventReducer } from '@/app/calendar-events/business/reducers/new-event-reducer'
 import { filtersReducer } from '@/app/filters-events/business/reducers/filters-reducers'
 import { LocationsGateway } from '@/app/geolocation/business/ports/locations.gateway'
-import { tracesReducer } from '@/app/traces/business/reducers/traces.reducers'
-import { TracesApiGateway } from '@/app/traces/business/use-cases/retrieve-traces/__test__/retrieve-traces.spec'
-import { Action, configureStore, Store, ThunkDispatch } from '@reduxjs/toolkit'
+import { TracesApiGateway } from '@/app/traces/business/ports/traces-api.gateway'
+import { Action, Store, ThunkDispatch, configureStore } from '@reduxjs/toolkit'
 import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
 import { GetDefaultMiddleware } from '@reduxjs/toolkit/dist/getDefaultMiddleware'
 
@@ -25,7 +24,6 @@ export const setupStore = (dependencies: Partial<Dependencies>) => {
         reducer: {
             eventsState: eventsReducer,
             filtersState: filtersReducer,
-            tracesState: tracesReducer,
             newEventState: newEventReducer,
         },
         devTools: true,

@@ -1,11 +1,12 @@
 import { eventsFixtures } from '@/app/_common/_config/fixtures/events.fixtures'
+import { ugatawaTraces } from '@/app/_common/_config/fixtures/traces.fixtures'
 import { Dependencies } from '@/app/_common/business/store/store'
 import { HttpEventCreationRepository } from '@/app/calendar-events/infrastructure/http-event-creation.repository'
 import { HttpEventsGateway } from '@/app/calendar-events/infrastructure/http-events.gateway'
 import { InMemoryEventCreationRepository } from '@/app/calendar-events/infrastructure/in-memory-event-creation.repository'
 import { InMemoryEventsGateway } from '@/app/calendar-events/infrastructure/in-memory-events.gateway'
 import { PhotonLocationsGateway } from '@/app/geolocation/infrastructure/photon-locations-gateway'
-import { UgatawaTracesApiGateway } from '@/app/traces/infrastructure/ugatawa-traces-api-gateway'
+import { DemoTracesApiGateway } from '@/app/traces/infrastructure/demo-traces-api-gateway'
 import { v4 } from 'uuid'
 
 export const buildDependencies = (): Dependencies => {
@@ -24,7 +25,7 @@ const buildRealDependencies = (): Dependencies => {
         generatorId: () => v4(),
         eventsGateway: new HttpEventsGateway(apiBaseUrl),
         locationsGateway: new PhotonLocationsGateway(),
-        tracesApiGateway: new UgatawaTracesApiGateway(),
+        tracesApiGateway: new DemoTracesApiGateway(),
         eventCreationRepository: new HttpEventCreationRepository(),
     }
 }
@@ -34,8 +35,9 @@ const buildInMemoryDependencies = (): Dependencies => {
     const eventCreationRepository = new InMemoryEventCreationRepository(() => new Date())
     const eventsGateway = new InMemoryEventsGateway(eventCreationRepository)
     const placesGateway = new PhotonLocationsGateway()
-    const tracesGateway = new UgatawaTracesApiGateway()
+    const tracesGateway = new DemoTracesApiGateway()
     eventsGateway.events = eventsFixtures
+    tracesGateway.traces = ugatawaTraces
 
     return {
         generatorId: () => v4(),

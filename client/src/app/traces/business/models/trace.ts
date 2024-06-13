@@ -11,7 +11,7 @@ export type Trace = {
     positiveElevation?: number
     //negativeElevation: number
     //traceLoop: TraceLoop
-    traceColor?: TraceColor
+    traceColor?: TraceColor | 'notDefined'
 }
 export type TraceColor = 'green' | 'blue' | 'red' | 'black'
 

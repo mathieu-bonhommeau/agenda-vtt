@@ -4,6 +4,7 @@ import { CalendarEventVM } from '@/app/calendar-events/client/view-models/retrie
 import { findLocationsByAddress } from '@/app/geolocation/business/use-cases/find-locations-by-address/find-locations-by.address'
 import { reverseGeocode } from '@/app/geolocation/business/use-cases/reverse-geocode/reverse.geocode'
 import { searchPlaces } from '@/app/geolocation/business/use-cases/search-place/searchPlace'
+import { retrieveTraceData } from '@/app/traces/business/use-cases/retrieve-traces/retrieve-trace-data'
 import { fromLonLat } from 'ol/proj'
 import React, { Dispatch, PropsWithChildren, SetStateAction, useState } from 'react'
 import { RView } from 'rlayers/RMap'
@@ -16,6 +17,7 @@ export type AppContextType = {
     searchPlaces: ReturnType<typeof searchPlaces>
     findLocationsByAddress: ReturnType<typeof findLocationsByAddress>
     reverseGeocode: ReturnType<typeof reverseGeocode>
+    retrieveTraceData: ReturnType<typeof retrieveTraceData>
     locale: 'fr' | 'en'
     resetFilters: boolean
     setResetFilters: Dispatch<SetStateAction<boolean>>
@@ -52,6 +54,7 @@ export function AppContextProvider({
                     locationsGateway: dependencies.locationsGateway,
                 }),
                 reverseGeocode: reverseGeocode({ locationsGateway: dependencies.locationsGateway }),
+                retrieveTraceData: retrieveTraceData({ tracesApiGateway: dependencies.tracesApiGateway }),
                 locale: 'fr',
                 resetFilters: resetFilters,
                 setResetFilters: setResetFilters,
