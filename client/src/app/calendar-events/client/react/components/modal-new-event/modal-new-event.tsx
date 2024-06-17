@@ -1,5 +1,6 @@
 import { AppDispatch } from '@/app/_common/business/store/store'
 import { newEventSlice } from '@/app/calendar-events/business/reducers/new-event-reducer'
+import { AdditionalDataNewEventModal } from '@/app/calendar-events/client/react/components/modal-new-event/additional-data-new-event-modal/additional-data-new-event-modal'
 import { MainDataNewEventModal } from '@/app/calendar-events/client/react/components/modal-new-event/main-data-new-event-modal/main-data-new-event-modal'
 import { TracesNewEventModal } from '@/app/calendar-events/client/react/components/modal-new-event/traces-new-event-modal/traces-new-event-modal'
 import { styleModal } from '@/app/calendar-events/client/react/styles/style-modal'
@@ -39,7 +40,7 @@ export function ModalNewEvent() {
             aria-describedby="keep-mounted-modal-description"
         >
             <Box sx={styleModal}>
-                <Box sx={{ py: 1 }}>
+                <Box sx={{ py: 1 }} display={'flex'} flexDirection={'column'}>
                     <Box display={'flex'} justifyContent={'space-between'} px={1}>
                         <Typography variant={'h6'}>Partager un événement</Typography>
                         <IconButton onClick={handleClose}>
@@ -63,10 +64,10 @@ export function ModalNewEvent() {
                     </Breadcrumbs>
                 </Box>
                 <Divider />
-                <Box>
+                <Box flexGrow={1}>
                     {currentStep === 'MAIN_DATA' && <MainDataNewEventModal />}
                     {currentStep === 'TRACES' && <TracesNewEventModal />}
-                    {currentStep === 'ADDITIONAL_DATA' && <Typography>Additional data form</Typography>}
+                    {currentStep === 'ADDITIONAL_DATA' && <AdditionalDataNewEventModal />}
                     {currentStep === 'OVERVIEW' && <Typography>overview</Typography>}
                 </Box>
             </Box>

@@ -7,7 +7,7 @@ import { EventLocation } from '@/app/calendar-events/business/models/geolocation
 import { newEventSlice } from '@/app/calendar-events/business/reducers/new-event-reducer'
 import { MainDataNewEventGeolocation } from '@/app/calendar-events/client/react/components/modal-new-event/main-data-new-event-modal/main-data-new-event-geolocation'
 import { NewEventStepsNavigation } from '@/app/calendar-events/client/react/components/modal-new-event/new-event-steps-navigation'
-import { FormControl, IconButton, TextField } from '@mui/material'
+import { IconButton, TextField } from '@mui/material'
 import Box from '@mui/material/Box'
 import { ContentState, EditorState, convertFromHTML, convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
@@ -63,55 +63,50 @@ export function MainDataNewEventModal() {
     }
 
     return (
-        <Box
-            component={'form'}
-            sx={{
-                '& > :not(style)': { m: 1 },
-            }}
-            noValidate
-            autoComplete="off"
-        >
-            <FormControl variant="standard" sx={{ display: 'flex', flexDirection: 'column', gap: 1, py: 1 }}>
-                <TextField
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder={"Titre de l'événement"}
-                    id="outlined-basic"
-                    label="Titre de l'événement"
-                    variant="outlined"
-                    value={title}
-                    InputProps={{
-                        endAdornment: title && (
-                            <IconButton
-                                aria-label="reset-dates"
-                                onClick={() => setTitle('')}
-                                sx={{ fontSize: '1.3rem' }}
-                            >
-                                <MdClear />
-                            </IconButton>
-                        ),
-                    }}
-                />
-                <DateRangePickers
-                    initialValues={newEventDates}
-                    commitDates={handleEventDates}
-                    startDateLabel={`Début de l'événement`}
-                    endDateLabel={`Fin de l'événement`}
-                    locale={locale}
-                    customCss={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        flexGrow: 1,
-                        gap: 1,
-                        justifyContent: 'space-between',
-                    }}
-                />
+        <Box display={'flex'} flexDirection={'column'} gap={1}>
+            <Box my={1}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, py: 1 }}>
+                    <TextField
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder={"Titre de l'événement"}
+                        id="outlined-basic"
+                        label="Titre de l'événement"
+                        variant="outlined"
+                        value={title}
+                        InputProps={{
+                            endAdornment: title && (
+                                <IconButton
+                                    aria-label="reset-dates"
+                                    onClick={() => setTitle('')}
+                                    sx={{ fontSize: '1.3rem' }}
+                                >
+                                    <MdClear />
+                                </IconButton>
+                            ),
+                        }}
+                    />
+                    <DateRangePickers
+                        initialValues={newEventDates}
+                        commitDates={handleEventDates}
+                        startDateLabel={`Début de l'événement`}
+                        endDateLabel={`Fin de l'événement`}
+                        locale={locale}
+                        customCss={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            flexGrow: 1,
+                            gap: 1,
+                            justifyContent: 'space-between',
+                        }}
+                    />
 
-                <MainDataNewEventGeolocation setLocation={setLocation} location={location} />
+                    <MainDataNewEventGeolocation setLocation={setLocation} location={location} />
 
-                <Box marginTop={2}>
-                    <WysiwygEditor editorState={editorState} setEditorState={setEditorState} />
+                    <Box marginTop={2}>
+                        <WysiwygEditor editorState={editorState} setEditorState={setEditorState} />
+                    </Box>
                 </Box>
-            </FormControl>
+            </Box>
             <NewEventStepsNavigation handleStep={handleStep} />
         </Box>
     )

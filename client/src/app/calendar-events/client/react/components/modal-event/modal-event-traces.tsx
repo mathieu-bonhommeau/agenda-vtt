@@ -19,7 +19,7 @@ export function ModalEventTraces(props: { eventLocation: EventLocation; traces: 
                     Aller au départ
                 </Link>
             </Box>
-            <TableTraces traces={props.traces} customCss={{ marginBottom: 2 }} />
+            <TableTraces traces={props.traces} customCss={{ marginBottom: 2, overflowX: 'visible' }} />
         </>
     )
 }

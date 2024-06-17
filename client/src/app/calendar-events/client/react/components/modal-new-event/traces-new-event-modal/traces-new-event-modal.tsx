@@ -2,10 +2,12 @@ import { AppState } from '@/app/_common/business/store/appState'
 import { AppDispatch } from '@/app/_common/business/store/store'
 import { AppContext } from '@/app/_common/client/context/app-context'
 import { newEventSlice } from '@/app/calendar-events/business/reducers/new-event-reducer'
+import { NewEventStepButtons } from '@/app/calendar-events/client/react/components/modal-new-event/main-data-new-event-modal/main-data-new-event-modal'
+import { NewEventStepsNavigation } from '@/app/calendar-events/client/react/components/modal-new-event/new-event-steps-navigation'
 import { TraceColor } from '@/app/traces/business/models/trace'
 import { TableTraces } from '@/app/traces/client/react/components/table-traces'
 import { DifficultyColorsStyle, difficultyColorsStyle } from '@/theme/theme'
-import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Box, Button, FormControl, IconButton, InputLabel, Link, MenuItem, Select, TextField } from '@mui/material'
 import React, { ChangeEvent, useContext, useState } from 'react'
 import { MdClear } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
@@ -24,8 +26,6 @@ export function TracesNewEventModal() {
     const [distance, setDistance] = useState<string>('')
     const [positiveElevation, setPositiveElevation] = useState<string>('')
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>()
-
-    console.log(traceLink)
 
     const handleTraceLink = (e: ChangeEvent<HTMLInputElement>) => {
         setTraceLink(e.target.value)
@@ -64,10 +64,25 @@ export function TracesNewEventModal() {
         setDifficulty('notDefined')
     }
 
-    console.log(draft)
+    const handleStep = (e: React.MouseEvent<HTMLElement>, step: NewEventStepButtons) => {
+        if (step === 'NEXT') {
+            dispatch(newEventSlice.actions.onTracesDataValidate())
+        }
+        if (step === 'PREVIOUS') {
+            dispatch(newEventSlice.actions.onDefineStepAsked('MAIN_DATA'))
+        }
+    }
 
     return (
-        <Box component={'form'} sx={{ my: 2 }} noValidate autoComplete="off">
+        <Box
+            component={'form'}
+            sx={{ my: 2 }}
+            noValidate
+            autoComplete="off"
+            display={'flex'}
+            flexDirection={'column'}
+            height={'100%'}
+        >
             <Box display={'flex'} flexDirection={'column'} gap={2}>
                 <TextField
                     fullWidth
@@ -159,13 +174,17 @@ export function TracesNewEventModal() {
                         }}
                     />
                 </Box>
-                <Box display={'flex'} justifyContent={'flex-end'}>
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                    <Link href={'https://www.utagawavtt.com/adm/topo_edit#utab-1'} target={'_blank'}>
+                        Créer une trace sur UtagawaVTT
+                    </Link>
                     <Button variant={'contained'} onClick={handleNewTrace}>
                         Ajouter un parcours
                     </Button>
                 </Box>
             </Box>
             <TableTraces traces={draft.traces} customCss={{ my: 2 }} deleteBtn={true} />
+            <NewEventStepsNavigation handleStep={handleStep} />
         </Box>
     )
 }

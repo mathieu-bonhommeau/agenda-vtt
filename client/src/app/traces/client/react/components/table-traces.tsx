@@ -29,20 +29,22 @@ export function TableTraces({
 }: {
     traces: Partial<Trace>[] | undefined
     customCss: { [key: string]: string | number }
-    deleteBtn: boolean
+    deleteBtn?: boolean
 }) {
     const dispatch = useDispatch<AppDispatch>()
+
+    console.log(traces)
 
     return (
         <TableContainer component={Paper} sx={customCss}>
             <Table aria-label="customized table">
                 <TableHead sx={{ background: '#F2F2F2' }}>
                     <TableRow>
-                        <TableCell>Distance</TableCell>
-                        <TableCell>Difficulté</TableCell>
-                        <TableCell>Dénivelé+</TableCell>
-                        <TableCell>Trace Gpx</TableCell>
-                        {deleteBtn && <TableCell>Supprimer</TableCell>}
+                        <TableCell sx={{ textAlign: 'center' }}>Distance</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>Difficulté</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>Dénivelé+</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>Trace Gpx</TableCell>
+                        {deleteBtn && <TableCell sx={{ textAlign: 'center' }}>Supprimer</TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -78,11 +80,15 @@ export function TableTraces({
                                         </Typography>
                                     )}
                                 </TableCell>
-                                <TableCell sx={{ display: 'flex', justifyContent: 'center' }}>
-                                    <IconButton onClick={() => dispatch(newEventSlice.actions.onDeleteTrace(trace.id))}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
+                                {deleteBtn && (
+                                    <TableCell sx={{ display: 'flex', justifyContent: 'center' }}>
+                                        <IconButton
+                                            onClick={() => dispatch(newEventSlice.actions.onDeleteTrace(trace.id!))}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                )}
                             </TableRow>
                         ))}
                 </TableBody>

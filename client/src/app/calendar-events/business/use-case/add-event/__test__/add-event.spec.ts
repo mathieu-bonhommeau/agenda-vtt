@@ -1,5 +1,5 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
-import { CalendarEvent } from '@/app/calendar-events/business/models/event'
+import { CalendarEvent, EventPrice } from '@/app/calendar-events/business/models/event'
 import {
     NewCalendarEvent,
     toCalendarEventFromNewCalendarEvent,
@@ -115,6 +115,27 @@ describe('Add event', () => {
         expect(sut.draft.traces).toEqual([newEventTracesData.traces![1]])
     })
 
+    it('add a new price in draft', () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+        sut.goToThirdStep(newEventTracesData)
+
+        sut.addPrices([{ price: '10€ pour les adultes' }, { price: '5€ pour les enfants' }])
+
+        expect(sut.draft.price).toEqual([{ price: '10€ pour les adultes' }, { price: '5€ pour les enfants' }])
+    })
+
+    it('remove a price from draft', () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+        sut.goToThirdStep(newEventTracesData)
+
+        sut.addPrices([{ price: '10€ pour les adultes' }, { price: '5€ pour les enfants' }])
+        sut.removePrice(0)
+
+        expect(sut.draft.price).toEqual([{ price: '5€ pour les enfants' }])
+    })
+
     it('continues with the next step to check with the overview', async () => {
         sut.startEventCreation()
         sut.goToSecondStep(newEventMainData)
@@ -205,6 +226,14 @@ class SUT {
 
     deleteTrace(payload: Trace['id']) {
         this._store.dispatch(newEventSlice.actions.onDeleteTrace(payload))
+    }
+
+    addPrices(prices: Array<EventPrice>) {
+        prices.forEach((price) => this._store.dispatch(newEventSlice.actions.onAddPrice(price)))
+    }
+
+    removePrice(index: number) {
+        this._store.dispatch(newEventSlice.actions.onRemovePrice(index))
     }
 
     async saveNewEvent() {

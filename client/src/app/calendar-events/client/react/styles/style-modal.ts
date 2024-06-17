@@ -10,4 +10,6 @@ export const styleModal = {
     boxShadow: 24,
     overflowY: 'scroll',
     height: '80vh',
+    display: 'flex',
+    flexDirection: 'column',
 }

@@ -14,26 +14,29 @@ export function NewEventStepsNavigation({
 }) {
     const currentStep = useSelector(newEventDraftCurrentStepVM)
     return (
-        <Box display={'flex'} justifyContent={'space-between'}>
-            <IconButton
-                aria-label="next"
-                size={'small'}
-                disabled={currentStep === 'MAIN_DATA'}
-                color="primary"
-                sx={{ border: '1px solid rgb(231, 221, 221)', borderRadius: '5px' }}
-                onClick={(e) => handleStep(e, 'PREVIOUS')}
-            >
-                <ArrowBackIosSharpIcon />
-            </IconButton>
-            <IconButton
-                aria-label="next"
-                size={'small'}
-                disabled={currentStep === 'OVERVIEW'}
-                sx={{ border: '1px solid rgb(231, 221, 221)', borderRadius: '5px' }}
-                onClick={(e) => handleStep(e, 'NEXT')}
-            >
-                <ArrowForwardIosSharpIcon />
-            </IconButton>
+        <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-end'} flexGrow={1}>
+            <Box display={'flex'} justifyContent={'space-between'}>
+                <IconButton
+                    aria-label="next"
+                    size={'small'}
+                    disabled={currentStep === 'MAIN_DATA'}
+                    color="primary"
+                    sx={{ border: '1px solid rgb(231, 221, 221)', borderRadius: '5px' }}
+                    onClick={(e) => handleStep(e, 'PREVIOUS')}
+                >
+                    <ArrowBackIosSharpIcon />
+                </IconButton>
+                <IconButton
+                    aria-label="previous"
+                    size={'small'}
+                    disabled={currentStep === 'OVERVIEW'}
+                    color="primary"
+                    sx={{ border: '1px solid rgb(231, 221, 221)', borderRadius: '5px' }}
+                    onClick={(e) => handleStep(e, 'NEXT')}
+                >
+                    <ArrowForwardIosSharpIcon />
+                </IconButton>
+            </Box>
         </Box>
     )
 }

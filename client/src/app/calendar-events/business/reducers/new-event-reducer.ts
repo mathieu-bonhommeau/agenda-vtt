@@ -92,6 +92,17 @@ export const newEventSlice = createSlice({
         onTracesDataValidate: (state) => {
             state.steps = [...state.steps, 'ADDITIONAL_DATA']
         },
+        onAddPrice: (state, { payload }: { payload: EventPrice }) => {
+            if (state.draft.price) {
+                state.draft.price = [...state.draft.price, payload]
+                return
+            }
+            state.draft.price = [payload]
+        },
+        onRemovePrice: (state, { payload }: { payload: number }) => {
+            if (!state.draft.price || payload < 0) return
+            state.draft.price.splice(payload, 1)
+        },
         onAdditionalDataValidate: (state, { payload }) => {
             state.steps = [...state.steps, 'OVERVIEW']
             state.draft = { ...state.draft, ...payload }
