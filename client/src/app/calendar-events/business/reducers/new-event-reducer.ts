@@ -103,6 +103,13 @@ export const newEventSlice = createSlice({
             if (!state.draft.price || payload < 0) return
             state.draft.price.splice(payload, 1)
         },
+        onAddOrganizer: (state, { payload }: { payload: EventOrganizer }) => {
+            state.draft.organizer = payload
+        },
+        onRemoveContact: (state, { payload }: { payload: number }) => {
+            if (!state.draft.organizer?.contacts || payload < 0) return
+            state.draft.organizer?.contacts.splice(payload, 1)
+        },
         onAdditionalDataValidate: (state, { payload }) => {
             state.steps = [...state.steps, 'OVERVIEW']
             state.draft = { ...state.draft, ...payload }

@@ -7,6 +7,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import DeleteIcon from '@mui/icons-material/Delete'
 import {
     Box,
+    Card,
     Divider,
     IconButton,
     Paper,
@@ -107,7 +108,7 @@ export function AdditionalDataNewEventModal() {
                     }}
                 />
                 <TextField
-                    onChange={(e) => setOrganizerName(e.target.value)}
+                    onChange={(e) => setOrganizerEmail(e.target.value)}
                     placeholder={"Email de l'organisateur"}
                     id="outlined-basic"
                     label="Email de l'organisateur"
@@ -146,7 +147,7 @@ export function AdditionalDataNewEventModal() {
                         ),
                     }}
                 />
-                <Box sx={{border: '1px solid '}}>
+                <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
                     <Box display={'flex'} gap={1}>
                         <TextField
                             sx={{ width: '50%' }}
@@ -188,42 +189,56 @@ export function AdditionalDataNewEventModal() {
                                 ),
                             }}
                         />
-                        <IconButton>
+                        <IconButton
+                            onClick={() =>
+                                dispatch(
+                                    newEventSlice.actions.onAddOrganizer({
+                                        name: organizerName,
+                                        email: organizerEmail,
+                                        website: organizerWebsite,
+                                        contacts: [...(draft.organizer?.contacts || []), contact],
+                                    }),
+                                )
+                            }
+                        >
                             <AddBoxIcon fontSize={'large'} />
                         </IconButton>
                     </Box>
-                </Box>
-
-                <TableContainer component={Paper}>
-                    <Table aria-label="customized table">
-                        <TableHead sx={{ background: '#F2F2F2' }}>
-                            <TableRow>
-                                <TableCell sx={{ width: '80%' }}>Prix</TableCell>
-                                <TableCell sx={{ textAlign: 'center', width: '20%' }}>Supprimer</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {draft.price &&
-                                draft.price.map((price, index) => (
-                                    <TableRow key={price.price}>
-                                        <TableCell sx={{ width: '80%' }}>{price.price}</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                            }}
-                                        >
-                                            <IconButton
-                                                onClick={() => dispatch(newEventSlice.actions.onRemovePrice(index))}
+                    <TableContainer component={Paper}>
+                        <Table aria-label="customized table">
+                            <TableHead sx={{ background: '#F2F2F2' }}>
+                                <TableRow>
+                                    <TableCell sx={{ width: '80%' }}>Nom du contact</TableCell>
+                                    <TableCell sx={{ width: '80%' }}>Téléphone du contact</TableCell>
+                                    <TableCell sx={{ textAlign: 'center', width: '20%' }}>Supprimer</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {draft.organizer?.contacts &&
+                                    draft.organizer?.contacts.map((contact, index) => (
+                                        <TableRow key={contact.name}>
+                                            <TableCell sx={{ width: '40%' }}>{contact.name}</TableCell>
+                                            <TableCell sx={{ width: '40%' }}>{contact.phone}</TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                }}
                                             >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                                                <IconButton
+                                                    onClick={() =>
+                                                        dispatch(newEventSlice.actions.onRemoveContact(index))
+                                                    }
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Card>
             </Box>
         </>
     )

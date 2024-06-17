@@ -1,5 +1,5 @@
 import { ReduxStore, setupStore } from '@/app/_common/business/store/store'
-import { CalendarEvent, EventPrice } from '@/app/calendar-events/business/models/event'
+import { CalendarEvent, EventOrganizer, EventPrice } from '@/app/calendar-events/business/models/event'
 import {
     NewCalendarEvent,
     toCalendarEventFromNewCalendarEvent,
@@ -136,6 +136,53 @@ describe('Add event', () => {
         expect(sut.draft.price).toEqual([{ price: '5€ pour les enfants' }])
     })
 
+    it('add a new organizer in draft', () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+        sut.goToThirdStep(newEventTracesData)
+
+        sut.addOrganizer({
+            name: 'an organizer',
+            email: 'organizer@gmail.com',
+            contacts: [
+                { name: 'john doe', phone: '+33 06 35 32 31 98' },
+                { name: 'marc did', phone: '+33 06 35 32 31 99' },
+            ],
+        })
+
+        expect(sut.draft.organizer).toEqual({
+            name: 'an organizer',
+            email: 'organizer@gmail.com',
+            contacts: [
+                { name: 'john doe', phone: '+33 06 35 32 31 98' },
+                { name: 'marc did', phone: '+33 06 35 32 31 99' },
+            ],
+        })
+    })
+
+    it('remove an organizer contact in draft', () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+        sut.goToThirdStep(newEventTracesData)
+
+        sut.addOrganizer({
+            name: 'an organizer',
+            email: 'organizer@gmail.com',
+            contacts: [
+                { name: 'john doe', phone: '+33 06 35 32 31 98' },
+                { name: 'marc did', phone: '+33 06 35 32 31 99' },
+            ],
+        })
+
+        sut.removeContact(0)
+
+        expect(sut.draft.organizer).toEqual({
+            name: 'an organizer',
+            email: 'organizer@gmail.com',
+            contacts: [{ name: 'marc did', phone: '+33 06 35 32 31 99' }],
+        })
+    })
+
     it('continues with the next step to check with the overview', async () => {
         sut.startEventCreation()
         sut.goToSecondStep(newEventMainData)
@@ -234,6 +281,14 @@ class SUT {
 
     removePrice(index: number) {
         this._store.dispatch(newEventSlice.actions.onRemovePrice(index))
+    }
+
+    addOrganizer(organizer: EventOrganizer) {
+        this._store.dispatch(newEventSlice.actions.onAddOrganizer(organizer))
+    }
+
+    removeContact(index: number) {
+        this._store.dispatch(newEventSlice.actions.onRemoveContact(index))
     }
 
     async saveNewEvent() {
