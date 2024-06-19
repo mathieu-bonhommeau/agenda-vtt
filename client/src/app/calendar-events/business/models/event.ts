@@ -1,11 +1,14 @@
 import { EventLocation } from '@/app/calendar-events/business/models/geolocation'
 import { Trace } from '@/app/traces/business/models/trace'
 
-export type CalendarEvent = {
+export type CalendarEventFull = {
     id: string
+    createdAt: string
+} & CalendarEvent
+
+export type CalendarEvent = {
     title: string
     description?: string
-    createdAt: string
     startDate: string
     endDate: string
     eventLocation: EventLocation

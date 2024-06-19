@@ -50,6 +50,7 @@ export function InputDatePickers({ startDateLabel, endDateLabel, locale, commitD
                             endDateLabel={endDateLabel}
                             locale={locale}
                             commitDates={commitDates}
+                            customCss={{ display: 'flex', flexDirection: 'column', flexGrow: 1, gap: 1 }}
                         />
                     </TabPanel>
                 </TabContext>

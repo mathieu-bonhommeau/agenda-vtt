@@ -6,6 +6,7 @@ import {
     EventLocationBuilder,
 } from '@/app/calendar-events/business/use-case/retrieve-events/__test__/calendar-event-builder'
 import { retrieveEvents } from '@/app/calendar-events/business/use-case/retrieve-events/retrieve-events'
+import { InMemoryEventCreationRepository } from '@/app/calendar-events/infrastructure/in-memory-event-creation.repository'
 import { InMemoryEventsGateway } from '@/app/calendar-events/infrastructure/in-memory-events.gateway'
 import { PlaceType } from '@/app/filters-events/business/models/filter'
 import { Trace } from '@/app/traces/business/models/trace'
@@ -462,7 +463,9 @@ class SUT {
     private now = () => new Date('2024-05-12')
 
     constructor() {
-        this._eventsGateway = new InMemoryEventsGateway(this.now)
+        this._eventsGateway = new InMemoryEventsGateway(
+            new InMemoryEventCreationRepository(() => new Date('2024-05-23')),
+        )
         this._calendarEventBuilder = new CalendarEventBuilder()
         this._store = setupStore({ eventsGateway: this._eventsGateway })
     }
