@@ -4,14 +4,14 @@
 export type Trace = {
     id: string
     utagawaId?: number
-    link: string
+    link?: string
     //bikeType: BikeType
     //duration: number
     distance: number
     positiveElevation?: number
     //negativeElevation: number
     //traceLoop: TraceLoop
-    traceColor?: TraceColor
+    traceColor?: TraceColor | 'notDefined'
 }
 export type TraceColor = 'green' | 'blue' | 'red' | 'black'
 

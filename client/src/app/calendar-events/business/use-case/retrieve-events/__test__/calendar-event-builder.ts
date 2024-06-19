@@ -1,4 +1,4 @@
-import { CalendarEvent, EventOrganizer, EventPrice } from '@/app/calendar-events/business/models/event'
+import { CalendarEventFull, EventOrganizer, EventPrice } from '@/app/calendar-events/business/models/event'
 import { EventLocation, GeoEventLocation } from '@/app/calendar-events/business/models/geolocation'
 import { Trace, TraceColor } from '@/app/traces/business/models/trace'
 
@@ -15,7 +15,7 @@ export class CalendarEventBuilder {
     private _services?: string[]
     private _organizer: EventOrganizer = { name: '', email: '' }
 
-    build(): CalendarEvent {
+    build(): CalendarEventFull {
         return {
             id: this._id,
             title: this._title,

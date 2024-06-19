@@ -2,16 +2,17 @@ import { CalendarEvent } from '@/app/calendar-events/business/models/event'
 import { LatLon } from '@/app/calendar-events/business/models/geolocation'
 import { EventsGateway } from '@/app/calendar-events/business/ports/events.gateway'
 import { RetrieveEventsCommand } from '@/app/calendar-events/business/use-case/retrieve-events/retrieve-events'
+import { InMemoryEventCreationRepository } from '@/app/calendar-events/infrastructure/in-memory-event-creation.repository'
 import Fuse, { FuseResult } from 'fuse.js'
 
 export class InMemoryEventsGateway implements EventsGateway {
     public events: CalendarEvent[] = []
     public error: boolean = false
 
-    constructor(private readonly now: () => Date = () => new Date()) {}
+    constructor(private readonly _eventCreationRepository: InMemoryEventCreationRepository) {}
 
     async retrieveEvents(command: RetrieveEventsCommand): Promise<CalendarEvent[]> {
-        let filteredEvents = [...this.events]
+        let filteredEvents = [...this.events, ...this._eventCreationRepository.eventsJustCreated]
 
         if (this.error) throw 'failed'
 

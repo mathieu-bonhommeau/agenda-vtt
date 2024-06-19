@@ -7,15 +7,28 @@ import dayjs, { Dayjs } from 'dayjs'
 import { useContext, useEffect, useState } from 'react'
 
 export type DateRangePickersProps = {
+    initialValues?: { startDate: string; endDate: string }
     startDateLabel: string
     endDateLabel: string
     locale: 'fr' | 'en'
     commitDates: (dates: { startDate?: string; endDate?: string }) => void
+    customCss: { [property: string]: string | number }
 }
 
-export function DateRangePickers({ startDateLabel, endDateLabel, locale, commitDates }: DateRangePickersProps) {
-    const [startDate, setStartDate] = useState<Dayjs | null>(dayjs(new Date()))
-    const [endDate, setEndDate] = useState<Dayjs | null>(null)
+export function DateRangePickers({
+    initialValues,
+    startDateLabel,
+    endDateLabel,
+    locale,
+    commitDates,
+    customCss,
+}: DateRangePickersProps) {
+    const [startDate, setStartDate] = useState<Dayjs | null>(
+        initialValues?.startDate ? dayjs(new Date(initialValues?.startDate)) : dayjs(new Date()),
+    )
+    const [endDate, setEndDate] = useState<Dayjs | null>(
+        initialValues?.endDate ? dayjs(new Date(initialValues?.endDate)) : null,
+    )
     const [error, setError] = useState<string | null>(null)
     const { resetFilters, setResetFilters } = useContext(AppContext)
 
@@ -49,18 +62,20 @@ export function DateRangePickers({ startDateLabel, endDateLabel, locale, commitD
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
             <Box sx={{ display: 'flex', my: 1, width: '100%' }} onFocus={() => resetFilters && setResetFilters(false)}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, gap: 1 }}>
+                <Box sx={customCss}>
                     <DatePicker
                         label={startDateLabel}
                         value={startDate}
                         onChange={(date) => handleStartDate(date)}
                         slotProps={{ textField: { error: !!error }, field: { clearable: true } }}
+                        sx={{ width: '100%' }}
                     />
                     <DatePicker
                         label={endDateLabel}
                         value={endDate}
                         onChange={(date) => handleEndDate(date)}
                         slotProps={{ textField: { error: !!error }, field: { clearable: true } }}
+                        sx={{ width: '100%' }}
                     />
                 </Box>
             </Box>

@@ -9,6 +9,7 @@ export type EventLocation = {
     county?: string
     city: string
     postcode?: string
+    housenumber?: string
     address: string
     latLon: GeoEventLocation
 }

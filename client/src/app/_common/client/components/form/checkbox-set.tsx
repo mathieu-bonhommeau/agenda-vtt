@@ -5,7 +5,6 @@ export function CheckboxSet({ initialChecked }: { initialChecked: Record<string,
     const [values, setValues] = useState<Record<string, boolean>>(initialChecked)
 
     const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log(!values[e.target.name])
         setValues({ ...values, [e.target.name]: !values[e.target.name] })
     }
 
