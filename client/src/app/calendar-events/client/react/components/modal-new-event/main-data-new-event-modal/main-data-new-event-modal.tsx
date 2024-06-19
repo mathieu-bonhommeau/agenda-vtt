@@ -24,9 +24,9 @@ export function MainDataNewEventModal() {
     const draft = useSelector((state: AppState) => state.newEventState.draft)
     const { locale } = useContext(AppContext)
     const [title, setTitle] = useState<string>(draft.title || '')
-    const [newEventDates, setNewEventDates] = useState<{ startDate: Dayjs; endDate: Dayjs }>({
-        startDate: dayjs(draft.startDate) || dayjs(new Date()),
-        endDate: dayjs(draft.endDate) || dayjs(new Date()),
+    const [newEventDates, setNewEventDates] = useState<{ startDate: Dayjs | null; endDate: Dayjs | null }>({
+        startDate: null,
+        endDate: null,
     })
     const [location, setLocation] = useState<EventLocation | undefined>(draft.eventLocation)
 
@@ -48,8 +48,6 @@ export function MainDataNewEventModal() {
     }
 
     const handleEventDates = (date: { startDate?: string; endDate?: string }) => {
-        if (!date?.startDate) date.startDate = dayjs(new Date()).toDate().toDateString()
-        if (!date?.endDate) date.endDate = dayjs(new Date()).toDate().toDateString()
         setNewEventDates({ startDate: dayjs(date.startDate), endDate: dayjs(date.endDate) })
     }
 
@@ -84,8 +82,8 @@ export function MainDataNewEventModal() {
             dispatch(
                 newEventSlice.actions.onMainDataValidate({
                     title,
-                    startDate: newEventDates.startDate.toDate().toDateString(),
-                    endDate: newEventDates.endDate.toDate().toDateString(),
+                    startDate: newEventDates.startDate?.toDate().toDateString(),
+                    endDate: newEventDates.endDate?.toDate().toDateString(),
                     eventLocation: location,
                     description: getDescriptionHtmlSanitized() === '<p></p>' ? '' : getDescriptionHtmlSanitized(),
                 }),
@@ -120,8 +118,8 @@ export function MainDataNewEventModal() {
                     />
                     <DateRangePickers
                         initialValues={{
-                            startDate: newEventDates.startDate.toDate().toDateString(),
-                            endDate: newEventDates.endDate.toDate().toDateString(),
+                            startDate: draft.startDate || '',
+                            endDate: draft.endDate || '',
                         }}
                         commitDates={handleEventDates}
                         startDateLabel={`Début de l'événement`}
