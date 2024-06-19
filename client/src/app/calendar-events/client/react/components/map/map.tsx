@@ -2,7 +2,6 @@ import { OpenLayersMap } from '@/app/calendar-events/client/react/components/map
 import { eventsVM } from '@/app/calendar-events/client/view-models/retrieve-events-view-model'
 import { eventsFiltersVM } from '@/app/filters-events/client/view-models/filters-view-models'
 import { Box } from '@mui/material'
-import 'ol/ol.css'
 import { useSelector } from 'react-redux'
 
 export function AppMap() {

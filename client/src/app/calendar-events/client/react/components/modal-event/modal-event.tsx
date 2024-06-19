@@ -9,7 +9,7 @@ import { styleModal } from '@/app/calendar-events/client/react/styles/style-moda
 import { Divider } from '@mui/material'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
-import Typography from '@mui/material/Typography'
+import DOMPurify from 'dompurify'
 import { useContext, useEffect, useRef } from 'react'
 
 export default function ModalEvent() {
@@ -44,11 +44,18 @@ export default function ModalEvent() {
                             endDate={openModal.event.endDate}
                             setOpen={setOpenModal}
                         />
-                        {openModal.open && (
-                            <ModalEventMap eventLocation={openModal.event.eventLocation} event={openModal.event} />
-                        )}
+                        <Box height={'30vh'}>
+                            {openModal.open && (
+                                <ModalEventMap eventLocation={openModal.event.eventLocation} event={openModal.event} />
+                            )}
+                        </Box>
+
                         <Divider />
-                        <Typography sx={{ my: 2 }}>{openModal.event.description}</Typography>
+
+                        <div
+                            style={{ marginTop: 2, marginBottom: 2 }}
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(openModal.event.description || '') }}
+                        />
                         <Divider />
                         <ModalEventTraces
                             eventLocation={openModal.event.eventLocation}

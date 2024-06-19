@@ -41,8 +41,8 @@ export function EventsListByDate() {
                         </Box>
                     </AccordionSummary>
                     <AccordionDetails>
-                        {events[weekNumber].map((event) => (
-                            <EventListCard event={event} key={event.id} />
+                        {events[weekNumber].map((event, i) => (
+                            <EventListCard event={event} key={`${event.title}-${i}`} />
                         ))}
                     </AccordionDetails>
                 </Accordion>

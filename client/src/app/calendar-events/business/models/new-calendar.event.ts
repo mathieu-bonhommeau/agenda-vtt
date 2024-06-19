@@ -1,4 +1,4 @@
-import { CalendarEvent, EventOrganizer, EventPrice } from '@/app/calendar-events/business/models/event'
+import { CalendarEventFull, EventOrganizer, EventPrice } from '@/app/calendar-events/business/models/event'
 import { EventLocation } from '@/app/calendar-events/business/models/geolocation'
 import { NewEventDraft } from '@/app/calendar-events/business/reducers/new-event-reducer'
 import { Trace } from '@/app/traces/business/models/trace'
@@ -38,14 +38,17 @@ export const toNewEventFromDraft = ({
         address: draft.eventLocation!.address,
         latLon: { lon: draft.eventLocation!.latLon.lon, lat: draft.eventLocation!.latLon.lat },
     },
-    traces: draft.traces!.map((trace, index) => ({
-        id: tracesIds[index],
-        utagawaId: trace.utagawaId,
-        link: trace.link,
-        distance: trace.distance!,
-        positiveElevation: trace.positiveElevation,
-        traceColor: trace.traceColor,
-    })),
+    traces:
+        (draft.traces &&
+            draft.traces.map((trace, index) => ({
+                id: tracesIds[index],
+                utagawaId: trace.utagawaId,
+                link: trace.link,
+                distance: trace.distance!,
+                positiveElevation: trace.positiveElevation,
+                traceColor: trace.traceColor,
+            }))) ||
+        [],
     price: draft.price,
     services: draft.services,
     organizer: {
@@ -58,7 +61,10 @@ export const toNewEventFromDraft = ({
         })),
     },
 })
-export const toCalendarEventFromNewCalendarEvent = (newEvent: NewCalendarEvent, now: () => Date): CalendarEvent => ({
+export const toCalendarEventFromNewCalendarEvent = (
+    newEvent: NewCalendarEvent,
+    now: () => Date,
+): CalendarEventFull => ({
     ...newEvent,
     createdAt: now().toLocaleDateString(),
 })

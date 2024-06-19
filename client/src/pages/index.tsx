@@ -1,4 +1,6 @@
 import { AppDispatch } from '@/app/_common/business/store/store'
+import AppSnackbar from '@/app/_common/client/components/snack-bar'
+import { AppContext } from '@/app/_common/client/context/app-context'
 import { newEventSlice } from '@/app/calendar-events/business/reducers/new-event-reducer'
 import { retrieveEvents } from '@/app/calendar-events/business/use-case/retrieve-events/retrieve-events'
 import { AppEventList } from '@/app/calendar-events/client/react/components/list/event-list'
@@ -10,7 +12,8 @@ import { eventsFiltersVM } from '@/app/filters-events/client/view-models/filters
 import AddIcon from '@mui/icons-material/Add'
 import LoginIcon from '@mui/icons-material/Login'
 import { Box, Fab, IconButton, Tab, Tabs } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import 'ol/ol.css'
+import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 export type ViewEvents = 'calendar' | 'map'
@@ -18,6 +21,7 @@ export type ViewEvents = 'calendar' | 'map'
 export default function Index() {
     const dispatch = useDispatch<AppDispatch>()
     const filters = useSelector(eventsFiltersVM())
+    const { errors } = useContext(AppContext)
 
     const [view, setView] = useState<ViewEvents>('map')
 
@@ -77,6 +81,7 @@ export default function Index() {
                 <AddIcon />
             </Fab>
             <ModalNewEvent />
+            <AppSnackbar errors={errors} />
         </>
     )
 }

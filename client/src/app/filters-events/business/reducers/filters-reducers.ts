@@ -5,13 +5,13 @@ export type FiltersState = {
     filters: EventsFilters
 }
 
-export const initialState: FiltersState = {
+export const initialFiltersState: FiltersState = {
     filters: { startDate: new Date().toDateString() },
 }
 
 export const filtersSlice = createSlice({
     name: 'filters-events',
-    initialState,
+    initialState: initialFiltersState,
     reducers: {
         onEventsFiltered: (state, { payload }: { payload: EventsFilters }) => {
             state.filters = payload

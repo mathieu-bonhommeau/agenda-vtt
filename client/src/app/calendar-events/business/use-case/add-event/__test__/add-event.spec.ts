@@ -183,6 +183,27 @@ describe('Add event', () => {
         })
     })
 
+    it('add a new service in draft', () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+        sut.goToThirdStep(newEventTracesData)
+
+        sut.addServices(['Parking gratuit', 'Station de lavage'])
+
+        expect(sut.draft.services).toEqual(['Parking gratuit', 'Station de lavage'])
+    })
+
+    it('remove a service from draft', () => {
+        sut.startEventCreation()
+        sut.goToSecondStep(newEventMainData)
+        sut.goToThirdStep(newEventTracesData)
+
+        sut.addServices(['Parking gratuit', 'Station de lavage'])
+        sut.removeService(0)
+
+        expect(sut.draft.services).toEqual(['Station de lavage'])
+    })
+
     it('continues with the next step to check with the overview', async () => {
         sut.startEventCreation()
         sut.goToSecondStep(newEventMainData)
@@ -264,7 +285,9 @@ class SUT {
     }
 
     goToOverviewStep(payload: AdditionalDataPayload) {
-        this._store.dispatch(newEventSlice.actions.onAdditionalDataValidate(payload))
+        payload.price!.forEach((price) => this._store.dispatch(newEventSlice.actions.onAddPrice(price)))
+        this._store.dispatch(newEventSlice.actions.onAddOrganizer(payload.organizer))
+        this._store.dispatch(newEventSlice.actions.onAdditionalDataValidate())
     }
 
     addTrace(payload: Trace) {
@@ -289,6 +312,14 @@ class SUT {
 
     removeContact(index: number) {
         this._store.dispatch(newEventSlice.actions.onRemoveContact(index))
+    }
+
+    addServices(services: string[]) {
+        services.forEach((service) => this._store.dispatch(newEventSlice.actions.onAddService(service)))
+    }
+
+    removeService(index: number) {
+        this._store.dispatch(newEventSlice.actions.onRemoveService(index))
     }
 
     async saveNewEvent() {

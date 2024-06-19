@@ -6,7 +6,13 @@ import { fromLonLat } from 'ol/proj'
 import { useContext, useRef, useState } from 'react'
 import { RFeature, ROverlay, RPopup } from 'rlayers'
 
-export function EventMarker({ event, disableClick }: { event: CalendarEvent; disableClick?: boolean }) {
+export function EventMarker({
+    event,
+    disableClick,
+}: {
+    event: Omit<CalendarEvent, 'id' | 'createdAt'>
+    disableClick?: boolean
+}) {
     const { setOpenModal } = useContext(AppContext)
     const [popupOpen, setPopupOpen] = useState(false)
 

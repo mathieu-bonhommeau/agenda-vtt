@@ -33,8 +33,6 @@ export function TableTraces({
 }) {
     const dispatch = useDispatch<AppDispatch>()
 
-    console.log(traces)
-
     return (
         <TableContainer component={Paper} sx={customCss}>
             <Table aria-label="customized table">

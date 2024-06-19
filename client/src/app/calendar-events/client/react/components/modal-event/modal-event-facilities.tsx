@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 
 export function ModalEventFacilities(props: { services: string[] | undefined }) {
     return (
-        <>
+        <Box marginBottom={2}>
             <Typography sx={{ my: 2 }}>Infos pratiques</Typography>
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                 {props.services &&
@@ -12,6 +12,6 @@ export function ModalEventFacilities(props: { services: string[] | undefined }) 
                         <Chip key={`${service}-${index}`} label={service} variant={'outlined'} />
                     ))}
             </Box>
-        </>
+        </Box>
     )
 }

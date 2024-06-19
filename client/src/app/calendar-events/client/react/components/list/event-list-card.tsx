@@ -10,7 +10,7 @@ export function EventListCard({ event }: { event: CalendarEvent }) {
 
     return (
         <Card
-            key={event.id}
+            key={event.title}
             sx={eventCardStyle}
             onClick={() => {
                 setOpenModal({ open: true, event })

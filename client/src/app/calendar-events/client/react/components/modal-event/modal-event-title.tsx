@@ -12,7 +12,7 @@ export function ModalEventTitle(props: {
     eventLocation: EventLocation
     startDate: string
     endDate: string
-    setOpen: Dispatch<SetStateAction<{ open: boolean; event: CalendarEventVM | undefined }>>
+    setOpen?: Dispatch<SetStateAction<{ open: boolean; event: CalendarEventVM | undefined }>>
 }) {
     const { locale } = useContext(AppContext)
 
@@ -35,9 +35,11 @@ export function ModalEventTitle(props: {
                 </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <IconButton onClick={() => props.setOpen({ open: false, event: undefined })}>
-                    <IoLogOut />
-                </IconButton>
+                {props.setOpen && (
+                    <IconButton onClick={() => props.setOpen!({ open: false, event: undefined })}>
+                        <IoLogOut />
+                    </IconButton>
+                )}
                 {props.startDate === props.endDate && (
                     <Stack direction="row" spacing={1}>
                         <Chip

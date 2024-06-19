@@ -5,7 +5,7 @@ import { fromLonLat } from 'ol/proj'
 import { RLayerVector, RMap, ROSM, RStyle } from 'rlayers'
 import PinXC from '../../../../../../assets/icons/pin_xc.svg'
 
-export function ModalEventMap(props: { eventLocation: EventLocation; event: CalendarEvent }) {
+export function ModalEventMap(props: { eventLocation: EventLocation; event: Omit<CalendarEvent, 'id' | 'createdAt'> }) {
     return (
         <RMap
             width={'100%'}

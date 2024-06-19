@@ -77,7 +77,7 @@ export const newEventSlice = createSlice({
         },
         onMainDataValidate: (state, { payload }: { payload: NewEventMainDraft }) => {
             state.steps = [...state.steps, 'TRACES']
-            state.draft = { ...payload }
+            state.draft = { ...state.draft, ...payload }
         },
         onAddTrace: (state, { payload }: { payload: Trace }) => {
             if (state.draft.traces) {
@@ -110,9 +110,19 @@ export const newEventSlice = createSlice({
             if (!state.draft.organizer?.contacts || payload < 0) return
             state.draft.organizer?.contacts.splice(payload, 1)
         },
-        onAdditionalDataValidate: (state, { payload }) => {
+        onAdditionalDataValidate: (state) => {
             state.steps = [...state.steps, 'OVERVIEW']
-            state.draft = { ...state.draft, ...payload }
+        },
+        onAddService: (state, { payload }: { payload: string }) => {
+            if (state.draft.services) {
+                state.draft.services = [...state.draft.services, payload]
+                return
+            }
+            state.draft.services = [payload]
+        },
+        onRemoveService: (state, { payload }: { payload: number }) => {
+            if (!state.draft.services || payload < 0) return
+            state.draft.services.splice(payload, 1)
         },
         onDefineStepAsked: (state, { payload }: PayloadAction<NewEventDraftSteps>) => {
             const index = state.steps.indexOf(payload)

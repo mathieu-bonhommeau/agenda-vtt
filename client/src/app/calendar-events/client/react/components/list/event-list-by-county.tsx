@@ -37,7 +37,7 @@ export function EventsListByCounty() {
                     </AccordionSummary>
                     <AccordionDetails>
                         {events[county].map((event, i) => (
-                            <EventListCard event={event} key={event.id} />
+                            <EventListCard event={event} key={`${event.title}-${i}`} />
                         ))}
                     </AccordionDetails>
                 </Accordion>

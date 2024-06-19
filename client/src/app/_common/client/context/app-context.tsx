@@ -21,6 +21,8 @@ export type AppContextType = {
     locale: 'fr' | 'en'
     resetFilters: boolean
     setResetFilters: Dispatch<SetStateAction<boolean>>
+    errors: string[]
+    setErrors: Dispatch<SetStateAction<string[]>>
 }
 
 export const AppContext = React.createContext<AppContextType>({} as AppContextType)
@@ -37,6 +39,8 @@ export function AppContextProvider({
         open: false,
         event: undefined,
     })
+
+    const [errors, setErrors] = useState<string[]>([])
 
     const [resetFilters, setResetFilters] = useState(false)
 
@@ -58,6 +62,8 @@ export function AppContextProvider({
                 locale: 'fr',
                 resetFilters: resetFilters,
                 setResetFilters: setResetFilters,
+                errors,
+                setErrors,
             }}
         >
             {children}

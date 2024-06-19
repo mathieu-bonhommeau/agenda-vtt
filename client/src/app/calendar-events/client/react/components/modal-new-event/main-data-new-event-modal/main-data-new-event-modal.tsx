@@ -9,6 +9,7 @@ import { MainDataNewEventGeolocation } from '@/app/calendar-events/client/react/
 import { NewEventStepsNavigation } from '@/app/calendar-events/client/react/components/modal-new-event/new-event-steps-navigation'
 import { IconButton, TextField } from '@mui/material'
 import Box from '@mui/material/Box'
+import dayjs, { Dayjs } from 'dayjs'
 import { ContentState, EditorState, convertFromHTML, convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
 import React, { useContext, useState } from 'react'
@@ -23,11 +24,13 @@ export function MainDataNewEventModal() {
     const draft = useSelector((state: AppState) => state.newEventState.draft)
     const { locale } = useContext(AppContext)
     const [title, setTitle] = useState<string>(draft.title || '')
-    const [newEventDates, setNewEventDates] = useState<{ startDate: string; endDate: string }>({
-        startDate: draft.startDate || '',
-        endDate: draft.endDate || '',
+    const [newEventDates, setNewEventDates] = useState<{ startDate: Dayjs; endDate: Dayjs }>({
+        startDate: dayjs(draft.startDate) || dayjs(new Date()),
+        endDate: dayjs(draft.endDate) || dayjs(new Date()),
     })
     const [location, setLocation] = useState<EventLocation | undefined>(draft.eventLocation)
+
+    const { setErrors } = useContext(AppContext)
 
     const initializeEditorState = (html: string) => {
         const blocksFromHTML = convertFromHTML(html)
@@ -45,20 +48,48 @@ export function MainDataNewEventModal() {
     }
 
     const handleEventDates = (date: { startDate?: string; endDate?: string }) => {
-        setNewEventDates({ startDate: date.startDate || '', endDate: date.endDate || '' })
+        if (!date?.startDate) date.startDate = dayjs(new Date()).toISOString()
+        if (!date?.endDate) date.endDate = dayjs(new Date()).toISOString()
+        setNewEventDates({ startDate: dayjs(date.startDate), endDate: dayjs(date.endDate) })
+    }
+
+    const validateMainData = () => {
+        const errors: string[] = []
+
+        if (!title) errors.push('Le titre est obligatoire')
+
+        if (!newEventDates.endDate || !newEventDates.startDate)
+            errors.push('Les dates de début et de fin sont obligatoires')
+
+        if (
+            newEventDates.endDate &&
+            newEventDates.startDate &&
+            newEventDates.endDate.isBefore(newEventDates.startDate)
+        ) {
+            errors.push('La date de fin doit être supérieur à la date de début')
+        }
+
+        if (!location) errors.push(`La localisation de l'événement est obligatoire`)
+        return errors
     }
 
     const handleStep = (e: React.MouseEvent<HTMLElement>, step: NewEventStepButtons) => {
         if (step === 'NEXT') {
+            const err = validateMainData()
+            if (err.length > 0) {
+                setErrors(err)
+                return
+            }
             dispatch(
                 newEventSlice.actions.onMainDataValidate({
                     title,
-                    startDate: newEventDates?.startDate,
-                    endDate: newEventDates?.endDate,
+                    startDate: newEventDates.startDate.toISOString(),
+                    endDate: newEventDates.endDate.toISOString(),
                     eventLocation: location,
-                    description: getDescriptionHtmlSanitized(),
+                    description: getDescriptionHtmlSanitized() === '<p></p>' ? '' : getDescriptionHtmlSanitized(),
                 }),
             )
+            setErrors([])
         }
     }
 
@@ -67,6 +98,7 @@ export function MainDataNewEventModal() {
             <Box my={1}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, py: 1 }}>
                     <TextField
+                        required
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder={"Titre de l'événement"}
                         id="outlined-basic"
@@ -86,7 +118,10 @@ export function MainDataNewEventModal() {
                         }}
                     />
                     <DateRangePickers
-                        initialValues={newEventDates}
+                        initialValues={{
+                            startDate: newEventDates.startDate.toISOString(),
+                            endDate: newEventDates.endDate.toISOString(),
+                        }}
                         commitDates={handleEventDates}
                         startDateLabel={`Début de l'événement`}
                         endDateLabel={`Fin de l'événement`}

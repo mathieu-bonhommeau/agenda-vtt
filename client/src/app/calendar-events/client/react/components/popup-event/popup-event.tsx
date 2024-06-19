@@ -6,7 +6,7 @@ import { Box, Typography } from '@mui/material'
 import { Dispatch, SetStateAction, useContext } from 'react'
 
 export type PopupEventEventProps = {
-    event: CalendarEvent
+    event: Omit<CalendarEvent, 'id' | 'createdAt'>
     setOpen: Dispatch<SetStateAction<boolean>>
 }
 

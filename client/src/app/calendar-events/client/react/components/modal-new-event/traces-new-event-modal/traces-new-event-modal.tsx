@@ -86,9 +86,8 @@ export function TracesNewEventModal() {
             <Box display={'flex'} flexDirection={'column'} gap={2}>
                 <TextField
                     fullWidth
-                    //error={!!linkError}
-                    //helperText={linkError}
                     onChange={handleTraceLink}
+                    helperText={linkError}
                     placeholder={'Lien vers la trace Gpx UtagawaVtt'}
                     type={'url'}
                     id="outlined-basic"
