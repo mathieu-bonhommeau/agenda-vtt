@@ -48,8 +48,8 @@ export function MainDataNewEventModal() {
     }
 
     const handleEventDates = (date: { startDate?: string; endDate?: string }) => {
-        if (!date?.startDate) date.startDate = dayjs(new Date()).toISOString()
-        if (!date?.endDate) date.endDate = dayjs(new Date()).toISOString()
+        if (!date?.startDate) date.startDate = dayjs(new Date()).toDate().toDateString()
+        if (!date?.endDate) date.endDate = dayjs(new Date()).toDate().toDateString()
         setNewEventDates({ startDate: dayjs(date.startDate), endDate: dayjs(date.endDate) })
     }
 
@@ -80,11 +80,12 @@ export function MainDataNewEventModal() {
                 setErrors(err)
                 return
             }
+
             dispatch(
                 newEventSlice.actions.onMainDataValidate({
                     title,
-                    startDate: newEventDates.startDate.toISOString(),
-                    endDate: newEventDates.endDate.toISOString(),
+                    startDate: newEventDates.startDate.toDate().toDateString(),
+                    endDate: newEventDates.endDate.toDate().toDateString(),
                     eventLocation: location,
                     description: getDescriptionHtmlSanitized() === '<p></p>' ? '' : getDescriptionHtmlSanitized(),
                 }),
@@ -119,8 +120,8 @@ export function MainDataNewEventModal() {
                     />
                     <DateRangePickers
                         initialValues={{
-                            startDate: newEventDates.startDate.toISOString(),
-                            endDate: newEventDates.endDate.toISOString(),
+                            startDate: newEventDates.startDate.toDate().toDateString(),
+                            endDate: newEventDates.endDate.toDate().toDateString(),
                         }}
                         commitDates={handleEventDates}
                         startDateLabel={`Début de l'événement`}
