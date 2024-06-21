@@ -1,6 +1,6 @@
 
 .api-modules: &api-modules
-  - npm install
+  - cd api && npm install
 
 api-lint:
   stage: validation

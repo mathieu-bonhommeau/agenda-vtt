@@ -1,6 +1,6 @@
 
 .frontend-modules: &frontend-modules
-  - npm install
+  - cd client && npm install
 
 frontend-lint:
   stage: validation
