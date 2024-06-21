@@ -1,5 +1,5 @@
 
-.modules: &modules
+.api-modules: &api-modules
   - cd client && npm install
 
 api-lint:
@@ -12,7 +12,7 @@ api-lint:
       when: always
     - when: never
   before_script:
-    - *modules
+    - *api-modules
   script:
     - npm run lint:check
 
@@ -26,7 +26,7 @@ api-test:
       when: always
     - when: never
   before_script:
-    - *modules
+    - *api-modules
   script:
     - npm run test
 
@@ -34,12 +34,12 @@ build-backend:
   image: node:20-alpine
   stage: build
   needs: [api-lint, api-test]
-  # rules:
-    # - if: '$CI_COMMIT_BRANCH == "main"'
-      # when: always
-    # - when: never
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+    - when: never
   before_script:
-    - *modules
+    - *api-modules
   script:
     - npm run build
   artifacts:
@@ -57,10 +57,10 @@ deploy-api-production:
     DOCKER_TLS_CERTDIR: "/certs"
     BACKEND_TAG: ${CI_REGISTRY_IMAGE}/api:${CI_ENVIRONMENT_NAME}
   needs: [build-backend]
-  # rules:
-    # - if: '$CI_COMMIT_BRANCH == "main"'
-      # when: always
-    # - when: never
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+    - when: never
   before_script:
     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY

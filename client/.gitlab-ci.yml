@@ -1,5 +1,5 @@
 
-.modules: &modules
+.frontend-modules: &frontend-modules
   - cd client && npm install
 
 frontend-lint:
@@ -12,7 +12,7 @@ frontend-lint:
       when: always
     - when: never
   before_script:
-    - *modules
+    - *frontend-modules
   script:
     - npm run lint:check
 
@@ -26,7 +26,7 @@ frontend-test:
       when: always
     - when: never
   before_script:
-    - *modules
+    - *frontend-modules
   script:
     - npm run test
 
@@ -39,7 +39,7 @@ build-frontend:
       when: always
     - when: never
   before_script:
-    - *modules
+    - *frontend-modules
   script:
     - npm run build
   artifacts:
