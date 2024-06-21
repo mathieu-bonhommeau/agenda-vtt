@@ -1,6 +1,6 @@
 
 .api-modules: &api-modules
-  - cd client && npm install
+  - cd api && npm install
 
 api-lint:
   stage: validation
@@ -14,7 +14,7 @@ api-lint:
   before_script:
     - *api-modules
   script:
-    - npm run lint:check
+    - cd api && npm run lint
 
 api-test:
   stage: test
@@ -28,7 +28,7 @@ api-test:
   before_script:
     - *api-modules
   script:
-    - npm run test
+    - cd api && npm run test
 
 build-backend:
   image: node:20-alpine
@@ -41,7 +41,7 @@ build-backend:
   before_script:
     - *api-modules
   script:
-    - npm run build
+    - cd api && npm run build
   artifacts:
     paths:
       - api/dist/
@@ -65,7 +65,7 @@ deploy-api-production:
     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - touch .env
-    - echo $ENV_PRODUCTION > .env
+    - echo $ENV_PRODUCTION_BACK > .env
   script:
     - docker build --no-cache -f ./docker/api/api.dockerfile -t ${BACKEND_TAG} .
     - docker push ${BACKEND_TAG}

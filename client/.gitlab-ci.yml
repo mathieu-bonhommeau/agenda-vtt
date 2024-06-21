@@ -14,7 +14,7 @@ frontend-lint:
   before_script:
     - *frontend-modules
   script:
-    - npm run lint:check
+    - cd client && npm run lint:check
 
 frontend-test:
   stage: test
@@ -28,7 +28,7 @@ frontend-test:
   before_script:
     - *frontend-modules
   script:
-    - npm run test
+    - cd client && npm run test
 
 build-frontend:
   image: node:20-alpine
@@ -41,7 +41,7 @@ build-frontend:
   before_script:
     - *frontend-modules
   script:
-    - npm run build
+    - cd client && npm run build
   artifacts:
     paths:
       - client/out/
