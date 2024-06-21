@@ -11,7 +11,7 @@ stages:
   - cd client && npm install
 
 frontend-lint:
-  stage: validation
+  stage: frontend-validation
   allow_failure: true
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -25,7 +25,7 @@ frontend-lint:
     - npm run lint:check
 
 frontend-test:
-  stage: test
+  stage: frontend-test
   needs: [ ]
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -40,7 +40,7 @@ frontend-test:
 
 build-frontend:
   image: node:20-alpine
-  stage: build
+  stage: frontend-build
   needs: [frontend-lint, frontend-test]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
@@ -56,7 +56,7 @@ build-frontend:
 
 deploy-frontend-production:
   image: docker:24.0.5
-  stage: deploy
+  stage: frontend-deploy
   environment:
     name: production
   services:
