@@ -1,16 +1,16 @@
 image: node:lts
 
 stages:
-  - validation
-  - test
-  - build
-  - deploy
+  - frontend-validation
+  - frontend-test
+  - frontend-build
+  - frontend-deploy
 
 
 .modules: &modules
   - cd client && npm install
 
-lint:
+frontend-lint:
   stage: validation
   allow_failure: true
   rules:
@@ -24,7 +24,7 @@ lint:
   script:
     - npm run lint:check
 
-test:
+frontend-test:
   stage: test
   needs: [ ]
   rules:
@@ -41,7 +41,7 @@ test:
 build-frontend:
   image: node:20-alpine
   stage: build
-  needs: [lint, test]
+  needs: [frontend-lint, frontend-test]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
