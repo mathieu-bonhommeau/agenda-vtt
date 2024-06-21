@@ -1,2 +1,3 @@
 include:
   - ${CI_PROJECT_DIR}/client/.gitlab-ci.yml
+  - ${CI_PROJECT_DIR}/api/.gitlab-ci.yml
