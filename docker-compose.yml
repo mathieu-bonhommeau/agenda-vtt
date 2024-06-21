@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
   client-agenda:
     build:
       context: .
@@ -8,3 +9,11 @@ services:
     container_name: "utagawavtt-agenda-frontend"
     ports:
       - "8080:80"
+
+  api-agenda:
+    build:
+      context: .
+      dockerfile: docker/api/api.dockerfile
+    container_name: "utagawavtt-agenda-api"
+    ports:
+      - "5000:5000"

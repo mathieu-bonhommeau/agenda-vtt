@@ -1,8 +1,8 @@
 
-.frontend-modules: &frontend-modules
+.api-modules: &api-modules
   - cd client && npm install
 
-frontend-lint:
+api-lint:
   stage: validation
   allow_failure: true
   rules:
@@ -12,11 +12,11 @@ frontend-lint:
       when: always
     - when: never
   before_script:
-    - *frontend-modules
+    - *api-modules
   script:
     - npm run lint:check
 
-frontend-test:
+api-test:
   stage: test
   needs: [ ]
   rules:
@@ -26,27 +26,27 @@ frontend-test:
       when: always
     - when: never
   before_script:
-    - *frontend-modules
+    - *api-modules
   script:
     - npm run test
 
-build-frontend:
+build-backend:
   image: node:20-alpine
   stage: build
-  needs: [frontend-lint, frontend-test]
+  needs: [api-lint, api-test]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
     - when: never
   before_script:
-    - *frontend-modules
+    - *api-modules
   script:
     - npm run build
   artifacts:
     paths:
-      - client/out/
+      - api/dist/
 
-deploy-frontend-production:
+deploy-api-production:
   image: docker:24.0.5
   stage: deploy
   environment:
@@ -55,18 +55,17 @@ deploy-frontend-production:
     - docker:24.0.5-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
-    FRONTEND_TAG: ${CI_REGISTRY_IMAGE}/client:${CI_ENVIRONMENT_NAME}
-  needs: [build-frontend]
+    BACKEND_TAG: ${CI_REGISTRY_IMAGE}/api:${CI_ENVIRONMENT_NAME}
+  needs: [build-backend]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
+      when: always
     - when: never
   before_script:
-      - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
-      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-      - echo $NGINX_CREDENTIALS >> ./docker/client/htpasswd
-      - touch .env
-      - echo $NEXT_PUBLIC_REACT_APP > .env
+    - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - touch .env
+    - echo $ENV_PRODUCTION > .env
   script:
-    - docker build --no-cache -f ./docker/client/client.dockerfile -t ${FRONTEND_TAG} .
-    - docker push ${FRONTEND_TAG}
+    - docker build --no-cache -f ./docker/api/api.dockerfile -t ${BACKEND_TAG} .
+    - docker push ${BACKEND_TAG}
