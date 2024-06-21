@@ -69,6 +69,5 @@ deploy-api-production:
     - touch .env
     - echo $ENV_PRODUCTION_BACK > .env
   script:
-    - ls
     - docker build --no-cache -f ../docker/api/api.dockerfile -t ${BACKEND_TAG} .
     - docker push ${BACKEND_TAG}
