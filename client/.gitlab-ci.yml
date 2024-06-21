@@ -1,6 +1,6 @@
 
 .frontend-modules: &frontend-modules
-  - cd client && npm install
+  - npm install
 
 frontend-lint:
   stage: validation
@@ -14,7 +14,7 @@ frontend-lint:
   before_script:
     - *frontend-modules
   script:
-    - cd client && npm run lint:check
+    - npm run lint:check
 
 frontend-test:
   stage: test
@@ -28,7 +28,7 @@ frontend-test:
   before_script:
     - *frontend-modules
   script:
-    - cd client && npm run test
+    - npm run test:frontend
 
 build-frontend:
   image: node:20-alpine
@@ -41,7 +41,7 @@ build-frontend:
   before_script:
     - *frontend-modules
   script:
-    - cd client && npm run build
+    - npm run build:frontend
   artifacts:
     paths:
       - client/out/

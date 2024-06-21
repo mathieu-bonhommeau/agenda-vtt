@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build:frontend": "next build",
     "start": "next start",
-    "lint": "eslint ./ --ext .ts,.tsx --cache --fix",
+    "lint:frontend": "eslint ./ --ext .ts,.tsx --cache --fix",
     "lint:check": "eslint ./ --ext .ts,.tsx",
-    "test": "jest --config jest.config.ts"
+    "test:frontend": "jest --config jest.config.ts"
   },
   "resolutions": {
     "wrap-ansi": "^7.0.0"

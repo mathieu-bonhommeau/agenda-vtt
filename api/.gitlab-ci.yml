@@ -1,6 +1,6 @@
 
 .api-modules: &api-modules
-  - cd api && npm install
+  - npm install
 
 api-lint:
   stage: validation
@@ -14,7 +14,7 @@ api-lint:
   before_script:
     - *api-modules
   script:
-    - cd api && npm run lint
+    - npm run lint:backend
 
 api-test:
   stage: test
@@ -28,7 +28,7 @@ api-test:
   before_script:
     - *api-modules
   script:
-    - cd api && npm run test
+    - npm run test:backend
 
 build-backend:
   image: node:20-alpine
@@ -41,7 +41,7 @@ build-backend:
   before_script:
     - *api-modules
   script:
-    - cd api && npm run build
+    - npm run build:backend
   artifacts:
     paths:
       - api/dist/
