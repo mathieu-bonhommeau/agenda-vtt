@@ -1,3 +1,11 @@
+image: node:lts
+
+stages:
+  - validation
+  - test
+  - build
+  - deploy
+
 include:
   - ${CI_PROJECT_DIR}/client/.gitlab-ci.yml
   - ${CI_PROJECT_DIR}/api/.gitlab-ci.yml
