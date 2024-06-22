@@ -7,7 +7,7 @@ import { EventsFilters } from '@/app/filters-events/business/models/filter'
 import { SearchPlace } from '@/app/geolocation/business/models/search-place'
 import { Box, Card, Divider, IconButton, TextField, Typography } from '@mui/material'
 import { fromLonLat } from 'ol/proj'
-import { ChangeEvent, ReactNode, useContext, useState } from 'react'
+import { ChangeEvent, useContext, useState } from 'react'
 import { MdClear } from 'react-icons/md'
 
 export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filters: EventsFilters) => void }) {
@@ -54,18 +54,13 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
         return () => clearTimeout(searchTimeout)
     }
 
-    const commitSearchPlaceSelected = (event: ChangeEvent<HTMLSelectElement>, _: ReactNode) => {
-        setSearchPlace(event.currentTarget.value)
-        const { options } = event.currentTarget
-        for (let i = 0, l = options.length; i < l; i += 1) {
-            if ((options[i] as HTMLOptionElement).selected) {
-                handleAddFilter({ place: searchResults[i] })
-                setFocus({
-                    center: fromLonLat([searchResults[i].latLon.lon, searchResults[i].latLon.lat]),
-                    zoom: placeZoom[searchResults[i].type],
-                })
-            }
-        }
+    const commitSearchPlaceSelected = (place: SearchPlace) => {
+        setSearchPlace(`${place.city || ''} ${place.postcode || ''} ${place.county || ''}`)
+        handleAddFilter({ place })
+        setFocus({
+            center: fromLonLat([place.latLon.lon, place.latLon.lat]),
+            zoom: placeZoom[place.type],
+        })
         setSearchResults([])
     }
 
@@ -117,7 +112,7 @@ export function EventsBasedFilters({ handleAddFilter }: { handleAddFilter: (filt
                     handleReset={handleSearchPlaceReset}
                     searchResults={searchResults}
                     openSelectResults={openPlacesResults}
-                    commitSearchSelected={commitSearchPlaceSelected}
+                    commitSearchPlaceSelected={commitSearchPlaceSelected}
                     placeholder={'Région, ville, ... en 🇫🇷, 🇧🇪 ou 🇨🇭'}
                     label={'Région, ville, ... en 🇫🇷, 🇧🇪 ou 🇨🇭'}
                 />

@@ -20,6 +20,7 @@ import {
     TableRow,
     Typography,
 } from '@mui/material'
+import { useMediaQuery, useTheme } from '@mui/system'
 import { useDispatch } from 'react-redux'
 
 export function TableTraces({
@@ -32,6 +33,8 @@ export function TableTraces({
     deleteBtn?: boolean
 }) {
     const dispatch = useDispatch<AppDispatch>()
+    const theme = useTheme()
+    const isLg = useMediaQuery(theme.breakpoints.up('lg'))
 
     return (
         <TableContainer component={Paper} sx={customCss}>
@@ -70,7 +73,7 @@ export function TableTraces({
                                 <TableCell>
                                     {trace.link ? (
                                         <Link href={trace.link} target={'_blank'} variant="body2">
-                                            Lien vers la trace Gpx
+                                            {isLg ? 'Lien vers la trace Gpx' : 'gpx'}
                                         </Link>
                                     ) : (
                                         <Typography variant={'caption'} color={'gray'}>

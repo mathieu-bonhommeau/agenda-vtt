@@ -2,11 +2,14 @@ import { AppContext } from '@/app/_common/client/context/app-context'
 import { determineTraceColor } from '@/app/_common/helpers/trace-helpers'
 import { CalendarEvent } from '@/app/calendar-events/business/models/event'
 import { Trace } from '@/app/traces/business/models/trace'
-import { Box, Card, Chip, Typography } from '@mui/material'
+import { Box, Card, Chip, Grid, Typography } from '@mui/material'
+import { useMediaQuery, useTheme } from '@mui/system'
 import { useContext } from 'react'
 
 export function EventListCard({ event }: { event: CalendarEvent }) {
     const { setOpenModal, locale } = useContext(AppContext)
+    const theme = useTheme()
+    const isMd = useMediaQuery(theme.breakpoints.up('md'))
 
     return (
         <Card
@@ -16,8 +19,8 @@ export function EventListCard({ event }: { event: CalendarEvent }) {
                 setOpenModal({ open: true, event })
             }}
         >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 2, py: 1 }}>
-                <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
+            <Grid container sx={{ display: 'flex', justifyContent: 'space-between', px: 2, py: 1 }}>
+                <Grid item md={8} xs={12} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
                     {event.startDate === event.endDate && (
                         <Typography variant={'caption'} sx={{ fontWeight: 'bold' }}>{`Le ${new Date(
                             event.startDate,
@@ -30,7 +33,7 @@ export function EventListCard({ event }: { event: CalendarEvent }) {
                             locale,
                         )}`}</Typography>
                     )}
-                    <Typography variant={'h6'}>{event.title}</Typography>
+                    <Typography variant={isMd ? 'h6' : 'inherit'}>{event.title}</Typography>
                     <Box sx={{ my: 1, display: 'flex', gap: 1, alignItems: 'center' }}>
                         {event.traces.map((trace: Trace) => (
                             <Typography
@@ -45,16 +48,24 @@ export function EventListCard({ event }: { event: CalendarEvent }) {
                             >{`${trace.distance} kms`}</Typography>
                         ))}
                     </Box>
-                </Box>
-                <Box display={'flex'} flexDirection={'column'} justifyContent={'space-around'} alignItems={'flex-end'}>
-                    <Typography sx={{ fontSize: '2rem', fontWeight: 'bold', opacity: '0.5' }}>
+                </Grid>
+                <Grid
+                    item
+                    md={8}
+                    xs={12}
+                    display={'flex'}
+                    flexDirection={isMd ? 'column' : 'row'}
+                    justifyContent={isMd ? 'space-around' : 'space-between'}
+                    alignItems={isMd ? 'flex-end' : 'center'}
+                >
+                    <Typography sx={{ fontSize: isMd ? '2rem' : '1.5rem', fontWeight: 'bold', opacity: '0.5' }}>
                         {event.eventLocation.postcode?.slice(0, 2)}
                     </Typography>
                     <Box display={'flex'} gap={1}>
                         <Chip label={event.eventLocation.city} size={'small'} />
                     </Box>
-                </Box>
-            </Box>
+                </Grid>
+            </Grid>
         </Card>
     )
 }
@@ -62,7 +73,7 @@ export function EventListCard({ event }: { event: CalendarEvent }) {
 const eventCardStyle = {
     p: 0,
     m: 2,
-    width: '500px',
+    maxWidth: '500px',
     scale: 1,
     transition: 'transform 0.3s',
     '&:hover': {

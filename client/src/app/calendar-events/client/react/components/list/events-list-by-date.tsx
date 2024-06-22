@@ -28,10 +28,10 @@ export function EventsListByDate() {
                                 <Box display={'flex'} flexDirection={'column'}>
                                     <Typography variant={'caption'}>
                                         Du
-                                        <span style={{ fontWeight: 'bold' }}>{` ${weeks[weekNumber].startDate}`}</span>
+                                        <span style={{ fontWeight: 'bold' }}>{` ${weeks[weekNumber]?.startDate}`}</span>
                                     </Typography>
                                     <Typography variant={'caption'}>
-                                        Au<span style={{ fontWeight: 'bold' }}>{` ${weeks[weekNumber].endDate}`}</span>
+                                        Au<span style={{ fontWeight: 'bold' }}>{` ${weeks[weekNumber]?.endDate}`}</span>
                                     </Typography>
                                 </Box>
                             </Box>

@@ -11,3 +11,7 @@
     border-radius: 10px;
     padding: 1rem;
 }
+
+.wysiwyg-wrapper .rdw-emoji-modal {
+    position: inherit;
+}
