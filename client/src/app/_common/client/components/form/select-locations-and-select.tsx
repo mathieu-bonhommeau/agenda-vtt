@@ -1,8 +1,8 @@
 import { AppContext } from '@/app/_common/client/context/app-context'
 import { EventLocation } from '@/app/calendar-events/business/models/geolocation'
 import { SearchPlace } from '@/app/geolocation/business/models/search-place'
-import { Box, IconButton, Popper, Select, SelectChangeEvent, TextField } from '@mui/material'
-import { ChangeEvent, Dispatch, ReactNode, SetStateAction, useContext, useRef } from 'react'
+import { Box, IconButton, MenuItem, Popper, TextField } from '@mui/material'
+import React, { ChangeEvent, Dispatch, SetStateAction, useContext, useRef } from 'react'
 import { MdClear } from 'react-icons/md'
 
 function isSearchPlace(result: SearchPlace | EventLocation): result is SearchPlace {
@@ -17,7 +17,8 @@ export function SearchLocationsAndSelect({
     handleReset,
     searchResults,
     openSelectResults,
-    commitSearchSelected,
+    commitSearchPlaceSelected,
+    commitSearchEventLocationSelected,
     placeholder,
     label,
 }: {
@@ -28,15 +29,17 @@ export function SearchLocationsAndSelect({
     handleReset?: () => void
     searchResults: SearchPlace[] | EventLocation[]
     openSelectResults: string | null
-    commitSearchSelected: (event: ChangeEvent<HTMLSelectElement>, child: ReactNode) => void
+    commitSearchPlaceSelected?: (place: SearchPlace) => void
+    commitSearchEventLocationSelected?: (eventLocation: EventLocation) => void
     placeholder: string
     label: string
 }) {
     const searchInput = useRef<HTMLDivElement | null>(null)
     const { resetFilters, setResetFilters } = useContext(AppContext)
 
-    const handleChangePlace = (event: SelectChangeEvent<string>, child: ReactNode) => {
-        commitSearchSelected(event as unknown as ChangeEvent<HTMLSelectElement>, child)
+    const handleChangePlace = (_: React.MouseEvent<HTMLLIElement>, index: number) => {
+        commitSearchPlaceSelected && commitSearchPlaceSelected(searchResults[index] as SearchPlace)
+        commitSearchEventLocationSelected && commitSearchEventLocationSelected(searchResults[index] as EventLocation)
     }
 
     return (
@@ -65,39 +68,44 @@ export function SearchLocationsAndSelect({
                 }}
             />
             {searchResults.length ? (
-                <Popper
-                    open={openSelectResults === name}
-                    anchorEl={searchInput.current}
-                    placement="bottom-start"
-                    style={{ zIndex: 10000 }}
-                >
-                    <Select
-                        style={{ padding: 2, background: 'white' }}
-                        multiple
-                        native
-                        onChange={handleChangePlace}
-                        inputProps={{
-                            id: 'select-multiple-native',
-                        }}
+                <>
+                    <Popper
+                        open={openSelectResults === name}
+                        anchorEl={searchInput.current}
+                        placement="bottom-start"
+                        style={{ zIndex: 10000 }}
+                        disablePortal={false}
                     >
-                        {searchResults.map((result, index) => {
-                            if (isSearchPlace(result)) {
-                                return (
-                                    <option key={`${result.city}-${index}`}>
-                                        {`${result.city || ''} ${result.postcode || ''} ${result.county || ''}`}
-                                    </option>
-                                )
-                            }
-                            return (
-                                <option key={`${result.address}-${index}`}>
-                                    {`${result.housenumber || ''} ${result.address || ''} ${result.postcode || ''} ${
-                                        result.city || ''
-                                    }, ${result.country || ''}`}
-                                </option>
-                            )
-                        })}
-                    </Select>
-                </Popper>
+                        {searchResults.length && (
+                            <Box style={{ padding: 2, background: 'white', zIndex: -1, maxWidth: '100%' }}>
+                                {searchResults.map((result, index) => {
+                                    if (isSearchPlace(result)) {
+                                        return (
+                                            <MenuItem
+                                                key={`${result.city}-${index}`}
+                                                value={index}
+                                                onClick={(_) => handleChangePlace(_, index)}
+                                            >
+                                                {`${result.city || ''} ${result.postcode || ''} ${result.county || ''}`}
+                                            </MenuItem>
+                                        )
+                                    }
+                                    return (
+                                        <MenuItem
+                                            key={`${result.address}-${index}`}
+                                            value={index}
+                                            onClick={(_) => handleChangePlace(_, index)}
+                                        >
+                                            {`${result.housenumber || ''} ${result.address || ''} ${
+                                                result.postcode || ''
+                                            } ${result.city || ''}, ${result.country || ''}`}
+                                        </MenuItem>
+                                    )
+                                })}
+                            </Box>
+                        )}
+                    </Popper>
+                </>
             ) : (
                 <></>
             )}

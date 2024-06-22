@@ -6,7 +6,7 @@ import PinXC from '@/assets/icons/pin_xc.svg'
 import { Card, CardContent } from '@mui/material'
 import { Point } from 'ol/geom'
 import { fromLonLat } from 'ol/proj'
-import { ChangeEvent, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from 'react'
+import { ChangeEvent, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
 import { RFeature, RLayerVector, RMap, ROSM, RStyle } from 'rlayers'
 import { RView } from 'rlayers/RMap'
 
@@ -69,21 +69,21 @@ export function MainDataNewEventGeolocation({
         return () => clearTimeout(searchTimeout)
     }
 
-    const commitFindLocationsSelected = (event: ChangeEvent<HTMLSelectElement>, _: ReactNode) => {
-        setAddress(event.currentTarget.value)
-        const { options } = event.currentTarget
+    const commitFindLocationsSelected = (eventLocation: EventLocation) => {
+        console.log(eventLocation)
+        setAddress(`
+            ${eventLocation.housenumber || ''} ${eventLocation.address || ''} ${eventLocation.postcode || ''} ${
+            eventLocation.city || ''
+        }, ${eventLocation.country || ''}`)
 
-        for (let i = 0, l = options.length; i < l; i += 1) {
-            if ((options[i] as HTMLOptionElement).selected) {
-                setLocation(findLocationsResults[i])
-                setGeocode(buildGeocodeString(findLocationsResults[i]))
-                setAddress(buildAddress(findLocationsResults[i]))
-                setFocus({
-                    center: fromLonLat([findLocationsResults[i].latLon.lon, findLocationsResults[i].latLon.lat]),
-                    zoom: 11,
-                })
-            }
-        }
+        setLocation(eventLocation)
+        setGeocode(buildGeocodeString(eventLocation))
+        setAddress(buildAddress(eventLocation))
+        setFocus({
+            center: fromLonLat([eventLocation.latLon.lon, eventLocation.latLon.lat]),
+            zoom: 11,
+        })
+
         setFindLocationsResults([])
     }
 
@@ -107,7 +107,7 @@ export function MainDataNewEventGeolocation({
                     handleReset={handleReset}
                     searchResults={findLocationsResults}
                     openSelectResults={openPopperResults}
-                    commitSearchSelected={commitFindLocationsSelected}
+                    commitSearchEventLocationSelected={commitFindLocationsSelected}
                     placeholder={`Adresse de l'événement`}
                     label={`Adresse de l'événement`}
                 />
@@ -119,7 +119,7 @@ export function MainDataNewEventGeolocation({
                     handleReset={handleReset}
                     searchResults={findLocationsResults}
                     openSelectResults={openPopperResults}
-                    commitSearchSelected={commitFindLocationsSelected}
+                    commitSearchEventLocationSelected={commitFindLocationsSelected}
                     placeholder={`lat et lon (Ex: 43.7, -0.7 ou 43.7 -0.7)`}
                     label={`Géolocalisation de l'événement`}
                 />
