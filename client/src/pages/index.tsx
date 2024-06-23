@@ -49,7 +49,7 @@ export default function Index() {
 
     return (
         <>
-            <Grid container spacing={2} height={'100vh'}>
+            <Grid container spacing={2} height={isLg ? '100vh' : 'auto'}>
                 <IconButton sx={{ position: 'absolute', top: 20, right: 10 }}>
                     <LoginIcon />
                 </IconButton>

@@ -14,7 +14,7 @@ export function ModalEventTitle(props: {
     endDate: string
     setOpen?: Dispatch<SetStateAction<{ open: boolean; event: CalendarEventVM | undefined }>>
 }) {
-    const { locale } = useContext(AppContext)
+    const { locale, setErrors } = useContext(AppContext)
     const theme = useTheme()
     const isLg = useMediaQuery(theme.breakpoints.up('lg'))
 
@@ -38,7 +38,10 @@ export function ModalEventTitle(props: {
                         top: 15,
                         right: 0,
                     }}
-                    onClick={() => props.setOpen!({ open: false, event: undefined })}
+                    onClick={() => {
+                        props.setOpen!({ open: false, event: undefined })
+                        setErrors([])
+                    }}
                 >
                     <IoLogOut />
                 </IconButton>

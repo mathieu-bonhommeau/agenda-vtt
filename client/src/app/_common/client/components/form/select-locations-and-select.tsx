@@ -77,11 +77,21 @@ export function SearchLocationsAndSelect({
                         disablePortal={false}
                     >
                         {searchResults.length && (
-                            <Box style={{ padding: 2, background: 'white', zIndex: -1, maxWidth: '100%' }}>
+                            <Box
+                                style={{
+                                    padding: 2,
+                                    background: 'white',
+                                    overflow: 'scroll',
+                                    maxWidth: '300px',
+                                    border: '1px solid #F2F2F2',
+                                    maxHeight: '300px',
+                                }}
+                            >
                                 {searchResults.map((result, index) => {
                                     if (isSearchPlace(result)) {
                                         return (
                                             <MenuItem
+                                                sx={{ textWrap: 'wrap' }}
                                                 key={`${result.city}-${index}`}
                                                 value={index}
                                                 onClick={(_) => handleChangePlace(_, index)}
@@ -92,6 +102,7 @@ export function SearchLocationsAndSelect({
                                     }
                                     return (
                                         <MenuItem
+                                            sx={{ textWrap: 'wrap' }}
                                             key={`${result.address}-${index}`}
                                             value={index}
                                             onClick={(_) => handleChangePlace(_, index)}
