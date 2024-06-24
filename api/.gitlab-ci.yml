@@ -96,9 +96,9 @@ deploy-db-production:
   script:
     - |
       docker build \
-      --no-cache -f ./docker/db/db.dockerfile
       --build-arg POSTGRES_USER=$POSTGRES_USER \
       --build-arg POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
       --build-arg POSTGRES_DB=$POSTGRES_DB \
+      --no-cache -f ./docker/db/db.dockerfile \
       -t ${DB_TAG} .
     - docker push ${DB_TAG}
