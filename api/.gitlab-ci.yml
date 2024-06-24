@@ -101,5 +101,4 @@ deploy-db-production:
       --build-arg POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
       --build-arg POSTGRES_DB=$POSTGRES_DB \
       -t ${DB_TAG} .
-       docker build --no-cache -f ./docker/db/db.dockerfile -t ${DB_TAG} .
     - docker push ${DB_TAG}
