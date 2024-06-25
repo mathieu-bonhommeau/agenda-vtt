@@ -91,11 +91,8 @@ deploy-db-production:
   before_script:
     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - touch .env
-    - echo $ENV_PRODUCTION_BACK > .env
   script:
     - |
-      echo $POSTGRES_USER
       docker build \
       --build-arg POSTGRES_USER=${POSTGRES_USER} \
       --build-arg POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
