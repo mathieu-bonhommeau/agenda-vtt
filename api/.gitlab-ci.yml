@@ -95,14 +95,11 @@ deploy-db-production:
     - echo $ENV_PRODUCTION_BACK > .env
   script:
     - |
-      set -a
-      . ./.env
-      set +a
       echo $POSTGRES_USER
       docker build \
-      --build-arg POSTGRES_USER=$POSTGRES_USER \
-      --build-arg POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
-      --build-arg POSTGRES_DB=$POSTGRES_DB \
+      --build-arg POSTGRES_USER=${POSTGRES_USER} \
+      --build-arg POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+      --build-arg POSTGRES_DB=${POSTGRES_DB} \
       --no-cache -f ./docker/db/db.dockerfile \
       -t ${DB_TAG} .
     - docker push ${DB_TAG}
