@@ -12,6 +12,9 @@ export const SqlProvider = {
             username: process.env.POSTGRES_USER || 'postgres',
             password: process.env.POSTGRES_PASSWORD || 'root',
             database: process.env.POSTGRESS_DB || 'utagawa-agenda-db',
+            entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+            synchronize: true,
         })
+        return dataSource.initialize()
     },
 }
