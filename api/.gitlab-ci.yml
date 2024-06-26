@@ -85,9 +85,9 @@ deploy-db-production:
     DB_TAG: ${CI_REGISTRY_IMAGE}/db:${CI_ENVIRONMENT_NAME}
   needs: []
   rules:
-    #- if: '$CI_COMMIT_BRANCH == "main"'
-      #when: manual
-    #- when: never
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+    - when: never
   before_script:
     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
