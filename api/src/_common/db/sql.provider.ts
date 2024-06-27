@@ -15,6 +15,6 @@ export const SqlProvider = {
             entities: [__dirname + '/../**/*.entity{.ts,.js}'],
             synchronize: true,
         })
-        return dataSource.initialize()
+        return pg.initialize()
     },
 }
