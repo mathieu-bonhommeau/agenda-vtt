@@ -23,7 +23,7 @@ For launch the project :
 
 1 - `cd client`
 
-2 - `npm install` for install dependencies
+2 - `npm install` to install dependencies
 
 3 - `cp env.template .env` copy .env file
 
@@ -39,9 +39,11 @@ This api is built with NestJs, Typescript and ad uses Posgresql database
 
 1 - `cd api`
 
-2 - `npm install` for install dependencies
+2 - `npm install` to install dependencies
 
 3 - `cp env.template .env` copy .env file
+
+4 - `npm run migration:up` to make migrations on db
 
 // Add steps for migrations and fixtures
 
