@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config jest-e2e.json",
     "migration:generate": "npm run build:backend && ./node_modules/.bin/typeorm migration:generate -d ./dist/_common/db/_config/sql.js ./src/_common/db/migrations/$NAME",
     "migration:run": "npm run build:backend && ./node_modules/.bin/typeorm migration:run -d ./dist/_common/db/_config/sql.js",
     "migration:down": "npm run build:backend && ./node_modules/.bin/typeorm migration:revert -d ./dist/_common/db/_config/sql.js"
