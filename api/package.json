@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config jest-e2e.json",
-    "migration:generate": "npm run build:backend && ./node_modules/.bin/typeorm migration:generate -d ./dist/_common/db/_config/sql.js ./src/_common/db/migrations/$NAME",
-    "migration:run": "npm run build:backend && ./node_modules/.bin/typeorm migration:run -d ./dist/_common/db/_config/sql.js",
-    "migration:down": "npm run build:backend && ./node_modules/.bin/typeorm migration:revert -d ./dist/_common/db/_config/sql.js"
+    "migration:generate": "npm run build:backend && ./node_modules/.bin/typeorm migration:generate -d ./dist/_common/db/typeorm/_config/typeorm-pg.js src/_common/db/pg/migrations/$NAME",
+    "migration:run": "npm run build:backend && ./node_modules/.bin/typeorm migration:run -d ./dist/_common/db/typeorm/_config/typeorm-pg.js",
+    "migration:down": "npm run build:backend && ./node_modules/.bin/typeorm migration:revert -d ./dist/_common/db/typeorm/_config/typeorm-pg.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -32,7 +32,9 @@
     "date-fns": "^3.6.0",
     "jest-expect-message": "^1.1.3",
     "jest-extended": "^4.0.2",
+    "normalize-object": "^2.0.4",
     "pg": "^8.12.0",
+    "postgres": "^3.4.4",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20"
@@ -58,7 +60,8 @@
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.3",
+    "uuidv4": "^6.2.13"
   },
   "jest": {
     "moduleFileExtensions": [

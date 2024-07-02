@@ -1,6 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm'
 
-const SqlConfig: DataSourceOptions = {
+const pgConfig: DataSourceOptions = {
     type: 'postgres',
     host: process.env.POSTGRES_HOST || 'localhost',
     port: parseInt(process.env.POSTGRES_PORT, 10) || 5432,
@@ -12,4 +12,4 @@ const SqlConfig: DataSourceOptions = {
     synchronize: true,
 }
 
-export const Sql = new DataSource(SqlConfig)
+export const Pg = new DataSource(pgConfig)

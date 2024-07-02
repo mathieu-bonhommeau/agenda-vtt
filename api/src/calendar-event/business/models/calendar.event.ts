@@ -1,4 +1,5 @@
 export type EventLocation = {
+    id: string
     country: string
     region?: string
     county?: string

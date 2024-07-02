@@ -1,10 +1,10 @@
 import { config } from 'dotenv'
-import { Sql } from './_config/sql'
+import { Pg } from './_config/pg'
 config()
 
-export const SqlProvider = {
+export const PgProvider = {
     provide: 'SQL',
     useFactory: async () => {
-        return Sql.initialize()
+        return Pg.initialize()
     },
 }
