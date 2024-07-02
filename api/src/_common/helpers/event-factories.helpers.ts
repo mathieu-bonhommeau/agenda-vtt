@@ -5,6 +5,7 @@ import {
     EventOrganizer,
     Trace,
 } from '../../calendar-event/business/models/calendar.event'
+import { v4 } from 'uuid'
 
 export const arbitraryCalendarEvent = (overrides: Partial<CalendarEvent>): CalendarEvent => ({
     id: 'random-event-id',
@@ -15,11 +16,12 @@ export const arbitraryCalendarEvent = (overrides: Partial<CalendarEvent>): Calen
     endDate: addDays(new Date(), 2),
     eventLocation: arbitraryEventLocation({}),
     traces: [arbitraryTrace({})],
-    prices: [{ price: '5€ pour les enfants' }],
+    prices: [{ id: v4(), price: '5€ pour les enfants' }],
     organizer: arbitraryEventOrganizer({}),
     ...overrides,
 })
 export const arbitraryEventLocation = (overrides: Partial<EventLocation>): EventLocation => ({
+    id: v4(),
     country: 'France',
     city: 'Paris',
     address: 'rue de la paix',
@@ -36,9 +38,10 @@ export const arbitraryTrace = (overrides: Partial<Trace>): Trace => ({
     ...overrides,
 })
 export const arbitraryEventOrganizer = (overrides: Partial<EventOrganizer>): EventOrganizer => ({
+    id: v4(),
     name: 'john doe',
     email: 'john@doe.com',
     website: 'https://johndoe.com',
-    contacts: [{ name: 'contact-1', phone: '0251565458' }],
+    contacts: [{ id: v4(), name: 'contact-1', phone: '0251565458' }],
     ...overrides,
 })

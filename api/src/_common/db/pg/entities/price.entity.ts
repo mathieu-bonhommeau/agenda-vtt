@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { CalendarEventEntity } from './calendar-event.entity'
 
 @Entity()
@@ -10,5 +10,6 @@ export class PriceEntity {
     price: string
 
     @ManyToOne(() => CalendarEventEntity, (calendarEvent) => calendarEvent.prices)
+    @JoinColumn({ name: 'calendar_event_id' })
     calendarEvent: CalendarEventEntity
 }

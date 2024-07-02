@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config jest-e2e.json",
-    "migration:generate": "npm run build:backend && ./node_modules/.bin/typeorm migration:generate -d ./dist/_common/db/typeorm/_config/typeorm-pg.js src/_common/db/pg/migrations/$NAME",
-    "migration:run": "npm run build:backend && ./node_modules/.bin/typeorm migration:run -d ./dist/_common/db/typeorm/_config/typeorm-pg.js",
-    "migration:down": "npm run build:backend && ./node_modules/.bin/typeorm migration:revert -d ./dist/_common/db/typeorm/_config/typeorm-pg.js"
+    "migration:generate": "npm run build:backend && ./node_modules/.bin/typeorm migration:generate -d ./dist/_common/db/pg/_config/pg.js src/_common/db/pg/migrations/$NAME",
+    "migration:run": "npm run build:backend && ./node_modules/.bin/typeorm migration:run -d ./dist/_common/db/pg/_config/pg.js",
+    "migration:down": "npm run build:backend && ./node_modules/.bin/typeorm migration:revert -d ./dist/_common/db/pg/_config/pg.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

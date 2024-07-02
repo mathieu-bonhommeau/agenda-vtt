@@ -1,6 +1,8 @@
-import { Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { CalendarEventEntity } from './calendar-event.entity'
+import { ContactEntity } from './contact.entity'
 
+@Entity()
 export class EventLocationEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string

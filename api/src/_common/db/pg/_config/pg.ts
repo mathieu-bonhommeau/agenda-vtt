@@ -7,8 +7,8 @@ const pgConfig: DataSourceOptions = {
     username: process.env.POSTGRES_USER || 'postgres',
     password: process.env.POSTGRES_PASSWORD || 'root',
     database: process.env.POSTGRESS_DB || 'utagawa-agenda-db',
-    entities: ['dist/_common/db/entities/*.js'],
-    migrations: ['dist/_common/db/migrations/*.js'],
+    entities: ['dist/_common/db/pg/entities/*.js'],
+    migrations: ['dist/_common/db/pg/migrations/*.js'],
     synchronize: true,
 }
 

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { EventLocationEntity } from './event-location.entity'
 import { TraceEntity } from './trace.entity'
 import { PriceEntity } from './price.entity'
@@ -26,6 +26,7 @@ export class CalendarEventEntity {
     endAt: Date
 
     @ManyToOne(() => EventLocationEntity, (eventLocation) => eventLocation.calendarEvents)
+    @JoinColumn({ name: 'event_location_id' })
     eventLocation: EventLocationEntity
 
     @OneToMany(() => TraceEntity, (trace) => trace.calendarEvent)
@@ -34,9 +35,22 @@ export class CalendarEventEntity {
     @OneToMany(() => PriceEntity, (price) => price.calendarEvent)
     prices: PriceEntity[]
 
-    @Column({ name: 'services', nullable: true })
+    @Column({
+        type: 'json',
+        name: 'services',
+        nullable: true,
+        transformer: {
+            to(value: string[]): string {
+                return JSON.stringify(value)
+            },
+            from(value: string): string[] {
+                return JSON.parse(value)
+            },
+        },
+    })
     services: string[]
 
     @ManyToOne(() => EventOrganizerEntity, (eventOrganizer) => eventOrganizer.calendarEvents)
+    @JoinColumn({ name: 'organizer_id' })
     organizer: EventOrganizer
 }

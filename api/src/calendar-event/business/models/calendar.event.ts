@@ -23,15 +23,18 @@ export type Trace = {
 }
 export type TraceColor = 'green' | 'blue' | 'red' | 'black'
 export type EventPrice = {
+    id: string
     price: string
 }
 export type EventOrganizer = {
+    id: string
     name: string
     email: string
     website?: string
     contacts?: Contact[]
 }
 export type Contact = {
+    id: string
     name: string
     phone: string
 }
