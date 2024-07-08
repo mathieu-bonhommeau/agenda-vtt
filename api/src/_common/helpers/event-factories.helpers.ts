@@ -1,6 +1,7 @@
 import { addDays } from 'date-fns'
 import {
     CalendarEvent,
+    Contact,
     EventLocation,
     EventOrganizer,
     Trace,
@@ -16,7 +17,7 @@ export const arbitraryCalendarEvent = (overrides: Partial<CalendarEvent>): Calen
     endDate: addDays(new Date(), 2),
     eventLocation: arbitraryEventLocation({}),
     traces: [arbitraryTrace({})],
-    prices: [{ id: v4(), price: '5€ pour les enfants' }],
+    prices: ['5€ pour les enfants'],
     organizer: arbitraryEventOrganizer({}),
     ...overrides,
 })
@@ -42,6 +43,13 @@ export const arbitraryEventOrganizer = (overrides: Partial<EventOrganizer>): Eve
     name: 'john doe',
     email: 'john@doe.com',
     website: 'https://johndoe.com',
-    contacts: [{ id: v4(), name: 'contact-1', phone: '0251565458' }],
+    contacts: [arbitraryContact({})],
+    ...overrides,
+})
+
+export const arbitraryContact = (overrides: Partial<Contact>): Contact => ({
+    id: v4(),
+    name: 'john doe',
+    phone: '0675452636',
     ...overrides,
 })

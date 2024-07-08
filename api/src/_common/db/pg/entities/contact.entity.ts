@@ -24,5 +24,5 @@ export class ContactEntity {
             referencedColumnName: 'id',
         },
     })
-    organizer: EventOrganizerEntity[]
+    organizer?: EventOrganizerEntity[]
 }

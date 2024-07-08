@@ -19,13 +19,10 @@ export type Trace = {
     link?: string
     distance: number
     positiveElevation?: number
-    traceColor?: TraceColor | 'notDefined'
+    traceColor?: TraceColor
 }
 export type TraceColor = 'green' | 'blue' | 'red' | 'black'
-export type EventPrice = {
-    id: string
-    price: string
-}
+
 export type EventOrganizer = {
     id: string
     name: string
@@ -47,7 +44,7 @@ export type CalendarEvent = {
     endDate: Date
     eventLocation: EventLocation
     traces: Trace[]
-    prices?: EventPrice[]
+    prices?: string[]
     services?: string[]
     organizer: EventOrganizer
 }

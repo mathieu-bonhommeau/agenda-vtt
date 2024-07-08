@@ -1,6 +1,5 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, Point, PrimaryGeneratedColumn } from 'typeorm'
 import { CalendarEventEntity } from './calendar-event.entity'
-import { ContactEntity } from './contact.entity'
 
 @Entity()
 export class EventLocationEntity {
@@ -19,6 +18,9 @@ export class EventLocationEntity {
     @Column({ name: 'postcode', nullable: true })
     postcode: string
 
+    @Column({ name: 'housenumber', nullable: true })
+    housenumber: string
+
     @Column({ name: 'city' })
     city: string
 
@@ -29,8 +31,8 @@ export class EventLocationEntity {
         type: 'geometry',
         srid: 3857,
     })
-    geometry: string
+    geometry: Point
 
     @OneToMany(() => CalendarEventEntity, (calendarEvent) => calendarEvent.eventLocation)
-    calendarEvents: CalendarEventEntity[]
+    calendarEvents?: CalendarEventEntity[]
 }

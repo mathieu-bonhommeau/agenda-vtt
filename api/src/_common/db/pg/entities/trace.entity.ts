@@ -8,7 +8,7 @@ export class TraceEntity {
     id: string
 
     @Column({ name: 'utagawa_id', nullable: true })
-    utagawaId: string
+    utagawaId: number
 
     @Column({ name: 'link', nullable: true })
     link: string
@@ -22,7 +22,7 @@ export class TraceEntity {
     @Column({ name: 'trace_color', nullable: true })
     traceColor: TraceColor
 
-    @ManyToOne(() => CalendarEventEntity, (calendarEvent) => calendarEvent.traces)
+    @ManyToOne(() => CalendarEventEntity, (calendarEvent) => calendarEvent.traces, { nullable: true })
     @JoinColumn({ name: 'calendar_event_id' })
-    calendarEvent: CalendarEventEntity
+    calendarEvent?: CalendarEventEntity
 }

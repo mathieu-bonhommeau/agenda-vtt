@@ -19,7 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-  "types": [
+    "allowJs": true,
+    "types": [
     "node",
     "jest",
     "jest-extended",

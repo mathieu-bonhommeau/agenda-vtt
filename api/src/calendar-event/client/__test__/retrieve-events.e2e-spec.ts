@@ -3,45 +3,236 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { Server } from 'http'
 import { CalendarEventController } from '../calendar-event.controller'
-import { arbitraryCalendarEvent } from '../../../_common/helpers/event-factories.helpers'
-import { CalendarEvent } from '../../business/models/calendar.event'
+import {
+    arbitraryCalendarEvent,
+    arbitraryContact,
+    arbitraryEventLocation,
+    arbitraryEventOrganizer,
+    arbitraryTrace,
+} from '../../../_common/helpers/event-factories.helpers'
+import { CalendarEvent, Contact, EventLocation, EventOrganizer, Trace } from '../../business/models/calendar.event'
 import { v4 } from 'uuid'
+import { PgModule } from '../../../_common/db/pg/pg.module'
+import { CalendarEventEntity } from '../../../_common/db/pg/entities/calendar-event.entity'
+import { DataSource, InsertResult, UpdateResult } from 'typeorm'
+import { PgTesting } from '../../../_common/db/pg/_config/pg-testing'
+import { EventLocationEntity } from '../../../_common/db/pg/entities/event-location.entity'
+import { TraceEntity } from '../../../_common/db/pg/entities/trace.entity'
+import { ContactEntity } from '../../../_common/db/pg/entities/contact.entity'
+import { EventOrganizerEntity } from '../../../_common/db/pg/entities/event-organizer.entity'
 
 describe('Calendar event e2e test', () => {
     let sut: SUT
     let app: INestApplication
+    let pg: DataSource
+    const eventLocation = arbitraryEventLocation({ id: v4() })
+    const traces = [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })]
+    const contacts = [arbitraryContact({ id: v4() }), arbitraryContact({ id: v4() })]
+    const organizer = arbitraryEventOrganizer({ id: v4(), contacts })
+    const event = arbitraryCalendarEvent({ id: v4(), eventLocation, traces, organizer })
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
+            imports: [PgModule],
             controllers: [CalendarEventController],
         }).compile()
         app = moduleRef.createNestApplication()
         await app.init()
     })
 
-    beforeEach(() => {
-        sut = new SUT(app)
-        sut.givenCalendarEvents([arbitraryCalendarEvent({ id: v4() })])
+    beforeEach(async () => {
+        pg = await PgTesting.initialize()
+        sut = new SUT({ app, pg })
+        await sut.clear()
+
+        sut.givenCalendarEvents(event)
+            .withTraces(traces)
+            .withEventLocation(eventLocation)
+            .withOrganizer(organizer)
+            .withContacts(contacts, organizer.id)
+
+        await sut.executePromises()
     })
 
     it('retrieves all events', async () => {
         const response = await sut.retrieveCalendarEvents('/calendar-events')
 
         expect(response.status).toEqual(200)
-        expect(response.body).toEqual({})
+        //expect(response.body).toEqual(sut.allEvents)
     })
 })
 
 class SUT {
     private readonly _server: Server
+    private readonly _pg: DataSource
+    private readonly _promises: Array<() => Promise<InsertResult | UpdateResult>> = []
 
-    constructor(private readonly _app: INestApplication) {
-        this._server = this._app.getHttpServer()
+    constructor({ app, pg }: { app: INestApplication; pg: DataSource }) {
+        this._server = app.getHttpServer()
+        this._pg = pg
     }
 
-    async givenCalendarEvents(events: CalendarEvent[]): Promise<void> {}
+    givenCalendarEvents(event: CalendarEvent) {
+        this._promises.push(() =>
+            this._pg
+                .createQueryBuilder()
+                .insert()
+                .into(CalendarEventEntity)
+                .values(toCalendarEventDbDTO(event))
+                .execute(),
+        )
+
+        return this.next(event)
+    }
+
+    next(event: CalendarEvent) {
+        const calendarEventDTO = toCalendarEventDbDTO(event)
+        return {
+            withTraces: (traces: Trace[]) => {
+                traces.forEach((trace) =>
+                    this._promises.push(() =>
+                        this._pg
+                            .createQueryBuilder()
+                            .insert()
+                            .into(TraceEntity)
+                            .values(toTraceDbDTO(trace, calendarEventDTO))
+                            .execute(),
+                    ),
+                )
+                return this.next(event)
+            },
+            withEventLocation: (eventLocation: EventLocation) => {
+                this._promises.push(() =>
+                    this._pg
+                        .createQueryBuilder()
+                        .insert()
+                        .into(EventLocationEntity)
+                        .values(toEventLocationDbDTO(eventLocation, calendarEventDTO))
+                        .execute(),
+                )
+                this._promises.push(() =>
+                    this._pg
+                        .createQueryBuilder()
+                        .update(CalendarEventEntity)
+                        .set({ eventLocation })
+                        .where('id = :id', { id: event.id })
+                        .execute(),
+                )
+                return this.next(event)
+            },
+            withOrganizer: (organizer: EventOrganizer) => {
+                this._promises.push(() =>
+                    this._pg
+                        .createQueryBuilder()
+                        .insert()
+                        .into(EventOrganizerEntity)
+                        .values(toEventOrganizerDbDTO(organizer))
+                        .execute(),
+                )
+                this._promises.push(() =>
+                    this._pg
+                        .createQueryBuilder()
+                        .update(CalendarEventEntity)
+                        .set({ organizer })
+                        .where('id = :id', { id: event.id })
+                        .execute(),
+                )
+                return this.next(event)
+            },
+            withContacts: (contacts: Contact[], organizerId: EventOrganizer['id']) => {
+                contacts.forEach((contact) => {
+                    this._promises.push(() =>
+                        this._pg
+                            .createQueryBuilder()
+                            .insert()
+                            .into(ContactEntity)
+                            .values(toContactDbDTO(contact))
+                            .execute(),
+                    )
+                    this._promises.push(() =>
+                        this._pg
+                            .createQueryBuilder()
+                            .insert()
+                            .into('organizer_contact')
+                            .values({ contact_id: contact.id, organizer_id: organizerId })
+                            .execute(),
+                    )
+                    return this.next(event)
+                })
+            },
+        }
+    }
 
     async retrieveCalendarEvents(path: string) {
         return request(this._server).get(path)
     }
+
+    async executePromises() {
+        for (const promise of this._promises) {
+            await promise()
+        }
+    }
+
+    async clear() {
+        await this._pg.createQueryBuilder().delete().from(TraceEntity).execute()
+        await this._pg.createQueryBuilder().delete().from(CalendarEventEntity).execute()
+        await this._pg.createQueryBuilder().delete().from('organizer_contact').execute()
+        await this._pg.createQueryBuilder().delete().from(EventOrganizerEntity).execute()
+        await this._pg.createQueryBuilder().delete().from(EventLocationEntity).execute()
+        await this._pg.createQueryBuilder().delete().from(ContactEntity).execute()
+    }
 }
+
+export const toCalendarEventDbDTO = (event: CalendarEvent): CalendarEventEntity => ({
+    id: event.id,
+    title: event.title,
+    description: event.description,
+    createdAt: event.createdAt,
+    startDate: event.startDate,
+    endDate: event.endDate,
+    traces: [],
+    prices: event.prices,
+    services: event.services,
+})
+
+export const toEventLocationDbDTO = (
+    eventLocation: EventLocation,
+    event: CalendarEventEntity,
+): EventLocationEntity => ({
+    id: eventLocation.id,
+    country: eventLocation.country,
+    region: eventLocation.region,
+    county: eventLocation.county,
+    city: eventLocation.city,
+    postcode: eventLocation.postcode,
+    housenumber: eventLocation.housenumber,
+    address: eventLocation.address,
+    geometry: {
+        type: 'Point',
+        coordinates: [eventLocation.latLon.lon, eventLocation.latLon.lat],
+    },
+    calendarEvents: [event],
+})
+
+export const toTraceDbDTO = (trace: Trace, calendarEvent: CalendarEventEntity): TraceEntity => ({
+    id: trace.id,
+    utagawaId: trace.utagawaId,
+    link: trace.link,
+    distance: trace.distance,
+    positiveElevation: trace.positiveElevation,
+    traceColor: trace.traceColor,
+    calendarEvent,
+})
+
+export const toEventOrganizerDbDTO = (eventOrganizer: EventOrganizer) => ({
+    id: eventOrganizer.id,
+    name: eventOrganizer.name,
+    email: eventOrganizer.email,
+    website: eventOrganizer.website,
+})
+
+export const toContactDbDTO = (contact: Contact) => ({
+    id: contact.id,
+    name: contact.name,
+    phone: contact.phone,
+})

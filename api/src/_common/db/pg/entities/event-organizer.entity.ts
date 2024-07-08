@@ -17,7 +17,7 @@ export class EventOrganizerEntity {
     website: string
 
     @OneToMany(() => CalendarEventEntity, (calendarEvents) => calendarEvents.organizer)
-    calendarEvents: CalendarEventEntity[]
+    calendarEvents?: CalendarEventEntity[]
 
     @ManyToMany(() => ContactEntity, (contactEntity) => contactEntity.organizer)
     @JoinTable({
@@ -31,5 +31,5 @@ export class EventOrganizerEntity {
             referencedColumnName: 'id',
         },
     })
-    contacts: ContactEntity[]
+    contacts?: ContactEntity[]
 }

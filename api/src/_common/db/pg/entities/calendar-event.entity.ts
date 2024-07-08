@@ -1,7 +1,6 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { EventLocationEntity } from './event-location.entity'
 import { TraceEntity } from './trace.entity'
-import { PriceEntity } from './price.entity'
 import { EventOrganizer } from '../../../../calendar-event/business/models/calendar.event'
 import { EventOrganizerEntity } from './event-organizer.entity'
 
@@ -23,17 +22,29 @@ export class CalendarEventEntity {
     startDate: Date
 
     @Column({ name: 'end_date' })
-    endAt: Date
+    endDate: Date
 
-    @ManyToOne(() => EventLocationEntity, (eventLocation) => eventLocation.calendarEvents)
+    @ManyToOne(() => EventLocationEntity, (eventLocation) => eventLocation.calendarEvents, { nullable: true })
     @JoinColumn({ name: 'event_location_id' })
-    eventLocation: EventLocationEntity
+    eventLocation?: EventLocationEntity
 
     @OneToMany(() => TraceEntity, (trace) => trace.calendarEvent)
-    traces: TraceEntity[]
+    traces?: TraceEntity[]
 
-    @OneToMany(() => PriceEntity, (price) => price.calendarEvent)
-    prices: PriceEntity[]
+    @Column({
+        type: 'json',
+        name: 'prices',
+        nullable: true,
+        transformer: {
+            to(value: string[]): string {
+                return JSON.stringify(value)
+            },
+            from(value: string): string[] {
+                return JSON.parse(value)
+            },
+        },
+    })
+    prices?: string[]
 
     @Column({
         type: 'json',
@@ -50,7 +61,7 @@ export class CalendarEventEntity {
     })
     services: string[]
 
-    @ManyToOne(() => EventOrganizerEntity, (eventOrganizer) => eventOrganizer.calendarEvents)
+    @ManyToOne(() => EventOrganizerEntity, (eventOrganizer) => eventOrganizer.calendarEvents, { nullable: true })
     @JoinColumn({ name: 'organizer_id' })
-    organizer: EventOrganizer
+    organizer?: EventOrganizer
 }
