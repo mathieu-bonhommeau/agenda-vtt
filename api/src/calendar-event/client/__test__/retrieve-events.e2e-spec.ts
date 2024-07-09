@@ -25,11 +25,26 @@ describe('Calendar event e2e test', () => {
     let sut: SUT
     let app: INestApplication
     let pg: DataSource
-    const eventLocation = arbitraryEventLocation({ id: v4() })
-    const traces = [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })]
-    const contacts = [arbitraryContact({ id: v4() }), arbitraryContact({ id: v4() })]
-    const organizer = arbitraryEventOrganizer({ id: v4(), contacts })
-    const event = arbitraryCalendarEvent({ id: v4(), eventLocation, traces, organizer })
+
+    const event1 = arbitraryCalendarEvent({
+        id: v4(),
+        eventLocation: arbitraryEventLocation({ id: v4() }),
+        traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
+        organizer: arbitraryEventOrganizer({
+            id: v4(),
+            contacts: [arbitraryContact({ id: v4() }), arbitraryContact({ id: v4() })],
+        }),
+    })
+
+    const event2 = arbitraryCalendarEvent({
+        id: v4(),
+        eventLocation: arbitraryEventLocation({ id: v4() }),
+        traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
+        organizer: arbitraryEventOrganizer({
+            id: v4(),
+            contacts: [arbitraryContact({ id: v4() }), arbitraryContact({ id: v4() })],
+        }),
+    })
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
@@ -45,11 +60,17 @@ describe('Calendar event e2e test', () => {
         sut = new SUT({ app, pg })
         await sut.clear()
 
-        sut.givenCalendarEvents(event)
-            .withTraces(traces)
-            .withEventLocation(eventLocation)
-            .withOrganizer(organizer)
-            .withContacts(contacts, organizer.id)
+        sut.givenCalendarEvent(event1)
+            .withTraces(event1.traces)
+            .withEventLocation(event1.eventLocation)
+            .withOrganizer(event1.organizer)
+            .withContacts(event1.organizer.contacts, event1.organizer.id)
+
+        sut.givenCalendarEvent(event2)
+            .withTraces(event2.traces)
+            .withEventLocation(event2.eventLocation)
+            .withOrganizer(event2.organizer)
+            .withContacts(event2.organizer.contacts, event2.organizer.id)
 
         await sut.executePromises()
     })
@@ -58,7 +79,7 @@ describe('Calendar event e2e test', () => {
         const response = await sut.retrieveCalendarEvents('/calendar-events')
 
         expect(response.status).toEqual(200)
-        //expect(response.body).toEqual(sut.allEvents)
+        expect(response.body).toEqual([event1, event2])
     })
 })
 
@@ -72,7 +93,7 @@ class SUT {
         this._pg = pg
     }
 
-    givenCalendarEvents(event: CalendarEvent) {
+    givenCalendarEvent(event: CalendarEvent) {
         this._promises.push(() =>
             this._pg
                 .createQueryBuilder()
