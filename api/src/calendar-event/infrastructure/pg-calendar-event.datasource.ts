@@ -1,5 +1,5 @@
 import { CalendarEventDataSource } from '../business/ports/calendar-event-data.source'
-import { DataSource } from 'typeorm'
+import { DataSource, getRepository } from 'typeorm'
 import { CalendarEvent, EventLocation, EventOrganizer, Trace } from '../business/models/calendar.event'
 import { CalendarEventEntity } from '../../_common/db/pg/entities/calendar-event.entity'
 import { EventLocationEntity } from '../../_common/db/pg/entities/event-location.entity'
@@ -15,9 +15,9 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
 
     async fetch(): Promise<CalendarEvent[]> {
         const eventsDB = await this._pg
-            .createQueryBuilder()
-            .select()
-            .from(CalendarEventEntity, 'calendar_event_entity')
+            .createQueryBuilder(CalendarEventEntity, 'calendar_event_entity')
+            .innerJoinAndSelect('calendar_event_entity.eventLocation', 'event_location_entity')
+            .innerJoinAndSelect('calendar_event_entity.organizer', 'event_organizer_entity')
             .getMany()
 
         console.log(eventsDB)

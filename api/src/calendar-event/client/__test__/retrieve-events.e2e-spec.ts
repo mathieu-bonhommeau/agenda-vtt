@@ -28,6 +28,9 @@ import {
     toTraceDbDTO,
 } from '../../infrastructure/dtos/calendar-event-dto'
 import { calendarEventDataSourceProvider, retrieveEventsProvider } from '../../_config/calendar-event.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { PgTestingModule, PgTestingProvider } from '../../../_common/db/pg/pg-testing-module'
+import { PgProvider } from '../../../_common/db/pg/pg.provider'
 
 describe('Calendar event e2e test', () => {
     let sut: SUT
@@ -55,17 +58,23 @@ describe('Calendar event e2e test', () => {
     })
 
     beforeAll(async () => {
+        pg = await PgTestingProvider.useFactory()
         const moduleRef = await Test.createTestingModule({
-            imports: [PgModule],
             controllers: [CalendarEventController],
-            providers: [retrieveEventsProvider, calendarEventDataSourceProvider],
+            providers: [
+                retrieveEventsProvider,
+                calendarEventDataSourceProvider,
+                {
+                    provide: 'SQL',
+                    useValue: pg,
+                },
+            ],
         }).compile()
         app = moduleRef.createNestApplication()
         await app.init()
     })
 
     beforeEach(async () => {
-        pg = await PgTesting.initialize()
         sut = new SUT({ app, pg })
         await sut.clear()
 
@@ -86,7 +95,6 @@ describe('Calendar event e2e test', () => {
 
     it('retrieves all events', async () => {
         const response = await sut.retrieveCalendarEvents('/calendar-events')
-        const calendarEvent = new CalendarEventEntity()
         expect(response.status).toEqual(200)
         expect(response.body).toEqual([event1, event2])
     })
