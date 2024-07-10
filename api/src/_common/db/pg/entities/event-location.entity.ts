@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, Point, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, getManager, OneToMany, Point, PrimaryGeneratedColumn } from 'typeorm'
 import { CalendarEventEntity } from './calendar-event.entity'
 
 @Entity()

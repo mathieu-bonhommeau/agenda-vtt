@@ -16,7 +16,6 @@ describe('Retrieve calendar events', () => {
             arbitraryCalendarEvent({ id: 'calendar-event-2' }),
         ]
         sut.givenSomeEvents(expectedEvents)
-
         const events = await sut.retrieveEvents()
 
         expect(events).toEqual(expectedEvents)

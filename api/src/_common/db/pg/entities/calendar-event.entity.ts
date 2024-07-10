@@ -63,5 +63,5 @@ export class CalendarEventEntity {
 
     @ManyToOne(() => EventOrganizerEntity, (eventOrganizer) => eventOrganizer.calendarEvents, { nullable: true })
     @JoinColumn({ name: 'organizer_id' })
-    organizer?: EventOrganizer
+    organizer?: EventOrganizerEntity
 }

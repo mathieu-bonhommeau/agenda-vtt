@@ -20,6 +20,14 @@ import { EventLocationEntity } from '../../../_common/db/pg/entities/event-locat
 import { TraceEntity } from '../../../_common/db/pg/entities/trace.entity'
 import { ContactEntity } from '../../../_common/db/pg/entities/contact.entity'
 import { EventOrganizerEntity } from '../../../_common/db/pg/entities/event-organizer.entity'
+import {
+    toCalendarEventDbDTO,
+    toContactDbDTO,
+    toEventLocationDbDTO,
+    toEventOrganizerDbDTO,
+    toTraceDbDTO,
+} from '../../infrastructure/dtos/calendar-event-dto'
+import { calendarEventDataSourceProvider, retrieveEventsProvider } from '../../_config/calendar-event.module'
 
 describe('Calendar event e2e test', () => {
     let sut: SUT
@@ -50,6 +58,7 @@ describe('Calendar event e2e test', () => {
         const moduleRef = await Test.createTestingModule({
             imports: [PgModule],
             controllers: [CalendarEventController],
+            providers: [retrieveEventsProvider, calendarEventDataSourceProvider],
         }).compile()
         app = moduleRef.createNestApplication()
         await app.init()
@@ -77,7 +86,7 @@ describe('Calendar event e2e test', () => {
 
     it('retrieves all events', async () => {
         const response = await sut.retrieveCalendarEvents('/calendar-events')
-
+        const calendarEvent = new CalendarEventEntity()
         expect(response.status).toEqual(200)
         expect(response.body).toEqual([event1, event2])
     })
@@ -203,57 +212,3 @@ class SUT {
         await this._pg.createQueryBuilder().delete().from(ContactEntity).execute()
     }
 }
-
-export const toCalendarEventDbDTO = (event: CalendarEvent): CalendarEventEntity => ({
-    id: event.id,
-    title: event.title,
-    description: event.description,
-    createdAt: event.createdAt,
-    startDate: event.startDate,
-    endDate: event.endDate,
-    traces: [],
-    prices: event.prices,
-    services: event.services,
-})
-
-export const toEventLocationDbDTO = (
-    eventLocation: EventLocation,
-    event: CalendarEventEntity,
-): EventLocationEntity => ({
-    id: eventLocation.id,
-    country: eventLocation.country,
-    region: eventLocation.region,
-    county: eventLocation.county,
-    city: eventLocation.city,
-    postcode: eventLocation.postcode,
-    housenumber: eventLocation.housenumber,
-    address: eventLocation.address,
-    geometry: {
-        type: 'Point',
-        coordinates: [eventLocation.latLon.lon, eventLocation.latLon.lat],
-    },
-    calendarEvents: [event],
-})
-
-export const toTraceDbDTO = (trace: Trace, calendarEvent: CalendarEventEntity): TraceEntity => ({
-    id: trace.id,
-    utagawaId: trace.utagawaId,
-    link: trace.link,
-    distance: trace.distance,
-    positiveElevation: trace.positiveElevation,
-    traceColor: trace.traceColor,
-    calendarEvent,
-})
-
-export const toEventOrganizerDbDTO = (eventOrganizer: EventOrganizer) => ({
-    id: eventOrganizer.id,
-    name: eventOrganizer.name,
-    email: eventOrganizer.email,
-    website: eventOrganizer.website,
-})
-
-export const toContactDbDTO = (contact: Contact) => ({
-    id: contact.id,
-    name: contact.name,
-    phone: contact.phone,
-})
