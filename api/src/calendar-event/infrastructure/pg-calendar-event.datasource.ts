@@ -1,5 +1,5 @@
 import { CalendarEventDataSource } from '../business/ports/calendar-event-data.source'
-import { DataSource, getRepository } from 'typeorm'
+import { DataSource } from 'typeorm'
 import { CalendarEvent, EventLocation, EventOrganizer, Trace } from '../business/models/calendar.event'
 import { CalendarEventEntity } from '../../_common/db/pg/entities/calendar-event.entity'
 import { EventLocationEntity } from '../../_common/db/pg/entities/event-location.entity'
@@ -18,9 +18,11 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
             .createQueryBuilder(CalendarEventEntity, 'calendar_event_entity')
             .innerJoinAndSelect('calendar_event_entity.eventLocation', 'event_location_entity')
             .innerJoinAndSelect('calendar_event_entity.organizer', 'event_organizer_entity')
-            .getMany()
+            .innerJoinAndSelect('event_organizer_entity.contacts', 'contact_entity')
+            .innerJoinAndSelect('calendar_event_entity.traces', 'trace_entity')
 
-        console.log(eventsDB)
+            .getMany()
+        console.log(eventsDB[0])
         return eventsDB.map((event: CalendarEventEntity) => PgCalendarEventFactory.create(event))
     }
 }

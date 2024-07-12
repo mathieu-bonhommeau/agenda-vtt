@@ -1,8 +1,4 @@
-import { INestApplication } from '@nestjs/common'
-import { Test } from '@nestjs/testing'
-import request from 'supertest'
-import { Server } from 'http'
-import { CalendarEventController } from '../calendar-event.controller'
+import { DataSource, InsertResult, UpdateResult } from 'typeorm'
 import {
     arbitraryCalendarEvent,
     arbitraryContact,
@@ -10,27 +6,26 @@ import {
     arbitraryEventOrganizer,
     arbitraryTrace,
 } from '../../../_common/helpers/event-factories.helpers'
-import { CalendarEvent, Contact, EventLocation, EventOrganizer, Trace } from '../../business/models/calendar.event'
 import { v4 } from 'uuid'
+import { PgTesting } from '../../../_common/db/pg/_config/pg-testing'
+import { Server } from 'http'
+import { CalendarEvent, Contact, EventLocation, EventOrganizer, Trace } from '../../business/models/calendar.event'
 import { CalendarEventEntity } from '../../../_common/db/pg/entities/calendar-event.entity'
-import { DataSource, InsertResult, UpdateResult } from 'typeorm'
-import { EventLocationEntity } from '../../../_common/db/pg/entities/event-location.entity'
-import { TraceEntity } from '../../../_common/db/pg/entities/trace.entity'
-import { ContactEntity } from '../../../_common/db/pg/entities/contact.entity'
-import { EventOrganizerEntity } from '../../../_common/db/pg/entities/event-organizer.entity'
 import {
     toCalendarEventDbDTO,
     toContactDbDTO,
     toEventLocationDbDTO,
     toEventOrganizerDbDTO,
     toTraceDbDTO,
-} from '../../infrastructure/dtos/calendar-event-dto'
-import { calendarEventDataSourceProvider, retrieveEventsProvider } from '../../_config/calendar-event.module'
-import { PgTestingProvider } from '../../../_common/db/pg/pg-testing-module'
+} from '../dtos/calendar-event-dto'
+import { TraceEntity } from '../../../_common/db/pg/entities/trace.entity'
+import { EventLocationEntity } from '../../../_common/db/pg/entities/event-location.entity'
+import { EventOrganizerEntity } from '../../../_common/db/pg/entities/event-organizer.entity'
+import { ContactEntity } from '../../../_common/db/pg/entities/contact.entity'
+import { PgCalendarEventDataSource } from '../pg-calendar-event.datasource'
 
-describe('Calendar event e2e test', () => {
+describe('Calendar event datasource', () => {
     let sut: SUT
-    let app: INestApplication
     let pg: DataSource
 
     const event1 = arbitraryCalendarEvent({
@@ -54,24 +49,11 @@ describe('Calendar event e2e test', () => {
     })
 
     beforeAll(async () => {
-        pg = await PgTestingProvider.useFactory()
-        const moduleRef = await Test.createTestingModule({
-            controllers: [CalendarEventController],
-            providers: [
-                retrieveEventsProvider,
-                calendarEventDataSourceProvider,
-                {
-                    provide: 'SQL',
-                    useValue: pg,
-                },
-            ],
-        }).compile()
-        app = moduleRef.createNestApplication()
-        await app.init()
+        pg = await PgTesting.initialize()
     })
 
     beforeEach(async () => {
-        sut = new SUT({ app, pg })
+        sut = new SUT({ pg })
         await sut.clear()
 
         sut.givenCalendarEvent(event1)
@@ -90,12 +72,10 @@ describe('Calendar event e2e test', () => {
     })
 
     it('retrieves all events', async () => {
-        const response = await sut.retrieveCalendarEvents('/calendar-events')
-        expect(response.status).toEqual(200)
-        console.log(response.body[0].traces)
-
-        expect(response.status).toEqual(200)
-        expect(response.body.length).toEqual(2)
+        const eventsRetrieved = await sut.retrieveCalendarEvents()
+        expect(eventsRetrieved.length).toEqual(2)
+        expect(eventsRetrieved[0]).toMatchObject(event1)
+        expect(eventsRetrieved[1]).toMatchObject(event2)
     })
 })
 
@@ -103,10 +83,11 @@ class SUT {
     private readonly _server: Server
     private readonly _pg: DataSource
     private readonly _promises: Array<() => Promise<InsertResult | UpdateResult>> = []
+    private readonly _calendarEventDatasource: PgCalendarEventDataSource
 
-    constructor({ app, pg }: { app: INestApplication; pg: DataSource }) {
-        this._server = app.getHttpServer()
+    constructor({ pg }: { pg: DataSource }) {
         this._pg = pg
+        this._calendarEventDatasource = new PgCalendarEventDataSource({ pg: this._pg })
     }
 
     givenCalendarEvent(event: CalendarEvent) {
@@ -200,8 +181,8 @@ class SUT {
         }
     }
 
-    async retrieveCalendarEvents(path: string) {
-        return request(this._server).get(path)
+    async retrieveCalendarEvents() {
+        return this._calendarEventDatasource.fetch()
     }
 
     async executePromises() {
