@@ -26,11 +26,15 @@ import {
 import { calendarEventDataSourceProvider, retrieveEventsProvider } from '../../_config/calendar-event.module'
 import { toCalendarEventFromResponseBodyDto } from './to-calendar-event-from-response-body-dto'
 import { PgTestingProvider } from '../../../_common/db/pg/pg-testing.provider'
+import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql'
 
 describe('Calendar event e2e test', () => {
     let sut: SUT
     let app: INestApplication
     let pg: DataSource
+    let postgresContainer: StartedPostgreSqlContainer
+
+    jest.setTimeout(60000)
 
     const event1 = arbitraryCalendarEvent({
         id: v4(),
@@ -58,7 +62,14 @@ describe('Calendar event e2e test', () => {
     })
 
     beforeAll(async () => {
-        pg = await PgTestingProvider.useFactory()
+        postgresContainer = await new PostgreSqlContainer('postgis/postgis:12-3.0').start()
+        pg = await PgTestingProvider.useFactory(postgresContainer.getConnectionUri())
+        /*const queryRunner = pg.createQueryRunner()*/
+
+        /*for (const migration of pg.migrations) {
+            await migration.up(queryRunner)
+        }*/
+
         const moduleRef = await Test.createTestingModule({
             controllers: [CalendarEventController],
             providers: [
@@ -89,6 +100,11 @@ describe('Calendar event e2e test', () => {
             .withOrganizer(event2.organizer)
 
         await sut.executePromises()
+    })
+
+    afterAll(async () => {
+        await pg.destroy()
+        await postgresContainer.stop()
     })
 
     it('retrieves all events', async () => {

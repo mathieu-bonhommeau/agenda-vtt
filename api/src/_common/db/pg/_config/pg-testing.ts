@@ -1,15 +1,11 @@
 import { DataSource, DataSourceOptions } from 'typeorm'
 
-const pgTestingConfig: DataSourceOptions = {
+export const pgTestingConfig = (testContainerUri: string): DataSourceOptions => ({
     type: 'postgres',
-    host: process.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT, 10) || 5432,
-    username: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || 'root',
-    database: process.env.POSTGRESS_DB || 'utagawa-agenda-db',
+    url: testContainerUri,
     entities: ['src/_common/db/pg/entities/*.ts'],
     migrations: ['src/_common/db/pg/migrations/*.ts'],
     synchronize: true,
-}
+})
 
-export const PgTesting = new DataSource(pgTestingConfig)
+export const PgTesting = (testContainerUri: string) => new DataSource(pgTestingConfig(testContainerUri))
