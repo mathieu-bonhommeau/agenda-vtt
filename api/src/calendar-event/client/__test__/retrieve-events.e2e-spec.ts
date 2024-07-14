@@ -10,23 +10,22 @@ import {
     arbitraryEventOrganizer,
     arbitraryTrace,
 } from '../../../_common/helpers/event-factories.helpers'
-import { CalendarEvent, Contact, EventLocation, EventOrganizer, Trace } from '../../business/models/calendar.event'
+import { CalendarEvent, EventLocation, EventOrganizer, Trace } from '../../business/models/calendar.event'
 import { v4 } from 'uuid'
 import { CalendarEventEntity } from '../../../_common/db/pg/entities/calendar-event.entity'
 import { DataSource, InsertResult, UpdateResult } from 'typeorm'
 import { EventLocationEntity } from '../../../_common/db/pg/entities/event-location.entity'
 import { TraceEntity } from '../../../_common/db/pg/entities/trace.entity'
-import { ContactEntity } from '../../../_common/db/pg/entities/contact.entity'
 import { EventOrganizerEntity } from '../../../_common/db/pg/entities/event-organizer.entity'
 import {
     toCalendarEventDbDTO,
-    toContactDbDTO,
     toEventLocationDbDTO,
     toEventOrganizerDbDTO,
     toTraceDbDTO,
 } from '../../infrastructure/dtos/calendar-event-dto'
 import { calendarEventDataSourceProvider, retrieveEventsProvider } from '../../_config/calendar-event.module'
-import { PgTestingProvider } from '../../../_common/db/pg/pg-testing-module'
+import { toCalendarEventFromResponseBodyDto } from './to-calendar-event-from-response-body-dto'
+import { PgTestingProvider } from '../../../_common/db/pg/pg-testing.provider'
 
 describe('Calendar event e2e test', () => {
     let sut: SUT
@@ -39,17 +38,22 @@ describe('Calendar event e2e test', () => {
         traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
         organizer: arbitraryEventOrganizer({
             id: v4(),
-            contacts: [arbitraryContact({ id: v4() }), arbitraryContact({ id: v4() })],
+            contacts: [arbitraryContact({ name: 'dorianito' })],
         }),
     })
 
     const event2 = arbitraryCalendarEvent({
         id: v4(),
-        eventLocation: arbitraryEventLocation({ id: v4() }),
+        eventLocation: arbitraryEventLocation({
+            id: v4(),
+            housenumber: null,
+            county: null,
+            postcode: null,
+        }),
         traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
         organizer: arbitraryEventOrganizer({
             id: v4(),
-            contacts: [arbitraryContact({ id: v4() }), arbitraryContact({ id: v4() })],
+            contacts: [arbitraryContact({ name: 'marcito' })],
         }),
     })
 
@@ -78,24 +82,22 @@ describe('Calendar event e2e test', () => {
             .withTraces(event1.traces)
             .withEventLocation(event1.eventLocation)
             .withOrganizer(event1.organizer)
-            .withContacts(event1.organizer.contacts, event1.organizer.id)
 
         sut.givenCalendarEvent(event2)
             .withTraces(event2.traces)
             .withEventLocation(event2.eventLocation)
             .withOrganizer(event2.organizer)
-            .withContacts(event2.organizer.contacts, event2.organizer.id)
 
         await sut.executePromises()
     })
 
     it('retrieves all events', async () => {
         const response = await sut.retrieveCalendarEvents('/calendar-events')
-        expect(response.status).toEqual(200)
-        console.log(response.body[0].traces)
 
         expect(response.status).toEqual(200)
         expect(response.body.length).toEqual(2)
+        expect(toCalendarEventFromResponseBodyDto(response.body[0])).toEqual(event1)
+        expect(toCalendarEventFromResponseBodyDto(response.body[1])).toEqual(event2)
     })
 })
 
@@ -176,27 +178,6 @@ class SUT {
                 )
                 return this.next(event)
             },
-            withContacts: (contacts: Contact[], organizerId: EventOrganizer['id']) => {
-                contacts.forEach((contact) => {
-                    this._promises.push(() =>
-                        this._pg
-                            .createQueryBuilder()
-                            .insert()
-                            .into(ContactEntity)
-                            .values(toContactDbDTO(contact))
-                            .execute(),
-                    )
-                    this._promises.push(() =>
-                        this._pg
-                            .createQueryBuilder()
-                            .insert()
-                            .into('organizer_contact')
-                            .values({ contact_id: contact.id, organizer_id: organizerId })
-                            .execute(),
-                    )
-                    return this.next(event)
-                })
-            },
         }
     }
 
@@ -213,9 +194,7 @@ class SUT {
     async clear() {
         await this._pg.createQueryBuilder().delete().from(TraceEntity).execute()
         await this._pg.createQueryBuilder().delete().from(CalendarEventEntity).execute()
-        await this._pg.createQueryBuilder().delete().from('organizer_contact').execute()
         await this._pg.createQueryBuilder().delete().from(EventOrganizerEntity).execute()
         await this._pg.createQueryBuilder().delete().from(EventLocationEntity).execute()
-        await this._pg.createQueryBuilder().delete().from(ContactEntity).execute()
     }
 }

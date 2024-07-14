@@ -31,7 +31,6 @@ export type EventOrganizer = {
     contacts?: Contact[]
 }
 export type Contact = {
-    id: string
     name: string
     phone: string
 }

@@ -1,14 +1,15 @@
-import { CalendarEventGateway } from '../../ports/calendar-event.gateway'
 import { CalendarEvent } from '../../models/calendar.event'
 
-export class RetrieveEvents {
-    private _calendarEventGateway: CalendarEventGateway
+import { CalendarEventDataSource } from '../../ports/calendar-event-data.source'
 
-    constructor({ calendarEventGateway }: { calendarEventGateway: CalendarEventGateway }) {
-        this._calendarEventGateway = calendarEventGateway
+export class RetrieveEvents {
+    private readonly _calendarEventDataSource: CalendarEventDataSource
+
+    constructor({ calendarEventDataSource }: { calendarEventDataSource: CalendarEventDataSource }) {
+        this._calendarEventDataSource = calendarEventDataSource
     }
 
-    async execute(): Promise<CalendarEvent[]> {
-        return this._calendarEventGateway.retrieveEvents()
+    async retrieveEvents(): Promise<CalendarEvent[]> {
+        return await this._calendarEventDataSource.fetch()
     }
 }

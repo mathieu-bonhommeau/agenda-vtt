@@ -18,12 +18,16 @@ export const arbitraryCalendarEvent = (overrides: Partial<CalendarEvent>): Calen
     eventLocation: arbitraryEventLocation({}),
     traces: [arbitraryTrace({})],
     prices: ['5€ pour les enfants'],
+    services: ['Parking, Station de lavage'],
     organizer: arbitraryEventOrganizer({}),
     ...overrides,
 })
 export const arbitraryEventLocation = (overrides: Partial<EventLocation>): EventLocation => ({
     id: v4(),
     country: 'France',
+    housenumber: '125',
+    county: 'Aquitaine',
+    postcode: '40330',
     city: 'Paris',
     address: 'rue de la paix',
     latLon: { lat: 0, lon: 0 },
@@ -48,7 +52,6 @@ export const arbitraryEventOrganizer = (overrides: Partial<EventOrganizer>): Eve
 })
 
 export const arbitraryContact = (overrides: Partial<Contact>): Contact => ({
-    id: v4(),
     name: 'john doe',
     phone: '0675452636',
     ...overrides,

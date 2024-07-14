@@ -1,6 +1,6 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
-import { ContactEntity } from './contact.entity'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { CalendarEventEntity } from './calendar-event.entity'
+import { Contact } from '../../../../calendar-event/business/models/calendar.event'
 
 @Entity()
 export class EventOrganizerEntity {
@@ -19,17 +19,18 @@ export class EventOrganizerEntity {
     @OneToMany(() => CalendarEventEntity, (calendarEvents) => calendarEvents.organizer)
     calendarEvents?: CalendarEventEntity[]
 
-    @ManyToMany(() => ContactEntity, (contactEntity) => contactEntity.organizer)
-    @JoinTable({
-        name: 'organizer_contact',
-        joinColumn: {
-            name: 'organizer_id',
-            referencedColumnName: 'id',
-        },
-        inverseJoinColumn: {
-            name: 'contact_id',
-            referencedColumnName: 'id',
+    @Column({
+        type: 'json',
+        name: 'contacts',
+        nullable: true,
+        transformer: {
+            to(value: Contact[]): string {
+                return JSON.stringify(value)
+            },
+            from(value: string): Contact[] {
+                return JSON.parse(value)
+            },
         },
     })
-    contacts?: ContactEntity[]
+    contacts: Contact[]
 }

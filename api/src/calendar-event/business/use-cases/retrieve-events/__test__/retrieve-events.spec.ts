@@ -1,7 +1,7 @@
 import { RetrieveEvents } from '../retrieve.events'
-import { CalendarEventGateway } from '../../../ports/calendar-event.gateway'
 import { CalendarEvent } from '../../../models/calendar.event'
 import { arbitraryCalendarEvent } from '../../../../../_common/helpers/event-factories.helpers'
+import { CalendarEventDataSource } from '../../../ports/calendar-event-data.source'
 
 describe('Retrieve calendar events', () => {
     let sut: SUT
@@ -23,29 +23,29 @@ describe('Retrieve calendar events', () => {
 })
 
 class SUT {
-    private readonly _calendarEventGateway: StubCalendarEventGateway
+    private readonly _calendarEventDataSource: StubCalendarEventDataSource
     private readonly _retrieveEvents: RetrieveEvents
 
     constructor() {
-        this._calendarEventGateway = new StubCalendarEventGateway()
+        this._calendarEventDataSource = new StubCalendarEventDataSource()
         this._retrieveEvents = new RetrieveEvents({
-            calendarEventGateway: this._calendarEventGateway,
+            calendarEventDataSource: this._calendarEventDataSource,
         })
     }
 
     givenSomeEvents(events: CalendarEvent[]) {
-        this._calendarEventGateway.feedWith(events)
+        this._calendarEventDataSource.feedWith(events)
     }
 
     async retrieveEvents() {
-        return this._retrieveEvents.execute()
+        return this._retrieveEvents.retrieveEvents()
     }
 }
 
-class StubCalendarEventGateway implements CalendarEventGateway {
+class StubCalendarEventDataSource implements CalendarEventDataSource {
     private _calendarEvents: CalendarEvent[] = []
 
-    async retrieveEvents(): Promise<CalendarEvent[]> {
+    async fetch(): Promise<CalendarEvent[]> {
         return this._calendarEvents
     }
 

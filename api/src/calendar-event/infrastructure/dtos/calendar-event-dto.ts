@@ -1,4 +1,4 @@
-import { CalendarEvent, Contact, EventLocation, EventOrganizer, Trace } from '../../business/models/calendar.event'
+import { CalendarEvent, EventLocation, EventOrganizer, Trace } from '../../business/models/calendar.event'
 import { CalendarEventEntity } from '../../../_common/db/pg/entities/calendar-event.entity'
 import { TraceEntity } from '../../../_common/db/pg/entities/trace.entity'
 import { EventLocationEntity } from '../../../_common/db/pg/entities/event-location.entity'
@@ -46,9 +46,5 @@ export const toEventOrganizerDbDTO = (eventOrganizer: EventOrganizer) => ({
     name: eventOrganizer.name,
     email: eventOrganizer.email,
     website: eventOrganizer.website,
-})
-export const toContactDbDTO = (contact: Contact) => ({
-    id: contact.id,
-    name: contact.name,
-    phone: contact.phone,
+    contacts: eventOrganizer.contacts,
 })

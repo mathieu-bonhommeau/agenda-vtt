@@ -1,6 +1,6 @@
 import { Controller, Get, HttpCode, Inject } from '@nestjs/common'
 import { CalendarEvent } from '../business/models/calendar.event'
-import { RetrieveEvents } from '../business/use-cases/retrieve.events'
+import { RetrieveEvents } from '../business/use-cases/retrieve-events/retrieve.events'
 
 @Controller('calendar-events')
 export class CalendarEventController {

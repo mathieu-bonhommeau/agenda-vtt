@@ -1,7 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { EventLocationEntity } from './event-location.entity'
 import { TraceEntity } from './trace.entity'
-import { EventOrganizer } from '../../../../calendar-event/business/models/calendar.event'
 import { EventOrganizerEntity } from './event-organizer.entity'
 
 @Entity()
@@ -59,7 +58,7 @@ export class CalendarEventEntity {
             },
         },
     })
-    services: string[]
+    services?: string[]
 
     @ManyToOne(() => EventOrganizerEntity, (eventOrganizer) => eventOrganizer.calendarEvents, { nullable: true })
     @JoinColumn({ name: 'organizer_id' })

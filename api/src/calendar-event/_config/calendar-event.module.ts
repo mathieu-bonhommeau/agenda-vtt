@@ -2,7 +2,7 @@ import { CalendarEventController } from '../client/calendar-event.controller'
 import { Module } from '@nestjs/common'
 import { PgModule } from '../../_common/db/pg/pg.module'
 import { DataSource } from 'typeorm'
-import { RetrieveEvents } from '../business/use-cases/retrieve.events'
+import { RetrieveEvents } from '../business/use-cases/retrieve-events/retrieve.events'
 import { CalendarEventDataSource } from '../business/ports/calendar-event-data.source'
 import { PgCalendarEventDataSource } from '../infrastructure/pg-calendar-event.datasource'
 

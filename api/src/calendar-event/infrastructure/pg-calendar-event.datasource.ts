@@ -18,11 +18,9 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
             .createQueryBuilder(CalendarEventEntity, 'calendar_event_entity')
             .innerJoinAndSelect('calendar_event_entity.eventLocation', 'event_location_entity')
             .innerJoinAndSelect('calendar_event_entity.organizer', 'event_organizer_entity')
-            .innerJoinAndSelect('event_organizer_entity.contacts', 'contact_entity')
             .innerJoinAndSelect('calendar_event_entity.traces', 'trace_entity')
-
             .getMany()
-        console.log(eventsDB[0])
+
         return eventsDB.map((event: CalendarEventEntity) => PgCalendarEventFactory.create(event))
     }
 }
@@ -39,6 +37,8 @@ class PgCalendarEventFactory {
             eventLocation: PgEventLocationFactory.create(dbCalendarEvent.eventLocation),
             organizer: PgEventOrganizerFactory.create(dbCalendarEvent.organizer),
             traces: dbCalendarEvent.traces.map((t) => PgTraceFactory.create(t)),
+            services: dbCalendarEvent.services,
+            prices: dbCalendarEvent.prices,
         }
     }
 }
@@ -65,7 +65,7 @@ class PgEventOrganizerFactory {
             email: dbEventOrganizer.email,
             name: dbEventOrganizer.name,
             website: dbEventOrganizer.website,
-            contacts: [],
+            contacts: dbEventOrganizer.contacts,
         }
     }
 }
