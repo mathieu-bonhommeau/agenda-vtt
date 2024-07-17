@@ -41,7 +41,7 @@ describe('Calendar event e2e test', () => {
             id: eventId1,
             startDate: new Date('2024-10-25'),
             endDate: new Date('2024-10-27'),
-            eventLocation: arbitraryEventLocation({ id: v4() }),
+            eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.49, lat: 48.88 } }),
             traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
@@ -57,6 +57,7 @@ describe('Calendar event e2e test', () => {
                 housenumber: null,
                 county: null,
                 postcode: null,
+                latLon: { lon: 5, lat: 48.52 },
             }),
             traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
             organizer: arbitraryEventOrganizer({
@@ -68,7 +69,7 @@ describe('Calendar event e2e test', () => {
             id: eventId3,
             startDate: new Date('2024-11-01'),
             endDate: new Date('2024-11-03'),
-            eventLocation: arbitraryEventLocation({ id: v4() }),
+            eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.1, lat: 47.7 } }),
             traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
@@ -79,7 +80,7 @@ describe('Calendar event e2e test', () => {
             id: eventId4,
             startDate: new Date('2024-10-11'),
             endDate: new Date('2024-10-12'),
-            eventLocation: arbitraryEventLocation({ id: v4() }),
+            eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.36, lat: 48.84 } }),
             traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
@@ -185,6 +186,15 @@ describe('Calendar event e2e test', () => {
             expect(response.body.map((e: unknown) => e['id'])).toEqual(resultsIds)
         },
     )
+
+    it('retrieves only events located in the bbox location with a predetrrmine radius', async () => {
+        const response = await sut.retrieveCalendarEvents('/calendar-events', {
+            bbox: [2.03, 48.69, 2.63, 49.01],
+        })
+        expect(response.status).toEqual(200)
+
+        expect(response.body.map((e: unknown) => e['id'])).toEqual([eventId1, eventId4])
+    })
 })
 
 class SUT {
@@ -202,11 +212,15 @@ class SUT {
         return this._testBuilder.buildCalendarEvent(event)
     }
 
-    async retrieveCalendarEvents(path: string, query: { start?: Date; end?: Date }) {
+    async retrieveCalendarEvents(path: string, query: { start?: Date; end?: Date; bbox?: number[] }) {
         let queriesString = ''
 
         if (query.start) queriesString += `&start=${query.start}`
         if (query.end) queriesString += `&end=${query.end}`
+        if (query.bbox) {
+            const bboxString = `${query.bbox[0]},${query.bbox[1]},${query.bbox[2]},${query.bbox[3]}`
+            queriesString += `&bbox=${bboxString}`
+        }
 
         return request(this._server).get(`${path}?${queriesString}`)
     }

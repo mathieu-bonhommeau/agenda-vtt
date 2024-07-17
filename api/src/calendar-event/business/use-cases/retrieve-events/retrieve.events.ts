@@ -5,6 +5,7 @@ import { CalendarEventDataSource } from '../../ports/calendar-event-data.source'
 export type RetrieveEventsCommand = {
     start?: Date
     end?: Date
+    bbox?: string[]
 }
 
 export class RetrieveEvents {

@@ -20,6 +20,7 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
             .innerJoinAndSelect('calendar_event_entity.eventLocation', 'event_location_entity')
             .innerJoinAndSelect('calendar_event_entity.organizer', 'event_organizer_entity')
             .innerJoinAndSelect('calendar_event_entity.traces', 'trace_entity')
+            .where('true')
 
         request = this.buildQueriesFilter(params, request)
 
@@ -32,13 +33,27 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
         params: CalendarEventFetchParams,
         query: SelectQueryBuilder<CalendarEventEntity>,
     ): SelectQueryBuilder<CalendarEventEntity> {
-        if (isValid(params.start) && !isValid(params.end)) {
-            query.where(':start <= calendar_event_entity.end_date', { start: params.start.toISOString() })
+        if (isValid(params.start) && isValid(params.end)) {
+            query.andWhere(':start <= calendar_event_entity.end_date', { start: params.start })
+            query.andWhere(':end >= calendar_event_entity.start_date', { end: params.end })
         }
 
-        if (isValid(params.start) && isValid(params.end)) {
-            query.where(':start <= calendar_event_entity.end_date', { start: params.start })
-            query.andWhere(':end >= calendar_event_entity.start_date', { end: params.end })
+        if (isValid(params.start) && !isValid(params.end))
+            query.andWhere(':start <= calendar_event_entity.end_date', { start: params.start.toISOString() })
+
+        if (params.bbox) {
+            query.andWhere(
+                `ST_Contains(
+                                    ST_MakeEnvelope(:minLon ,:minLat ,:maxLon ,:maxLat , 4326),
+                                    ST_Transform(event_location_entity.geometry, 4326)
+                          )`,
+                {
+                    minLon: parseFloat(params.bbox[0]),
+                    minLat: parseFloat(params.bbox[1]),
+                    maxLon: parseFloat(params.bbox[2]),
+                    maxLat: parseFloat(params.bbox[3]),
+                },
+            )
         }
 
         return query
