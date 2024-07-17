@@ -5,7 +5,7 @@ import { CalendarEventEntity } from '../../_common/db/pg/entities/calendar-event
 import { EventLocationEntity } from '../../_common/db/pg/entities/event-location.entity'
 import { EventOrganizerEntity } from '../../_common/db/pg/entities/event-organizer.entity'
 import { TraceEntity } from '../../_common/db/pg/entities/trace.entity'
-import { addDays, isValid } from 'date-fns'
+import { isValid } from 'date-fns'
 
 export class PgCalendarEventDataSource implements CalendarEventDataSource {
     private readonly _pg: DataSource
@@ -32,11 +32,13 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
         params: CalendarEventFetchParams,
         query: SelectQueryBuilder<CalendarEventEntity>,
     ): SelectQueryBuilder<CalendarEventEntity> {
-        if (isValid(params.start) && !isValid(params.end))
-            query.where('calendar_event_entity.end_date >= :start', { start: addDays(params.start, -1) })
+        if (isValid(params.start) && !isValid(params.end)) {
+            query.where(':start <= calendar_event_entity.end_date', { start: params.start.toISOString() })
+        }
+
         if (isValid(params.start) && isValid(params.end)) {
-            query.where('calendar_event_entity.end_date >= :start', { start: addDays(params.start, -1) })
-            query.andWhere('calendar_event_entity.end_date <= :end', { end: addDays(params.end, 1) })
+            query.where(':start <= calendar_event_entity.end_date', { start: params.start })
+            query.andWhere(':end >= calendar_event_entity.start_date', { end: params.end })
         }
 
         return query

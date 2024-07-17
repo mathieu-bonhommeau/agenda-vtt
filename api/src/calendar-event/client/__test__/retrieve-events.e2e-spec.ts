@@ -22,6 +22,7 @@ import { PgTestingProvider } from '../../../_common/db/pg/pg-testing.provider'
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql'
 import { DbCalendarEventsBuilders } from '../../../_common/helpers/db-calendar-events.helpers'
 import { toCalendarEventFromResponseBodyDto } from './to-calendar-event-from-response-body-dto'
+import { AppModule } from '../../../_common/app/app.module'
 
 describe('Calendar event e2e test', () => {
     let sut: SUT
@@ -92,6 +93,7 @@ describe('Calendar event e2e test', () => {
         pg = await PgTestingProvider.useFactory(postgresContainer.getConnectionUri())
 
         const moduleRef = await Test.createTestingModule({
+            imports: [AppModule],
             controllers: [CalendarEventController],
             providers: [
                 retrieveEventsProvider,
@@ -159,7 +161,9 @@ describe('Calendar event e2e test', () => {
         startDateToCompare | endDateToCompare | resultsIds
         ${'2024-10-31'}    | ${'2024-11-04'}  | ${[eventId3]}
         ${'2024-11-01'}    | ${'2024-11-03'}  | ${[eventId3]}
+        ${'2024-11-02'}    | ${'2024-11-02'}  | ${[eventId3]}
         ${'2024-11-02'}    | ${'2024-11-25'}  | ${[eventId2, eventId3]}
+        ${'2024-11-02'}    | ${'2024-11-26'}  | ${[eventId2, eventId3]}
         ${'2024-11-03'}    | ${'2024-11-27'}  | ${[eventId2, eventId3]}
     `(
         'retrieves only events scheduled after or equal a this start date $startDateToCompare and before or equal this end date $endDateToCompare',
