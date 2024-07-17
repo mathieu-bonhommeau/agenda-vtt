@@ -1,4 +1,4 @@
-import { Column, Entity, getManager, OneToMany, Point, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, Point, PrimaryGeneratedColumn } from 'typeorm'
 import { CalendarEventEntity } from './calendar-event.entity'
 
 @Entity()
@@ -9,7 +9,7 @@ export class EventLocationEntity {
     @Column({ name: 'country' })
     country: string
 
-    @Column({ name: 'description', nullable: true })
+    @Column({ name: 'region', nullable: true })
     region: string
 
     @Column({ name: 'county', nullable: true })

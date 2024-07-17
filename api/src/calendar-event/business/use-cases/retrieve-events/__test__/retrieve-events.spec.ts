@@ -38,7 +38,7 @@ class SUT {
     }
 
     async retrieveEvents() {
-        return this._retrieveEvents.retrieveEvents()
+        return this._retrieveEvents.retrieveEvents({})
     }
 }
 

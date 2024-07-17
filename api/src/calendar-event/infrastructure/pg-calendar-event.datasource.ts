@@ -1,10 +1,11 @@
-import { CalendarEventDataSource } from '../business/ports/calendar-event-data.source'
-import { DataSource } from 'typeorm'
+import { CalendarEventDataSource, CalendarEventFetchParams } from '../business/ports/calendar-event-data.source'
+import { DataSource, SelectQueryBuilder } from 'typeorm'
 import { CalendarEvent, EventLocation, EventOrganizer, Trace } from '../business/models/calendar.event'
 import { CalendarEventEntity } from '../../_common/db/pg/entities/calendar-event.entity'
 import { EventLocationEntity } from '../../_common/db/pg/entities/event-location.entity'
 import { EventOrganizerEntity } from '../../_common/db/pg/entities/event-organizer.entity'
 import { TraceEntity } from '../../_common/db/pg/entities/trace.entity'
+import { addDays, isValid } from 'date-fns'
 
 export class PgCalendarEventDataSource implements CalendarEventDataSource {
     private readonly _pg: DataSource
@@ -13,15 +14,32 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
         this._pg = pg
     }
 
-    async fetch(): Promise<CalendarEvent[]> {
-        const eventsDB = await this._pg
+    async fetch(params: CalendarEventFetchParams): Promise<CalendarEvent[]> {
+        let request = this._pg
             .createQueryBuilder(CalendarEventEntity, 'calendar_event_entity')
             .innerJoinAndSelect('calendar_event_entity.eventLocation', 'event_location_entity')
             .innerJoinAndSelect('calendar_event_entity.organizer', 'event_organizer_entity')
             .innerJoinAndSelect('calendar_event_entity.traces', 'trace_entity')
-            .getMany()
+
+        request = this.buildQueriesFilter(params, request)
+
+        const eventsDB = await request.getMany()
 
         return eventsDB.map((event: CalendarEventEntity) => PgCalendarEventFactory.create(event))
+    }
+
+    private buildQueriesFilter(
+        params: CalendarEventFetchParams,
+        query: SelectQueryBuilder<CalendarEventEntity>,
+    ): SelectQueryBuilder<CalendarEventEntity> {
+        if (isValid(params.start) && !isValid(params.end))
+            query.where('calendar_event_entity.end_date >= :start', { start: addDays(params.start, -1) })
+        if (isValid(params.start) && isValid(params.end)) {
+            query.where('calendar_event_entity.end_date >= :start', { start: addDays(params.start, -1) })
+            query.andWhere('calendar_event_entity.end_date <= :end', { end: addDays(params.end, 1) })
+        }
+
+        return query
     }
 }
 
@@ -48,6 +66,7 @@ class PgEventLocationFactory {
         return {
             id: dbEventLocation.id,
             city: dbEventLocation.city,
+            region: dbEventLocation.region,
             county: dbEventLocation.county,
             postcode: dbEventLocation.postcode,
             housenumber: dbEventLocation.housenumber,

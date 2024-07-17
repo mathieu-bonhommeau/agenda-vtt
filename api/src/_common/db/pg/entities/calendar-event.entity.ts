@@ -14,13 +14,13 @@ export class CalendarEventEntity {
     @Column({ name: 'description' })
     description: string
 
-    @Column({ name: 'created_at' })
+    @Column({ name: 'created_at', type: 'timestamp with time zone' })
     createdAt: Date
 
-    @Column({ name: 'start_date' })
+    @Column({ name: 'start_date', type: 'timestamp with time zone' })
     startDate: Date
 
-    @Column({ name: 'end_date' })
+    @Column({ name: 'end_date', type: 'timestamp with time zone' })
     endDate: Date
 
     @ManyToOne(() => EventLocationEntity, (eventLocation) => eventLocation.calendarEvents, { nullable: true })

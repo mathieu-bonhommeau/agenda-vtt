@@ -9,7 +9,7 @@ import {
 import { v4 } from 'uuid'
 
 export const arbitraryCalendarEvent = (overrides: Partial<CalendarEvent>): CalendarEvent => ({
-    id: 'random-event-id',
+    id: v4(),
     title: 'my title',
     description: 'my description',
     createdAt: new Date(),
@@ -25,6 +25,7 @@ export const arbitraryCalendarEvent = (overrides: Partial<CalendarEvent>): Calen
 export const arbitraryEventLocation = (overrides: Partial<EventLocation>): EventLocation => ({
     id: v4(),
     country: 'France',
+    region: 'Nouvelle Aquitaine',
     housenumber: '125',
     county: 'Aquitaine',
     postcode: '40330',
@@ -34,7 +35,7 @@ export const arbitraryEventLocation = (overrides: Partial<EventLocation>): Event
     ...overrides,
 })
 export const arbitraryTrace = (overrides: Partial<Trace>): Trace => ({
-    id: 'random-trace-id',
+    id: v4(),
     utagawaId: 123456,
     link: 'https://utagawa.com/123456',
     distance: 40,
