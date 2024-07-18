@@ -46,7 +46,7 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
                 `ST_Contains(
                                     ST_MakeEnvelope(:minLon ,:minLat ,:maxLon ,:maxLat , 4326),
                                     ST_Transform(event_location_entity.geometry, 4326)
-                          )`,
+                          ) = true`,
                 {
                     minLon: parseFloat(params.bbox[0]),
                     minLat: parseFloat(params.bbox[1]),
@@ -89,7 +89,7 @@ class PgEventLocationFactory {
             housenumber: dbEventLocation.housenumber,
             country: dbEventLocation.country,
             address: dbEventLocation.address,
-            latLon: { lon: dbEventLocation.geometry.coordinates[0], lat: dbEventLocation.geometry.coordinates[1] },
+            latLon: { lon: dbEventLocation.geometry.coordinates[1], lat: dbEventLocation.geometry.coordinates[0] },
         }
     }
 }

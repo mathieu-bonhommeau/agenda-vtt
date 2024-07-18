@@ -176,7 +176,7 @@ export const eventsFixtures = [
             region: 'Ile de France',
             county: 'Yvelines',
             postcode: '75023',
-            latLon: { lat: 48.345867416163784, lon: 6.634133024680511 },
+            latLon: { lat: 48.845867416163784, lon: 2.334133024680511 },
             address: '253 Rte de la Gare',
         }),
         traces: [

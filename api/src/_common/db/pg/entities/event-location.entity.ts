@@ -29,7 +29,7 @@ export class EventLocationEntity {
 
     @Column({
         type: 'geometry',
-        srid: 3857,
+        srid: 4326,
     })
     geometry: Point
 

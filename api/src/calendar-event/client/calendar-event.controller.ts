@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, Inject, Query } from '@nestjs/common'
 import { CalendarEvent } from '../business/models/calendar.event'
 import { RetrieveEvents } from '../business/use-cases/retrieve-events/retrieve.events'
-import { ArrayMaxSize, IsArray, IsDateString, IsOptional } from 'class-validator'
+import { IsDateString, IsOptional, IsString } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class RetrieveEventsQuery {
@@ -15,10 +15,10 @@ export class RetrieveEventsQuery {
     @IsOptional()
     end?: string
 
-    @ApiProperty({ example: ['2.25', '45.63', '2.36', '48.88'] })
-    @ArrayMaxSize(4)
+    @ApiProperty({ example: '2.25,45.63,2.36,48.88' })
+    @IsString()
     @IsOptional()
-    bbox?: string[]
+    bbox?: string
 }
 
 @Controller('calendar-events')
@@ -31,7 +31,7 @@ export class CalendarEventController {
         return await this._retrieveEvents.retrieveEvents({
             start: query.start && new Date(query.start),
             end: query.end && new Date(query.end),
-            bbox: query.bbox && query.bbox,
+            bbox: query.bbox && query.bbox.split(','),
         })
     }
 }
