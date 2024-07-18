@@ -6,6 +6,9 @@ export type RetrieveEventsCommand = {
     start?: Date
     end?: Date
     bbox?: string[]
+    keyWord?: string
+    distanceMax?: number
+    distanceMin?: number
 }
 
 export class RetrieveEvents {

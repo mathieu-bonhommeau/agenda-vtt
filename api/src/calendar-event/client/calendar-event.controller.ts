@@ -19,6 +19,21 @@ export class RetrieveEventsQuery {
     @IsString()
     @IsOptional()
     bbox?: string
+
+    @ApiProperty({ example: 'search word' })
+    @IsString()
+    @IsOptional()
+    keyWord?: string
+
+    @ApiProperty({ example: '40' })
+    @IsString()
+    @IsOptional()
+    distanceMax?: string
+
+    @ApiProperty({ example: '40' })
+    @IsString()
+    @IsOptional()
+    distanceMin?: string
 }
 
 @Controller('calendar-events')
@@ -32,6 +47,9 @@ export class CalendarEventController {
             start: query.start && new Date(query.start),
             end: query.end && new Date(query.end),
             bbox: query.bbox && query.bbox.split(','),
+            keyWord: query.keyWord,
+            distanceMax: query.distanceMax && parseInt(query.distanceMax),
+            distanceMin: query.distanceMin && parseInt(query.distanceMin),
         })
     }
 }

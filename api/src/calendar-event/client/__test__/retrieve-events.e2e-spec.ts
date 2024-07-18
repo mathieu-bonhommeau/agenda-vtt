@@ -41,8 +41,9 @@ describe('Calendar event e2e test', () => {
             id: eventId1,
             startDate: new Date('2024-10-25'),
             endDate: new Date('2024-10-27'),
+            title: 'valop',
             eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.49, lat: 48.88 } }),
-            traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
+            traces: [arbitraryTrace({ id: v4(), distance: 20 }), arbitraryTrace({ id: v4(), distance: 10 })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
                 contacts: [arbitraryContact({ name: 'dorianito' })],
@@ -59,7 +60,7 @@ describe('Calendar event e2e test', () => {
                 postcode: null,
                 latLon: { lon: 5, lat: 48.52 },
             }),
-            traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
+            traces: [arbitraryTrace({ id: v4(), distance: 45 }), arbitraryTrace({ id: v4(), distance: 15 })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
                 contacts: [arbitraryContact({ name: 'marcito' })],
@@ -67,10 +68,11 @@ describe('Calendar event e2e test', () => {
         }),
         arbitraryCalendarEvent({
             id: eventId3,
+            title: 'valopetsre',
             startDate: new Date('2024-11-01'),
             endDate: new Date('2024-11-03'),
             eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.1, lat: 47.7 } }),
-            traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
+            traces: [arbitraryTrace({ id: v4(), distance: 28 }), arbitraryTrace({ id: v4(), distance: 50 })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
                 contacts: [arbitraryContact({ name: 'dorianito' })],
@@ -81,9 +83,10 @@ describe('Calendar event e2e test', () => {
             startDate: new Date('2024-10-11'),
             endDate: new Date('2024-10-12'),
             eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.36, lat: 48.84 } }),
-            traces: [arbitraryTrace({ id: v4() }), arbitraryTrace({ id: v4() })],
+            traces: [arbitraryTrace({ id: v4(), distance: 25 }), arbitraryTrace({ id: v4(), distance: 10 })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
+                name: 'Valontin',
                 contacts: [arbitraryContact({ name: 'dorianito' })],
             }),
         }),
@@ -187,7 +190,7 @@ describe('Calendar event e2e test', () => {
         },
     )
 
-    it('retrieves only events located in the bbox location with a predetrrmine radius', async () => {
+    it('retrieves only events located in the bbox location with a deterministic radius', async () => {
         const response = await sut.retrieveCalendarEvents('/calendar-events', {
             bbox: [2.03, 48.69, 2.63, 49.01],
         })
@@ -196,8 +199,49 @@ describe('Calendar event e2e test', () => {
         expect(response.body.map((e: unknown) => e['id'])).toEqual([eventId1, eventId4])
     })
 
-    it('retrieves only events whose title or organizer matches with the search word', async () => {
+    it.each`
+        keyWord    | resultsIds
+        ${'valo'}  | ${[eventId1, eventId3, eventId4]}
+        ${'Valop'} | ${[eventId1, eventId3]}
+        ${'alon'}  | ${[eventId4]}
+    `(
+        'retrieves only events whose title or organizer matches with the search word: $keyWord',
+        async ({ keyWord, resultsIds }: { keyWord: string; resultsIds: string[] }) => {
+            const response = await sut.retrieveCalendarEvents('/calendar-events', {
+                keyWord,
+            })
+            expect(response.status).toEqual(200)
 
+            expect(response.body.map((e: unknown) => e['id'])).toEqual(resultsIds)
+        },
+    )
+
+    it('retrieves only events with a distance smaller than the define max distance', async () => {
+        const response = await sut.retrieveCalendarEvents('/calendar-events', {
+            distanceMax: 15,
+        })
+        expect(response.status).toEqual(200)
+
+        expect(response.body.map((e: unknown) => e['id'])).toEqual([eventId1, eventId4])
+    })
+
+    it('retrieves only events with a distance greater than the define min distance', async () => {
+        const response = await sut.retrieveCalendarEvents('/calendar-events', {
+            distanceMin: 42,
+        })
+        expect(response.status).toEqual(200)
+
+        expect(response.body.map((e: unknown) => e['id'])).toEqual([eventId2, eventId3])
+    })
+
+    it('retrieves only events with a distance greater than the define min distance and smaller than the define max distance', async () => {
+        const response = await sut.retrieveCalendarEvents('/calendar-events', {
+            distanceMin: 25,
+            distanceMax: 35,
+        })
+        expect(response.status).toEqual(200)
+
+        expect(response.body.map((e: unknown) => e['id'])).toEqual([eventId3, eventId4])
     })
 })
 
@@ -216,7 +260,17 @@ class SUT {
         return this._testBuilder.buildCalendarEvent(event)
     }
 
-    async retrieveCalendarEvents(path: string, query: { start?: Date; end?: Date; bbox?: number[] }) {
+    async retrieveCalendarEvents(
+        path: string,
+        query: {
+            start?: Date
+            end?: Date
+            bbox?: number[]
+            keyWord?: string
+            distanceMax?: number
+            distanceMin?: number
+        },
+    ) {
         let queriesString = ''
 
         if (query.start) queriesString += `&start=${query.start}`
@@ -225,6 +279,9 @@ class SUT {
             const bboxString = `${query.bbox[0]},${query.bbox[1]},${query.bbox[2]},${query.bbox[3]}`
             queriesString += `&bbox=${bboxString}`
         }
+        if (query.keyWord) queriesString = `&keyWord=${query.keyWord}`
+        if (query.distanceMax) queriesString = `&distanceMax=${query.distanceMax}`
+        if (query.distanceMin) queriesString = `&distanceMin=${query.distanceMin}`
 
         return request(this._server).get(`${path}?${queriesString}`)
     }

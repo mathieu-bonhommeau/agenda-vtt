@@ -41,7 +41,7 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
         if (isValid(params.start) && !isValid(params.end))
             query.andWhere(':start <= calendar_event_entity.end_date', { start: params.start.toISOString() })
 
-        if (params.bbox) {
+        if (params.bbox)
             query.andWhere(
                 `ST_Contains(
                                     ST_MakeEnvelope(:minLon ,:minLat ,:maxLon ,:maxLat , 4326),
@@ -54,6 +54,26 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
                     maxLat: parseFloat(params.bbox[3]),
                 },
             )
+
+        if (params.keyWord)
+            query.andWhere(
+                '(lower(calendar_event_entity.title) like :keyWord OR lower(event_organizer_entity.name) like :keyWord)',
+                {
+                    keyWord: `%${params.keyWord.toLowerCase()}%`,
+                },
+            )
+
+        if (params.distanceMax && !params.distanceMin) {
+            query.andWhere('trace_entity.distance < :distanceMax', { distanceMax: params.distanceMax })
+        }
+        if (params.distanceMin && !params.distanceMax) {
+            query.andWhere('trace_entity.distance > :distanceMin', { distanceMin: params.distanceMin })
+        }
+        if (params.distanceMin && params.distanceMax) {
+            query.andWhere('trace_entity.distance between :distanceMax AND :distanceMin', {
+                distanceMin: params.distanceMin,
+                distanceMax: params.distanceMax,
+            })
         }
 
         return query
@@ -89,7 +109,7 @@ class PgEventLocationFactory {
             housenumber: dbEventLocation.housenumber,
             country: dbEventLocation.country,
             address: dbEventLocation.address,
-            latLon: { lon: dbEventLocation.geometry.coordinates[1], lat: dbEventLocation.geometry.coordinates[0] },
+            latLon: { lon: dbEventLocation.geometry.coordinates[0], lat: dbEventLocation.geometry.coordinates[1] },
         }
     }
 }
