@@ -42,7 +42,7 @@ describe('Calendar event e2e test', () => {
             startDate: new Date('2024-10-25'),
             endDate: new Date('2024-10-27'),
             title: 'valop',
-            eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.49, lat: 48.88 } }),
+            eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.49, lat: 48.88 }, postcode: '16321' }),
             traces: [arbitraryTrace({ id: v4(), distance: 20 }), arbitraryTrace({ id: v4(), distance: 10 })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
@@ -57,7 +57,7 @@ describe('Calendar event e2e test', () => {
                 id: v4(),
                 housenumber: null,
                 county: null,
-                postcode: null,
+                postcode: '75600',
                 latLon: { lon: 5, lat: 48.52 },
             }),
             traces: [arbitraryTrace({ id: v4(), distance: 45 }), arbitraryTrace({ id: v4(), distance: 15 })],
@@ -71,7 +71,7 @@ describe('Calendar event e2e test', () => {
             title: 'valopetsre',
             startDate: new Date('2024-11-01'),
             endDate: new Date('2024-11-03'),
-            eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.1, lat: 47.7 } }),
+            eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.1, lat: 47.7 }, postcode: '45000' }),
             traces: [arbitraryTrace({ id: v4(), distance: 28 }), arbitraryTrace({ id: v4(), distance: 50 })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
@@ -82,7 +82,7 @@ describe('Calendar event e2e test', () => {
             id: eventId4,
             startDate: new Date('2024-10-11'),
             endDate: new Date('2024-10-12'),
-            eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.36, lat: 48.84 } }),
+            eventLocation: arbitraryEventLocation({ id: v4(), latLon: { lon: 2.36, lat: 48.84 }, postcode: '25300' }),
             traces: [arbitraryTrace({ id: v4(), distance: 25 }), arbitraryTrace({ id: v4(), distance: 10 })],
             organizer: arbitraryEventOrganizer({
                 id: v4(),
@@ -243,6 +243,22 @@ describe('Calendar event e2e test', () => {
 
         expect(response.body.map((e: unknown) => e['id'])).toEqual([eventId3, eventId4])
     })
+
+    it.each`
+        sortBy        | resultsIds
+        ${'date'}     | ${[eventId4, eventId1, eventId3, eventId2]}
+        ${'location'} | ${[eventId1, eventId4, eventId3, eventId2]}
+    `(
+        'retrieves events sorted by $sortBy',
+        async ({ sortBy, resultsIds }: { sortBy: string; resultsIds: string[] }) => {
+            const response = await sut.retrieveCalendarEvents('/calendar-events', {
+                sortBy,
+            })
+            expect(response.status).toEqual(200)
+
+            expect(response.body.map((e: unknown) => e['id'])).toEqual(resultsIds)
+        },
+    )
 })
 
 class SUT {
@@ -269,6 +285,7 @@ class SUT {
             keyWord?: string
             distanceMax?: number
             distanceMin?: number
+            sortBy?: string
         },
     ) {
         let queriesString = ''
@@ -279,9 +296,10 @@ class SUT {
             const bboxString = `${query.bbox[0]},${query.bbox[1]},${query.bbox[2]},${query.bbox[3]}`
             queriesString += `&bbox=${bboxString}`
         }
-        if (query.keyWord) queriesString = `&keyWord=${query.keyWord}`
-        if (query.distanceMax) queriesString = `&distanceMax=${query.distanceMax}`
-        if (query.distanceMin) queriesString = `&distanceMin=${query.distanceMin}`
+        if (query.keyWord) queriesString += `&keyWord=${query.keyWord}`
+        if (query.distanceMax) queriesString += `&distanceMax=${query.distanceMax}`
+        if (query.distanceMin) queriesString += `&distanceMin=${query.distanceMin}`
+        if (query.sortBy) queriesString += `&sortBy=${query.sortBy}`
 
         return request(this._server).get(`${path}?${queriesString}`)
     }

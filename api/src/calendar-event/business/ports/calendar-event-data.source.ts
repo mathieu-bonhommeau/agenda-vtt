@@ -7,6 +7,7 @@ export type CalendarEventFetchParams = {
     keyWord?: string
     distanceMax?: number
     distanceMin?: number
+    sortBy?: string
 }
 
 export interface CalendarEventDataSource {

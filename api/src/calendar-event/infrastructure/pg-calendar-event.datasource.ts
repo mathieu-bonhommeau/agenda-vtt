@@ -70,11 +70,11 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
             query.andWhere('trace_entity.distance > :distanceMin', { distanceMin: params.distanceMin })
         }
         if (params.distanceMin && params.distanceMax) {
-            query.andWhere('trace_entity.distance between :distanceMax AND :distanceMin', {
-                distanceMin: params.distanceMin,
-                distanceMax: params.distanceMax,
-            })
+            query.andWhere('trace_entity.distance <= :distanceMax', { distanceMax: params.distanceMax })
+            query.andWhere('trace_entity.distance >= :distanceMin', { distanceMin: params.distanceMin })
         }
+        if (params.sortBy === 'date') query.orderBy('calendar_event_entity.start_date', 'ASC')
+        if (params.sortBy === 'location') query.orderBy('substring(event_location_entity.postcode, 0, 3)', 'ASC')
 
         return query
     }

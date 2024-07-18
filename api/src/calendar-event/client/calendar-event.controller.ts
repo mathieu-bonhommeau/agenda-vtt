@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, Inject, Query } from '@nestjs/common'
 import { CalendarEvent } from '../business/models/calendar.event'
 import { RetrieveEvents } from '../business/use-cases/retrieve-events/retrieve.events'
-import { IsDateString, IsOptional, IsString } from 'class-validator'
+import { IsDateString, IsIn, IsOptional, IsString } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class RetrieveEventsQuery {
@@ -34,6 +34,11 @@ export class RetrieveEventsQuery {
     @IsString()
     @IsOptional()
     distanceMin?: string
+
+    @ApiProperty({ example: 'date' })
+    @IsIn(['date', 'location'])
+    @IsOptional()
+    sortBy?: string
 }
 
 @Controller('calendar-events')
@@ -50,6 +55,7 @@ export class CalendarEventController {
             keyWord: query.keyWord,
             distanceMax: query.distanceMax && parseInt(query.distanceMax),
             distanceMin: query.distanceMin && parseInt(query.distanceMin),
+            sortBy: query.sortBy && query.sortBy,
         })
     }
 }

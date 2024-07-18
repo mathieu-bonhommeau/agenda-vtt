@@ -9,6 +9,7 @@ export type RetrieveEventsCommand = {
     keyWord?: string
     distanceMax?: number
     distanceMin?: number
+    sortBy?: string
 }
 
 export class RetrieveEvents {
