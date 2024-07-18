@@ -195,6 +195,10 @@ describe('Calendar event e2e test', () => {
 
         expect(response.body.map((e: unknown) => e['id'])).toEqual([eventId1, eventId4])
     })
+
+    it('retrieves only events whose title or organizer matches with the search word', async () => {
+
+    })
 })
 
 class SUT {
