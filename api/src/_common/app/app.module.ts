@@ -20,5 +20,6 @@ export class AppModule implements NestModule {
         SwaggerModule.setup(swaggerBasePath, app, document)
     }
 
-    configure(consumer: MiddlewareConsumer): any {}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    configure(consumer: MiddlewareConsumer) {}
 }
