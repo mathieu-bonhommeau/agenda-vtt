@@ -18,11 +18,11 @@ api-lint:
 api-test:
   stage: test
   services:
-    - image: docker:24.0.5-dind
-      name: docker-dind
-    - image: postgres:16.3
-      name: postgres
+    - name: docker:24.0.5-dind
+      alias: dind
+    - name: postgres:16.3
       command: [ "postgres" ,"-c" ,"max_connections=1000" ]
+      alias: postgres
   variables:
     DOCKER_HOST: "tcp://docker:2375"
     POSTGRES_PASSWORD: root
