@@ -1,4 +1,3 @@
-
 .api-modules: &api-modules
   - cd api && npm install
 
@@ -18,6 +17,10 @@ api-lint:
 
 api-test:
   stage: test
+  services:
+    - name: docker:dind
+      alias: dind
+
   needs: [ ]
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -33,7 +36,7 @@ api-test:
 build-backend:
   image: node:20-alpine
   stage: build
-  needs: [api-lint, api-test]
+  needs: [ api-lint, api-test ]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
@@ -56,7 +59,7 @@ deploy-api-production:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     BACKEND_TAG: ${CI_REGISTRY_IMAGE}/api:${CI_ENVIRONMENT_NAME}
-  needs: [build-backend]
+  needs: [ build-backend ]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: manual
@@ -83,7 +86,7 @@ deploy-db-production:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     DB_TAG: ${CI_REGISTRY_IMAGE}/db:${CI_ENVIRONMENT_NAME}
-  needs: []
+  needs: [ ]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: manual
