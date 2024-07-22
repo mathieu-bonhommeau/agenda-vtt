@@ -2,6 +2,7 @@ image: node:lts
 
 stages:
   - validation
+  - pre-test
   - test
   - build
   - deploy
