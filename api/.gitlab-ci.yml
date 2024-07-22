@@ -32,7 +32,6 @@ api-test:
     POSTGRES_DB: utagawa-agenda-db
     CONTAINER_NAME: pgsql-db
     PGPORT: 5432
-
   needs: [ ]
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
