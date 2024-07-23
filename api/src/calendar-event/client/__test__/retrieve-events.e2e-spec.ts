@@ -132,14 +132,18 @@ describe('Calendar event e2e test', () => {
     })
 
     it('retrieves all events', async () => {
-        const response = await sut.retrieveCalendarEvents('/calendar-events', {})
+        try {
+            const response = await sut.retrieveCalendarEvents('/calendar-events', {})
+            expect(response.status).toEqual(200)
+            expect(response.body.length).toEqual(4)
 
-        expect(response.status).toEqual(200)
-        expect(response.body.length).toEqual(4)
-
-        events.forEach((event, i) => {
-            expect(toCalendarEventFromResponseBodyDto(response.body[i])).toEqual(event)
-        })
+            events.forEach((event, i) => {
+                expect(toCalendarEventFromResponseBodyDto(response.body[i])).toEqual(event)
+            })
+        } catch (e) {
+            console.log('Error retrieving events:', e)
+            throw e
+        }
     })
 
     it.each`

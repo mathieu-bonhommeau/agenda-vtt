@@ -70,6 +70,8 @@ api-test:
     - when: never
   before_script:
     - *api-modules
+    - echo "Waiting for PostgreSQL to be ready..."
+    - until pg_isready -h postgres -p 5432; do echo "Waiting..."; sleep 1; done
   script:
     - npm run test:backend --verbose
 
