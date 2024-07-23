@@ -15,14 +15,17 @@ api-lint:
   script:
     - npm run lint:backend
 
-build-db:
+deploy-db:
   image: docker:24.0.5
   stage: db-build
+  environment:
+    name: production
   services:
     - docker:24.0.5-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
-    DB_TAG: ${CI_REGISTRY_IMAGE}/db
+    DB_TAG: ${CI_REGISTRY_IMAGE}/db:${CI_ENVIRONMENT_NAME}
+  needs: [ ]
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: manual
@@ -33,20 +36,21 @@ build-db:
     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - ls -ll
-    - docker build --no-cache -f ./docker/db/db.dockerfile -t ${DB_TAG} .
+    - |
+      docker build \
+      --build-arg POSTGRES_USER=${POSTGRES_USER} \
+      --build-arg POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+      --build-arg POSTGRES_DB=${POSTGRES_DB} \
+      --no-cache -f ./docker/db/db.dockerfile \
+      -t ${DB_TAG} .
     - docker push ${DB_TAG}
-  artifacts:
-    paths:
-      - custom-postgres.tar
-    expire_in: 1 hour
 
 api-test:
   stage: test
   services:
-    - name: docker:24.0.5-dind
+    - name: registry.gitlab.com/utagawavtt/utagawavtt-agenda/db:production
       alias: dind
-    - name: build-db
+    - name: deploy-db
       command: [ "postgres" ,"-c" ,"max_connections=1000" ]
       alias: postgres
   variables:
@@ -110,31 +114,3 @@ deploy-api-production:
   script:
     - docker build --no-cache -f ./docker/api/api.dockerfile -t ${BACKEND_TAG} .
     - docker push ${BACKEND_TAG}
-
-deploy-db-production:
-  image: docker:24.0.5
-  stage: deploy
-  environment:
-    name: production
-  services:
-    - docker:24.0.5-dind
-  variables:
-    DOCKER_TLS_CERTDIR: "/certs"
-    DB_TAG: ${CI_REGISTRY_IMAGE}/db:${CI_ENVIRONMENT_NAME}
-  needs: [ ]
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
-    - when: never
-  before_script:
-    - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - |
-      docker build \
-      --build-arg POSTGRES_USER=${POSTGRES_USER} \
-      --build-arg POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
-      --build-arg POSTGRES_DB=${POSTGRES_DB} \
-      --no-cache -f ./docker/db/db.dockerfile \
-      -t ${DB_TAG} .
-    - docker push ${DB_TAG}
