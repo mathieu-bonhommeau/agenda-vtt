@@ -48,9 +48,9 @@ deploy-db:
 api-test:
   stage: test
   services:
-    - name: registry.gitlab.com/utagawavtt/utagawavtt-agenda/db:production
+    - name: docker:24.0.5-dind
       alias: dind
-    - name: deploy-db
+    - name: registry.gitlab.com/utagawavtt/utagawavtt-agenda/db:production
       command: [ "postgres" ,"-c" ,"max_connections=1000" ]
       alias: postgres
   variables:
