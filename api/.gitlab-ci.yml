@@ -73,7 +73,6 @@ api-test:
   before_script:
     - *api-modules
     - echo "Waiting for PostgreSQL to be ready..."
-    - cd ..
     - touch .env
     - echo $ENV_PRODUCTION_BACK > .env
   script:
