@@ -93,23 +93,27 @@ describe('Calendar event e2e test', () => {
     ]
 
     beforeAll(async () => {
-        postgresContainer = await new PostgreSqlContainer('postgis/postgis:12-3.0').start()
-        pg = await PgTestingProvider.useFactory(postgresContainer.getConnectionUri())
+        try {
+            postgresContainer = await new PostgreSqlContainer('postgis/postgis:12-3.0').start()
+            pg = await PgTestingProvider.useFactory(postgresContainer.getConnectionUri())
 
-        const moduleRef = await Test.createTestingModule({
-            imports: [AppModule],
-            controllers: [CalendarEventController],
-            providers: [
-                retrieveEventsProvider,
-                calendarEventDataSourceProvider,
-                {
-                    provide: 'SQL',
-                    useValue: pg,
-                },
-            ],
-        }).compile()
-        app = moduleRef.createNestApplication()
-        await app.init()
+            const moduleRef = await Test.createTestingModule({
+                imports: [AppModule],
+                controllers: [CalendarEventController],
+                providers: [
+                    retrieveEventsProvider,
+                    calendarEventDataSourceProvider,
+                    {
+                        provide: 'SQL',
+                        useValue: pg,
+                    },
+                ],
+            }).compile()
+            app = moduleRef.createNestApplication()
+            await app.init()
+        } catch (e) {
+            console.log(e)
+        }
     })
 
     beforeEach(async () => {
