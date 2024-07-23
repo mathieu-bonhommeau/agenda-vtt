@@ -52,7 +52,7 @@ api-test:
     POSTGRES_DB: utagawa-agenda-db
     PG_PORT: 5432
   needs:
-    - build_docker_db_image
+    - build-db
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
