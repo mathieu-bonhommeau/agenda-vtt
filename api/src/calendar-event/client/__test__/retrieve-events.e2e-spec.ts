@@ -93,27 +93,23 @@ describe('Calendar event e2e test', () => {
     ]
 
     beforeAll(async () => {
-        try {
-            postgresContainer = await new PostgreSqlContainer('postgis/postgis:12-3.0').start()
-            pg = await PgTestingProvider.useFactory(postgresContainer.getConnectionUri())
+        postgresContainer = await new PostgreSqlContainer('postgis/postgis:12-3.0').start()
+        pg = await PgTestingProvider.useFactory(postgresContainer.getConnectionUri())
 
-            const moduleRef = await Test.createTestingModule({
-                imports: [AppModule],
-                controllers: [CalendarEventController],
-                providers: [
-                    retrieveEventsProvider,
-                    calendarEventDataSourceProvider,
-                    {
-                        provide: 'SQL',
-                        useValue: pg,
-                    },
-                ],
-            }).compile()
-            app = moduleRef.createNestApplication()
-            await app.init()
-        } catch (e) {
-            console.log(e)
-        }
+        const moduleRef = await Test.createTestingModule({
+            imports: [AppModule],
+            controllers: [CalendarEventController],
+            providers: [
+                retrieveEventsProvider,
+                calendarEventDataSourceProvider,
+                {
+                    provide: 'SQL',
+                    useValue: pg,
+                },
+            ],
+        }).compile()
+        app = moduleRef.createNestApplication()
+        await app.init()
     })
 
     beforeEach(async () => {
@@ -136,18 +132,13 @@ describe('Calendar event e2e test', () => {
     })
 
     it('retrieves all events', async () => {
-        try {
-            const response = await sut.retrieveCalendarEvents('/calendar-events', {})
-            expect(response.status).toEqual(200)
-            expect(response.body.length).toEqual(4)
+        const response = await sut.retrieveCalendarEvents('/calendar-events', {})
+        expect(response.status).toEqual(200)
+        expect(response.body.length).toEqual(4)
 
-            events.forEach((event, i) => {
-                expect(toCalendarEventFromResponseBodyDto(response.body[i])).toEqual(event)
-            })
-        } catch (e) {
-            console.log('Error retrieving events:', e)
-            throw e
-        }
+        events.forEach((event, i) => {
+            expect(toCalendarEventFromResponseBodyDto(response.body[i])).toEqual(event)
+        })
     })
 
     it.each`
