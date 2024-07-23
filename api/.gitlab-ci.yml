@@ -74,6 +74,7 @@ api-test:
     - *api-modules
     - echo "Waiting for PostgreSQL to be ready..."
   script:
+    - docker logs $(docker ps -q --filter "name=postgres")
     - npm run test:backend --verbose
 
 build-backend:
