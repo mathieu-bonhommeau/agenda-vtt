@@ -30,7 +30,7 @@ build-db:
     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - docker build --no-cache -f ./docker/db/db.dockerfile -t ${DB_TAG} .
+    - docker build --no-cache -f ../docker/db/db.dockerfile -t ${DB_TAG} .
     - docker push ${DB_TAG}
   artifacts:
     paths:
