@@ -6,10 +6,10 @@ import { TraceEntity } from '../entities/trace.entity'
 import 'dotenv/config'
 
 const entities = [CalendarEventEntity, EventOrganizerEntity, EventLocationEntity, TraceEntity]
-console.log('in config', process.env.POSTGRES_HOST)
+
 export const pgConfig: DataSourceOptions = {
     type: 'postgres',
-    host: process.env.POSTGRES_HOST || 'localhost',
+    host: 'db-agenda',
     port: parseInt(process.env.POSTGRES_PORT, 10) || 5432,
     username: process.env.POSTGRES_USER || 'postgres',
     password: process.env.POSTGRES_PASSWORD || 'root',

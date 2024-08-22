@@ -2,7 +2,6 @@ import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { Server } from 'http'
-import { CalendarEventController } from '../calendar-event.controller'
 import {
     arbitraryCalendarEvent,
     arbitraryContact,
@@ -17,7 +16,6 @@ import { DataSource } from 'typeorm'
 import { EventLocationEntity } from '../../../_common/db/pg/entities/event-location.entity'
 import { TraceEntity } from '../../../_common/db/pg/entities/trace.entity'
 import { EventOrganizerEntity } from '../../../_common/db/pg/entities/event-organizer.entity'
-import { calendarEventDataSourceProvider, retrieveEventsProvider } from '../../_config/calendar-event.module'
 import { PgTestingProvider } from '../../../_common/db/pg/pg-testing.provider'
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql'
 import { DbCalendarEventsBuilders } from '../../../_common/helpers/db-calendar-events.helpers'
@@ -94,20 +92,15 @@ describe('Calendar event e2e test', () => {
 
     beforeAll(async () => {
         postgresContainer = await new PostgreSqlContainer('postgis/postgis:12-3.0').start()
+
         pg = await PgTestingProvider.useFactory(postgresContainer.getConnectionUri())
 
         const moduleRef = await Test.createTestingModule({
             imports: [AppModule],
-            controllers: [CalendarEventController],
-            providers: [
-                retrieveEventsProvider,
-                calendarEventDataSourceProvider,
-                {
-                    provide: 'SQL',
-                    useValue: pg,
-                },
-            ],
-        }).compile()
+        })
+            .overrideProvider('SQL')
+            .useValue(pg)
+            .compile()
         app = moduleRef.createNestApplication()
         await app.init()
     })
