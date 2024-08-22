@@ -11,9 +11,5 @@ export type EventLocation = {
     postcode?: string
     housenumber?: string
     address: string
-    latLon: GeoEventLocation
-}
-export type GeoEventLocation = {
-    lat: number
-    lon: number
+    latLon: LatLon
 }
