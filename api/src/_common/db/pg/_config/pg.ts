@@ -3,9 +3,10 @@ import { CalendarEventEntity } from '../entities/calendar-event.entity'
 import { EventOrganizerEntity } from '../entities/event-organizer.entity'
 import { EventLocationEntity } from '../entities/event-location.entity'
 import { TraceEntity } from '../entities/trace.entity'
+import 'dotenv/config'
 
 const entities = [CalendarEventEntity, EventOrganizerEntity, EventLocationEntity, TraceEntity]
-
+console.log('in config', process.env.POSTGRES_HOST)
 export const pgConfig: DataSourceOptions = {
     type: 'postgres',
     host: process.env.POSTGRES_HOST || 'localhost',

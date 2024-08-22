@@ -5,18 +5,46 @@ services:
   client-agenda:
     build:
       context: .
-      dockerfile: docker/client/client.dockerfile
+      dockerfile: docker/client/client.local.dockerfile
     container_name: "utagawavtt-agenda-frontend"
+    volumes:
+      - ./client:/app
     ports:
-      - "8080:80"
+      - "3000:3000"
+    networks:
+      - utg
 
   api-agenda:
     build:
       context: .
-      dockerfile: docker/api/api.dockerfile
+      dockerfile: docker/api/api.local.dockerfile
     container_name: "utagawavtt-agenda-api"
     ports:
       - "5000:5000"
+    volumes:
+      - ./api:/app
+    links:
+      - db-agenda
+    networks:
+      - utg
+
+  reverse-proxy:
+    build:
+      context: .
+      dockerfile: docker/reverse-proxy/reverse-proxy.dockerfile
+    container_name: "reverse-proxy"
+    volumes:
+      - ./docker/reverse-proxy/conf.d:/etc/nginx/conf.d
+      - ./docker/reverse-proxy/certs:/etc/ssl/certs
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - client-agenda
+      - api-agenda
+      - db-agenda
+    networks:
+      - utg
 
   db-agenda:
     build:
@@ -28,6 +56,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: utagawa-agenda-db
       PG_PORT: 5432
-
     ports:
       - "5432:5432"
+    networks:
+      - utg
+
+networks:
+  utg:
+    driver: bridge

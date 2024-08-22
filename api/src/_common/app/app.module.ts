@@ -2,9 +2,10 @@ import { INestApplication, MiddlewareConsumer, Module, NestModule } from '@nestj
 import { ConfigModule } from '@nestjs/config'
 import { CalendarEventModule } from '../../calendar-event/_config/calendar-event.module'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { AuthModule } from '../auth/auth.module'
 
 @Module({
-    imports: [ConfigModule.forRoot(), CalendarEventModule],
+    imports: [ConfigModule.forRoot({ isGlobal: true }), CalendarEventModule, AuthModule],
     controllers: [],
     providers: [],
 })

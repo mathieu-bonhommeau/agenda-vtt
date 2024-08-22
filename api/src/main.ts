@@ -4,8 +4,11 @@ import * as process from 'node:process'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ValidationPipe } from '@nestjs/common'
 import * as fs from 'node:fs'
+import session from 'express-session'
+import cookieParser from 'cookie-parser'
 
 async function bootstrap() {
+    console.log(process.env.POSTGRES_HOST)
     const app = await NestFactory.create(AppModule)
 
     AppModule.configureSwagger(app, '')
@@ -20,6 +23,15 @@ async function bootstrap() {
             .build(),
     )
     fs.writeFileSync('./swagger-spec.json', JSON.stringify(document))
+
+    app.use(
+        session({
+            secret: process.env.SESSION_SECRET,
+            resave: false,
+            saveUninitialized: false,
+        }),
+    )
+    app.use(cookieParser())
 
     app.useGlobalPipes(new ValidationPipe({ transform: true }))
 
