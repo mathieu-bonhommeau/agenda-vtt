@@ -1,5 +1,5 @@
 import { CalendarEventFull, EventOrganizer, EventPrice } from '@/app/calendar-events/business/models/event'
-import { EventLocation, GeoEventLocation } from '@/app/calendar-events/business/models/geolocation'
+import { EventLocation, LatLon } from '@/app/calendar-events/business/models/geolocation'
 import { Trace, TraceColor } from '@/app/traces/business/models/trace'
 
 export class CalendarEventBuilder {
@@ -88,7 +88,7 @@ export class EventLocationBuilder {
     private _department: string = 'Landes'
     private _city: string = 'Dax'
     private _postcode?: string
-    private _latLon: GeoEventLocation = { lon: 43.370312777615865, lat: -0.9990490074308079 }
+    private _latLon: LatLon = { lon: 43.370312777615865, lat: -0.9990490074308079 }
     private _address: string = '155 rue de la mairie'
 
     build(): EventLocation {
@@ -103,7 +103,7 @@ export class EventLocationBuilder {
         }
     }
 
-    setLatLon(latLon: GeoEventLocation): EventLocationBuilder {
+    setLatLon(latLon: LatLon): EventLocationBuilder {
         this._latLon = latLon
         return this
     }

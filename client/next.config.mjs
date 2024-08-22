@@ -3,6 +3,7 @@
 const nextConfig = {
     reactStrictMode: false,
     output: 'export',
+    basePath: process.env.NEXT_PUBLIC_REACT_APP='dev' ? '/client' : '/',
     transpilePackages: ['ol', 'rlayers'],
     experimental: {
         esmExternals: 'loose'
@@ -12,7 +13,7 @@ const nextConfig = {
     },
     images: {
         unoptimized: true
-    }
+    },
 };
 
 export default nextConfig;

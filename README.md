@@ -21,15 +21,56 @@ This app is built with NextJs and Typescript.
 
 For launch the project : 
 
-1 - `npm install` for install dependencies
+1 - `cd client`
 
-2 - `cp env.template .env` copy .env file
+2 - `npm install` to install dependencies
 
-3 - The project can run with in memory data (and without the backend connection) or with classical http requests for retrieve data :
+3 - `cp env.template .env` copy .env file
+
+4 - The project can run with in memory data (and without the backend connection) or with classical http requests for retrieve data :
 - in memory : change the value of REACT_APP variable to "dev"
 - http : change the value of REACT_APP variable to "prod"
 
-4 - `npm run dev` run the app in dev mode
+5 - `npm run dev` run the app in dev mode
 
-Have fun ! 
+## API
+
+This api is built with NestJs, Typescript and ad uses Posgresql database
+
+1 - `cd api`
+
+2 - `npm install` to install dependencies
+
+3 - `cp env.template .env` copy .env file
+
+4 - `npm run migration:up` to make migrations on db
+
+// Add steps for migrations and fixtures
+
+4 - The project can run with in memory data (and without the backend connection) or with classical http requests for retrieve data :
+- in memory : change the value of REACT_APP variable to "dev"
+- http : change the value of REACT_APP variable to "prod"
+
+5 - `npm run dev` run the app in dev mode
+
+## PRODUCTION
+
+To launch the app in production, you have to use containers available on gitlab container registry. This is true for frontend, api and database
+
+- frontend
+
+```
+docker run -p 80:80 registry.gitlab.com/utagawavtt/utagawavtt-agenda/client:production
+```
+
+- database
+```
+docker run --rm \
+-e POSTGRES_USER=<POSTGRES_USER> \
+-e POSTGRES_PASSWORD=<POSTGRES_PASSWORD> \
+-e POSTGRES_DB=<POSTGRES_DB> \
+-p <LOCAL_PORT>:5432 registry.gitlab.com/utagawavtt/utagawavtt-agenda/db:production
+```
+
+Have fun !
 
