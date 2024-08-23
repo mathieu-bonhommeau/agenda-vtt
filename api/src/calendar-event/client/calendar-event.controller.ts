@@ -1,49 +1,16 @@
-import { Controller, Get, HttpCode, Inject, Query } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Inject, Post, Query } from '@nestjs/common'
 import { CalendarEvent } from '../business/models/calendar.event'
 import { RetrieveEvents } from '../business/use-cases/retrieve-events/retrieve.events'
-import { IsDateString, IsIn, IsOptional, IsString } from 'class-validator'
-import { ApiProperty } from '@nestjs/swagger'
-
-export class RetrieveEventsQuery {
-    @ApiProperty({ example: '2024-07-16T06:56:15.151' })
-    @IsDateString()
-    @IsOptional()
-    start?: string
-
-    @ApiProperty({ example: '2024-07-16T06:56:15.151' })
-    @IsDateString()
-    @IsOptional()
-    end?: string
-
-    @ApiProperty({ example: '2.25,45.63,2.36,48.88' })
-    @IsString()
-    @IsOptional()
-    bbox?: string
-
-    @ApiProperty({ example: 'search word' })
-    @IsString()
-    @IsOptional()
-    keyWord?: string
-
-    @ApiProperty({ example: '40' })
-    @IsString()
-    @IsOptional()
-    distanceMax?: string
-
-    @ApiProperty({ example: '40' })
-    @IsString()
-    @IsOptional()
-    distanceMin?: string
-
-    @ApiProperty({ example: 'date' })
-    @IsIn(['date', 'location'])
-    @IsOptional()
-    sortBy?: string
-}
+import { RetrieveEventsQuery } from './retrieve-events.query'
+import { AddNewEventBody } from './add-new-event.body'
+import { AddCalendarEvent } from '../business/use-cases/add-event/add-events'
 
 @Controller('calendar-events')
 export class CalendarEventController {
-    constructor(@Inject('RetrieveEventsUseCase') private readonly _retrieveEvents: RetrieveEvents) {}
+    constructor(
+        @Inject('RetrieveEventsUseCase') private readonly _retrieveEvents: RetrieveEvents,
+        @Inject('AddEventUseCase') private readonly _addEvents: AddCalendarEvent,
+    ) {}
 
     @Get()
     @HttpCode(200)
@@ -56,6 +23,23 @@ export class CalendarEventController {
             distanceMax: query.distanceMax && parseInt(query.distanceMax),
             distanceMin: query.distanceMin && parseInt(query.distanceMin),
             sortBy: query.sortBy && query.sortBy,
+        })
+    }
+
+    @Post()
+    @HttpCode(201)
+    async saveEvent(@Body() body: AddNewEventBody): Promise<void> {
+        return this._addEvents.addNewEvent({
+            id: body.id,
+            title: body.title,
+            description: body?.description,
+            startDate: body.startDate,
+            endDate: body.endDate,
+            eventLocation: body.eventLocation,
+            traces: body.traces,
+            price: body?.price,
+            services: body?.services,
+            organizer: body.organizer,
         })
     }
 }

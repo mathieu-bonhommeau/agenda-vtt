@@ -1,3 +1,4 @@
 .idea
 .gitlab-ci-local
 docker/client/htpasswd
+docker/reverse-proxy/certs
