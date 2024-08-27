@@ -1,11 +1,9 @@
 import { CalendarEventDataSource, CalendarEventFetchParams } from '../business/ports/calendar-event-data.source'
 import { DataSource, SelectQueryBuilder } from 'typeorm'
-import { CalendarEvent, EventLocation, EventOrganizer, Trace } from '../business/models/calendar.event'
+import { CalendarEvent } from '../business/models/calendar.event'
 import { CalendarEventEntity } from '../../_common/db/pg/entities/calendar-event.entity'
-import { EventLocationEntity } from '../../_common/db/pg/entities/event-location.entity'
-import { EventOrganizerEntity } from '../../_common/db/pg/entities/event-organizer.entity'
-import { TraceEntity } from '../../_common/db/pg/entities/trace.entity'
 import { isValid } from 'date-fns'
+import { PgCalendarEventFactory } from './factories/pg-event-location.factory'
 
 export class PgCalendarEventDataSource implements CalendarEventDataSource {
     private readonly _pg: DataSource
@@ -77,64 +75,5 @@ export class PgCalendarEventDataSource implements CalendarEventDataSource {
         if (params.sortBy === 'location') query.orderBy('substring(event_location_entity.postcode, 0, 3)', 'ASC')
 
         return query
-    }
-}
-
-class PgCalendarEventFactory {
-    static create(dbCalendarEvent: CalendarEventEntity): CalendarEvent {
-        return {
-            id: dbCalendarEvent.id,
-            title: dbCalendarEvent.title,
-            description: dbCalendarEvent.description,
-            createdAt: dbCalendarEvent.createdAt,
-            startDate: dbCalendarEvent.startDate,
-            endDate: dbCalendarEvent.endDate,
-            eventLocation: PgEventLocationFactory.create(dbCalendarEvent.eventLocation),
-            organizer: PgEventOrganizerFactory.create(dbCalendarEvent.organizer),
-            traces: dbCalendarEvent.traces.map((t) => PgTraceFactory.create(t)),
-            services: dbCalendarEvent.services,
-            prices: dbCalendarEvent.prices,
-        }
-    }
-}
-
-class PgEventLocationFactory {
-    static create(dbEventLocation: EventLocationEntity): EventLocation {
-        return {
-            id: dbEventLocation.id,
-            city: dbEventLocation.city,
-            region: dbEventLocation.region,
-            county: dbEventLocation.county,
-            postcode: dbEventLocation.postcode,
-            housenumber: dbEventLocation.housenumber,
-            country: dbEventLocation.country,
-            address: dbEventLocation.address,
-            latLon: { lon: dbEventLocation.geometry.coordinates[0], lat: dbEventLocation.geometry.coordinates[1] },
-        }
-    }
-}
-
-class PgEventOrganizerFactory {
-    static create(dbEventOrganizer: EventOrganizerEntity): EventOrganizer {
-        return {
-            id: dbEventOrganizer.id,
-            email: dbEventOrganizer.email,
-            name: dbEventOrganizer.name,
-            website: dbEventOrganizer.website,
-            contacts: dbEventOrganizer.contacts,
-        }
-    }
-}
-
-class PgTraceFactory {
-    static create(dbTrace: TraceEntity): Trace {
-        return {
-            id: dbTrace.id,
-            distance: dbTrace.distance,
-            link: dbTrace.link,
-            positiveElevation: dbTrace.positiveElevation,
-            traceColor: dbTrace.traceColor,
-            utagawaId: dbTrace.utagawaId,
-        }
     }
 }

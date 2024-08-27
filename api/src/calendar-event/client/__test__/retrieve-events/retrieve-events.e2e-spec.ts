@@ -8,21 +8,21 @@ import {
     arbitraryEventLocation,
     arbitraryEventOrganizer,
     arbitraryTrace,
-} from '../../../_common/helpers/event-factories.helpers'
-import { CalendarEvent } from '../../business/models/calendar.event'
+} from '../../../../_common/helpers/event-factories.helpers'
+import { CalendarEvent } from '../../../business/models/calendar.event'
 import { v4 } from 'uuid'
-import { CalendarEventEntity } from '../../../_common/db/pg/entities/calendar-event.entity'
+import { CalendarEventEntity } from '../../../../_common/db/pg/entities/calendar-event.entity'
 import { DataSource } from 'typeorm'
-import { EventLocationEntity } from '../../../_common/db/pg/entities/event-location.entity'
-import { TraceEntity } from '../../../_common/db/pg/entities/trace.entity'
-import { EventOrganizerEntity } from '../../../_common/db/pg/entities/event-organizer.entity'
-import { PgTestingProvider } from '../../../_common/db/pg/pg-testing.provider'
+import { EventLocationEntity } from '../../../../_common/db/pg/entities/event-location.entity'
+import { TraceEntity } from '../../../../_common/db/pg/entities/trace.entity'
+import { EventOrganizerEntity } from '../../../../_common/db/pg/entities/event-organizer.entity'
+import { PgTestingProvider } from '../../../../_common/db/pg/pg-testing.provider'
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql'
-import { DbCalendarEventsBuilders } from '../../../_common/helpers/db-calendar-events.helpers'
-import { toCalendarEventFromResponseBodyDto } from './to-calendar-event-from-response-body-dto'
-import { AppModule } from '../../../_common/app/app.module'
+import { DbCalendarEventsBuilders } from '../../../../_common/helpers/db-calendar-events.helpers'
+import { toCalendarEventFromResponseBodyDto } from '../dtos/to-calendar-event-from-response-body-dto'
+import { AppModule } from '../../../../_common/app/app.module'
 
-describe('Calendar event e2e test', () => {
+describe('Retrieve calendar events e2e test', () => {
     let sut: SUT
     let app: INestApplication
     let pg: DataSource
