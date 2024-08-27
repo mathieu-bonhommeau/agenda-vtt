@@ -13,12 +13,12 @@ import {
     IsString,
     IsUrl,
     IsUUID,
-    MaxLength,
-    MinLength,
+    Length,
     ValidateNested,
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { Contact, EventLocation, EventOrganizer, LatLon, Trace, TraceColor } from '../business/models/calendar.event'
+import { IsGreaterThanStartDate } from '../../_common/constraints/is-greater-than-start-date.constraint'
 
 export class AddNewEventBody {
     @ApiProperty({ example: '07e46831-5247-45a0-bc6f-f5e075d963c9' })
@@ -42,6 +42,7 @@ export class AddNewEventBody {
 
     @ApiProperty({ example: '2024-07-16T06:56:15.151' })
     @IsDateString()
+    @IsGreaterThanStartDate()
     endDate: string
 
     @ApiProperty({ type: 'json' })
@@ -81,8 +82,7 @@ export class EventLocationBody {
 
     @ApiProperty({ example: 'FR' })
     @IsString()
-    @MinLength(2)
-    @MaxLength(2)
+    @Length(2, 2)
     country: string
 
     @ApiProperty({ example: 'Nouvelle Aquitaine' })
@@ -129,10 +129,12 @@ export class EventLocationBody {
 export class LatLonBody {
     @ApiProperty({ example: 1.12515645455 })
     @IsLatitude()
+    @Type(() => Number)
     lat: number
 
     @ApiProperty({ example: 1.12515645455 })
     @IsLongitude()
+    @Type(() => Number)
     lon: number
 }
 

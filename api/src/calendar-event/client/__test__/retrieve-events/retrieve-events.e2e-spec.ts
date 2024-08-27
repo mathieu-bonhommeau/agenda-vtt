@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common'
+import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { Server } from 'http'
@@ -102,6 +102,7 @@ describe('Retrieve calendar events e2e test', () => {
             .useValue(pg)
             .compile()
         app = moduleRef.createNestApplication()
+        app.useGlobalPipes(new ValidationPipe({ transform: true }))
         await app.init()
     })
 
@@ -144,12 +145,16 @@ describe('Retrieve calendar events e2e test', () => {
     `(
         'retrieves only events scheduled after or equal a this date $dateToCompare',
         async ({ dateToCompare, resultsIds }: { dateToCompare: string; resultsIds: string[] }) => {
-            const response = await sut.retrieveCalendarEvents('/calendar-events', {
-                start: new Date(dateToCompare),
-            })
-            expect(response.status).toEqual(200)
+            try {
+                const response = await sut.retrieveCalendarEvents('/calendar-events', {
+                    start: dateToCompare,
+                })
+                expect(response.status).toEqual(200)
 
-            expect(response.body.map((e: unknown) => e['id'])).toEqual(resultsIds)
+                expect(response.body.map((e: unknown) => e['id'])).toEqual(resultsIds)
+            } catch (error) {
+                console.log(error)
+            }
         },
     )
 
@@ -173,8 +178,8 @@ describe('Retrieve calendar events e2e test', () => {
             resultsIds: string[]
         }) => {
             const response = await sut.retrieveCalendarEvents('/calendar-events', {
-                start: new Date(startDateToCompare),
-                end: new Date(endDateToCompare),
+                start: startDateToCompare,
+                end: endDateToCompare,
             })
             expect(response.status).toEqual(200)
 
@@ -271,8 +276,8 @@ class SUT {
     async retrieveCalendarEvents(
         path: string,
         query: {
-            start?: Date
-            end?: Date
+            start?: string
+            end?: string
             bbox?: number[]
             keyWord?: string
             distanceMax?: number

@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common'
+import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { DataSource } from 'typeorm'
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql'
 import { PgTestingProvider } from '../../../../_common/db/pg/pg-testing.provider'
@@ -22,6 +22,33 @@ describe('Add a new calendar event test e2e', () => {
     let pg: DataSource
     let postgresContainer: StartedPostgreSqlContainer
     const now: Date = new Date()
+    const newEvent: NewCalendarEventCommand = {
+        id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
+        title: 'my title',
+        description: 'my description',
+        startDate: '2024-07-16',
+        endDate: '2024-07-19',
+        eventLocation: {
+            id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
+            address: 'my address',
+            city: 'my city',
+            country: 'FR',
+            latLon: { lat: 1, lon: 1 },
+        },
+        traces: [
+            {
+                id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
+                distance: 10,
+            },
+        ],
+        price: ['25'],
+        services: ['Parking'],
+        organizer: {
+            id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
+            name: 'my name',
+            email: 'emai@email.com',
+        },
+    }
 
     jest.setTimeout(60000)
 
@@ -39,6 +66,7 @@ describe('Add a new calendar event test e2e', () => {
             .useValue(new PgCalendarEventRepository({ pg, now }))
             .compile()
         app = moduleRef.createNestApplication()
+        app.useGlobalPipes(new ValidationPipe({ transform: true }))
         await app.init()
     })
 
@@ -48,19 +76,48 @@ describe('Add a new calendar event test e2e', () => {
     })
 
     it('saves a basic new event', async () => {
+        const res = await sut.addNewEvent('/calendar-events', newEvent)
+
+        expect(res.statusCode).toEqual(201)
+        expect((await sut.getEvents())[0]).toEqual(toCalendarEventFromNewCalendarEventCommand(now)(newEvent))
+    })
+
+    it('tries to save a new event with an invalid range of date', async () => {
+        const response = await sut.addNewEvent('/calendar-events', {
+            ...newEvent,
+            startDate: '2024-07-20',
+            endDate: '2024-07-19',
+        })
+
+        expect(response.statusCode).toEqual(400)
+        expect(await sut.getEvents()).toEqual([])
+    })
+
+    it('saves a new event with startdate and endate identical', async () => {
+        const response = await sut.addNewEvent('/calendar-events', {
+            ...newEvent,
+            startDate: '2024-07-20',
+            endDate: '2024-07-20',
+        })
+
+        expect(response.statusCode).toEqual(201)
+        expect((await sut.getEvents())[0]).toEqual(
+            toCalendarEventFromNewCalendarEventCommand(now)({
+                ...newEvent,
+                startDate: '2024-07-20',
+                endDate: '2024-07-20',
+            }),
+        )
+    })
+
+    it('tries to save a new event without event location', async () => {
         const newEvent: NewCalendarEventCommand = {
             id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
             title: 'my title',
             description: 'my description',
-            startDate: '2024-07-16',
-            endDate: '2024-07-19',
-            eventLocation: {
-                id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
-                address: 'my address',
-                city: 'my city',
-                country: 'my country',
-                latLon: { lat: 1, lon: 1 },
-            },
+            startDate: '2024-07-20',
+            endDate: '2024-07-21',
+            eventLocation: null,
             traces: [
                 {
                     id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
@@ -72,13 +129,14 @@ describe('Add a new calendar event test e2e', () => {
             organizer: {
                 id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
                 name: 'my name',
-                email: 'my email',
+                email: 'emai@email.com',
             },
         }
 
-        await sut.addNewEvent('/calendar-events', newEvent)
+        const response = await sut.addNewEvent('/calendar-events', newEvent)
 
-        expect((await sut.getEvents())[0]).toEqual(toCalendarEventFromNewCalendarEventCommand(now)(newEvent))
+        expect(response.statusCode).toEqual(400)
+        expect(await sut.getEvents()).toEqual([])
     })
 })
 

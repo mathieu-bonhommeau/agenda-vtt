@@ -3,37 +3,37 @@ import { IsDateString, IsIn, IsOptional, IsString } from 'class-validator'
 
 export class RetrieveEventsQuery {
     @ApiProperty({ example: '2024-07-16T06:56:15.151' })
-    @IsDateString()
     @IsOptional()
+    @IsDateString()
     start?: string
 
     @ApiProperty({ example: '2024-07-16T06:56:15.151' })
-    @IsDateString()
     @IsOptional()
+    @IsDateString()
     end?: string
 
     @ApiProperty({ example: '2.25,45.63,2.36,48.88' })
-    @IsString()
     @IsOptional()
+    @IsString()
     bbox?: string
 
     @ApiProperty({ example: 'search word' })
-    @IsString()
     @IsOptional()
+    @IsString()
     keyWord?: string
 
     @ApiProperty({ example: '40' })
-    @IsString()
     @IsOptional()
+    @IsString()
     distanceMax?: string
 
     @ApiProperty({ example: '40' })
-    @IsString()
     @IsOptional()
+    @IsString()
     distanceMin?: string
 
     @ApiProperty({ example: 'date' })
-    @IsIn(['date', 'location'])
     @IsOptional()
+    @IsIn(['date', 'location'])
     sortBy?: string
 }

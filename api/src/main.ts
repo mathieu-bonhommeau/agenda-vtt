@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser'
 async function bootstrap() {
     console.log(process.env.POSTGRES_HOST)
     const app = await NestFactory.create(AppModule)
+    app.useGlobalPipes(new ValidationPipe({ transform: true }))
 
     AppModule.configureSwagger(app, '')
     app.enableShutdownHooks().enableCors()

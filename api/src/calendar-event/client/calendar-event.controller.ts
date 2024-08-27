@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Inject, Post, Query } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, HttpCode, Inject, Post, Query } from '@nestjs/common'
 import { CalendarEvent } from '../business/models/calendar.event'
 import { RetrieveEvents } from '../business/use-cases/retrieve-events/retrieve.events'
 import { RetrieveEventsQuery } from './retrieve-events.query'
@@ -29,17 +29,21 @@ export class CalendarEventController {
     @Post()
     @HttpCode(201)
     async saveEvent(@Body() body: AddNewEventBody): Promise<void> {
-        return this._addEvents.addNewEvent({
-            id: body.id,
-            title: body.title,
-            description: body?.description,
-            startDate: body.startDate,
-            endDate: body.endDate,
-            eventLocation: body.eventLocation,
-            traces: body.traces,
-            price: body?.price,
-            services: body?.services,
-            organizer: body.organizer,
-        })
+        try {
+            await this._addEvents.addNewEvent({
+                id: body.id,
+                title: body.title,
+                description: body?.description,
+                startDate: body.startDate,
+                endDate: body.endDate,
+                eventLocation: body.eventLocation,
+                traces: body.traces,
+                price: body?.price,
+                services: body?.services,
+                organizer: body.organizer,
+            })
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
     }
 }
