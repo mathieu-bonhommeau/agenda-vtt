@@ -12,7 +12,7 @@ import { EventLocationEntity } from '../../../../_common/db/pg/entities/event-lo
 import { NewCalendarEventCommand } from '../../../business/use-cases/add-event/add-events'
 import { toCalendarEventFromNewCalendarEventCommand } from '../dtos/to-calendar-event-from-response-body-dto'
 import request from 'supertest'
-import { CalendarEvent } from '../../../business/models/calendar.event'
+import { CalendarEvent, LatLon, Trace } from '../../../business/models/calendar.event'
 import { PgCalendarEventFactory } from '../../../infrastructure/factories/pg-event-location.factory'
 import { PgCalendarEventRepository } from '../../../infrastructure/pg-calendar-event-repository'
 
@@ -22,6 +22,10 @@ describe('Add a new calendar event test e2e', () => {
     let pg: DataSource
     let postgresContainer: StartedPostgreSqlContainer
     const now: Date = new Date()
+    const trace: Trace = {
+        id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
+        distance: 10,
+    }
     const newEvent: NewCalendarEventCommand = {
         id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
         title: 'my title',
@@ -35,12 +39,7 @@ describe('Add a new calendar event test e2e', () => {
             country: 'FR',
             latLon: { lat: 1, lon: 1 },
         },
-        traces: [
-            {
-                id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
-                distance: 10,
-            },
-        ],
+        traces: [trace],
         price: ['25'],
         services: ['Parking'],
         organizer: {
@@ -110,33 +109,56 @@ describe('Add a new calendar event test e2e', () => {
         )
     })
 
-    it('tries to save a new event without event location', async () => {
-        const newEvent: NewCalendarEventCommand = {
-            id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
-            title: 'my title',
-            description: 'my description',
-            startDate: '2024-07-20',
-            endDate: '2024-07-21',
-            eventLocation: null,
-            traces: [
-                {
-                    id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
-                    distance: 10,
+    it.each`
+        latlon
+        ${null}
+        ${{ lat: 1, lon: null }}
+        ${{ lat: null, lon: 1 }}
+        ${{ lat: 91, lon: 91 }}
+    `(
+        'tries to save a new event with event location with invalid lat lon : $latlon',
+        async ({ latLon }: { latLon: LatLon | null }) => {
+            const response = await sut.addNewEvent('/calendar-events', {
+                ...newEvent,
+                eventLocation: {
+                    ...newEvent.eventLocation,
+                    latLon: latLon,
                 },
-            ],
-            price: ['25'],
-            services: ['Parking'],
-            organizer: {
-                id: '07e46831-5247-45a0-bc6f-f5e075d963c9',
-                name: 'my name',
-                email: 'emai@email.com',
-            },
-        }
+            })
 
-        const response = await sut.addNewEvent('/calendar-events', newEvent)
+            expect(response.statusCode).toEqual(400)
+            expect(await sut.getEvents()).toEqual([])
+        },
+    )
+
+    it.each`
+        traces
+        ${[{ ...trace, distance: -10 }]}
+        ${[{ ...trace, positiveElevation: -300 }]}
+        ${[{ ...trace, traceColor: 'yellow' }]}
+    `('tries to save a new event with invalid traces : $traces', async ({ traces }: { traces: Trace[] }) => {
+        const response = await sut.addNewEvent('/calendar-events', {
+            ...newEvent,
+            traces,
+        })
 
         expect(response.statusCode).toEqual(400)
         expect(await sut.getEvents()).toEqual([])
+    })
+
+    it('saves a new event with multiple traces', async () => {
+        const response = await sut.addNewEvent('/calendar-events', {
+            ...newEvent,
+            traces: [trace, { ...trace, id: '07e46831-5247-45a0-bc6f-f5e075d963c8' }],
+        })
+
+        expect(response.statusCode).toEqual(201)
+        expect((await sut.getEvents())[0]).toEqual(
+            toCalendarEventFromNewCalendarEventCommand(now)({
+                ...newEvent,
+                traces: [trace, { ...trace, id: '07e46831-5247-45a0-bc6f-f5e075d963c8' }],
+            }),
+        )
     })
 })
 
